@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="win32">
+      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Unit">
+      <UniqueIdentifier>{c6407b75-e72c-49c2-b823-4df11743fe70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Unit\Player">
+      <UniqueIdentifier>{cb146470-6f9b-40a9-ba8a-f46683f56a9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Unit\Monster">
+      <UniqueIdentifier>{43834fde-0efd-4dd3-8102-ca64d1b3a351}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers">
+      <UniqueIdentifier>{67af41d4-416a-49f8-88dd-513ea3a473c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\PlayerUILayer">
+      <UniqueIdentifier>{58eaffe8-6f87-46ce-a4e7-0ef7f09982c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\MapLayer">
+      <UniqueIdentifier>{a4284c45-802c-45db-b894-c64c6d0be0c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\LoadingUILayer">
+      <UniqueIdentifier>{bed9db6f-0eab-431e-bc57-6058ec44773d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\EnterGameLayer">
+      <UniqueIdentifier>{bcc105e4-4f1a-4dd8-9233-07a056187555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\SpriteButton">
+      <UniqueIdentifier>{fe3475dd-a5fb-406b-838b-c13efebce57a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\SQLite">
+      <UniqueIdentifier>{f0e38cf9-6172-4c17-aefb-5c87b2b0a3d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\TypingLayer">
+      <UniqueIdentifier>{2ad1621d-133d-42ba-94bd-96f8427f7bba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Actions">
+      <UniqueIdentifier>{499dfd56-1c89-40a5-aaf6-b18a3a18b870}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Unit.cpp">
+      <Filter>src\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Player.cpp">
+      <Filter>src\Unit\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Monster.cpp">
+      <Filter>src\Unit\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LoadingUILayer.cpp">
+      <Filter>src\Layers\LoadingUILayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PlayerUILayer.cpp">
+      <Filter>src\Layers\PlayerUILayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\BackMapLayer.cpp">
+      <Filter>src\Layers\MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\FrontMapLayer.cpp">
+      <Filter>src\Layers\MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MainMapLayer.cpp">
+      <Filter>src\Layers\MapLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\EnterGameLayer.cpp">
+      <Filter>src\Layers\EnterGameLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TypingLayer.cpp">
+      <Filter>src\Layers\TypingLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ActionManager.cpp">
+      <Filter>src\Actions</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HelloWorldScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Unit.h">
+      <Filter>src\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Player.h">
+      <Filter>src\Unit\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Monster.h">
+      <Filter>src\Unit\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LoadingUILayer.h">
+      <Filter>src\Layers\LoadingUILayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Types.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PlayerUILayer.h">
+      <Filter>src\Layers\PlayerUILayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\BackMapLayer.h">
+      <Filter>src\Layers\MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\FrontMapLayer.h">
+      <Filter>src\Layers\MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MainMapLayer.h">
+      <Filter>src\Layers\MapLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EnterGameLayer.h">
+      <Filter>src\Layers\EnterGameLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TypingLayer.h">
+      <Filter>src\Layers\TypingLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ActionManager.h">
+      <Filter>src\Actions</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
