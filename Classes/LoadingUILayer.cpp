@@ -1,4 +1,4 @@
-#include "LoadingUILayer.h"
+﻿#include "LoadingUILayer.h"
 #include "Player.h"
 #include "spine\spine.h"
 #include "cocos\editor-support\spine\SkeletonAnimation.h"

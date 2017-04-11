@@ -1,4 +1,4 @@
-#include "TypingLayer.h"
+﻿#include "TypingLayer.h"
 #include "Types.h"
 
 TypingLayer::TypingLayer()

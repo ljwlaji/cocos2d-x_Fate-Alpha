@@ -1,4 +1,4 @@
-#include "ActionManager.h"
+﻿#include "ActionManager.h"
 #include "Player.h"
 
 ActionMgr::ActionMgr(Player* _player)

@@ -1,4 +1,4 @@
-#ifndef __UNIT_H__
+ï»¿#ifndef __UNIT_H__
 #define __UNIT_H__
 
 #include "Types.h"
@@ -16,7 +16,7 @@ public:
 
 	float GetPositionX() { return getBoundingBox().origin.x + (getBoundingBox().size.width / 2); }
 	float GetPositionZ() { return getBoundingBox().origin.y; }
-	//ÓÉJumpÔ­µã»ñÈ¡
+	//ç”±JumpåŸç‚¹è·å–
 	float GetPositionY();
 	void SetFacing(Facing _var);
 	MoveType GetMoveType()									{ return m_MoveType; }

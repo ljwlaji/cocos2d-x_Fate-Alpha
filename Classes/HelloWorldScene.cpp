@@ -1,4 +1,4 @@
-#include "HelloWorldScene.h"
+ï»¿#include "HelloWorldScene.h"
 #include "ActionManager.h"
 static  MainScene* _MainScene = nullptr;
 USING_NS_CC;
@@ -178,7 +178,7 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	}
 	//switch (keyCode)
 	//{
-	//	//ÒÆ¶¯//
+	//	//ç§»åŠ¨//
 	//case cocos2d::EventKeyboard::KeyCode::KEY_A:
 	//	break;
 	//case cocos2d::EventKeyboard::KeyCode::KEY_S:
@@ -187,9 +187,9 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	//	break;
 	//case cocos2d::EventKeyboard::KeyCode::KEY_W:
 	//	break;
-	//	//ÒÆ¶¯//
+	//	//ç§»åŠ¨//
 	//
-	//	//°´¼ü//
+	//	//æŒ‰é”®//
 	//case cocos2d::EventKeyboard::KeyCode::KEY_J:
 	//	break;
 	//case cocos2d::EventKeyboard::KeyCode::KEY_L:
@@ -202,9 +202,9 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	//	break;
 	//case cocos2d::EventKeyboard::KeyCode::KEY_P:
 	//	break;
-	//	//°´¼ü//
+	//	//æŒ‰é”®//
 	//
-	//	//¿ì½İ¼ü//
+	//	//å¿«æ·é”®//
 	//case cocos2d::EventKeyboard::KeyCode::KEY_E:
 	//	break;
 	//case cocos2d::EventKeyboard::KeyCode::KEY_Q:

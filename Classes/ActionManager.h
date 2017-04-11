@@ -1,4 +1,4 @@
-#ifndef __ACTION_MANAGER_H__
+﻿#ifndef __ACTION_MANAGER_H__
 #define __ACTION_MANAGER_H__
 
 #include "Types.h"
