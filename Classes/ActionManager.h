@@ -2,43 +2,35 @@
 #define __ACTION_MANAGER_H__
 
 #include "Types.h"
-
-
-enum KeyValue
-{
-	//移动左
-	KEY_A,
-	//移动右
-	KEY_S,
-	//移动上
-	KEY_D,
-	//移动下
-	KEY_W,
-	//攻击
-	KEY_J,
-	//跳跃
-	KEY_K,
-	//道具
-	KEY_L,
-	//释放
-	KEY_I,
-};
 struct SingleAction
 {
-	uint16 UperActionID;
+	uint8 Character;
+	uint16 RequireAction;
+	std::vector<uint16> KeyVector;
+	uint16 ActionID;
+	std::string ActionName;
+	MoveType Require_MoveType;
 };
 
+#define MatchNull 0
+
 class Player;
-class ActionManager
+class ActionMgr
 {
 public:
-	ActionManager();
-	~ActionManager();
-	static ActionManager* GetInstance();
+	ActionMgr(Player* _player);
+	~ActionMgr();
+	void ClearKey()				{ TempPlayerKeys.clear(); }
 	void OnPlayerPressKey(cocos2d::EventKeyboard::KeyCode keyCode);
-	bool CanDoAction(Player* _player);
+	void LoadActionFromDB();
+	ActionType CheckActionEcho(bool& keepretain);
 private:
 
 	std::vector<uint16> TempPlayerKeys;
+	std::vector<SingleAction> Actions;
+	std::vector<SingleAction> DeterMineVector;
+	uint16 DoingAction;
+
+	Player* _holder;
 };
 #endif

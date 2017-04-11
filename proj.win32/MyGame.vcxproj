@@ -147,6 +147,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\ActionManager.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\BackMapLayer.cpp" />
+    <ClCompile Include="..\Classes\DataMgr.cpp" />
     <ClCompile Include="..\Classes\EnterGameLayer.cpp" />
     <ClCompile Include="..\Classes\FrontMapLayer.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
@@ -155,6 +156,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Monster.cpp" />
     <ClCompile Include="..\Classes\Player.cpp" />
     <ClCompile Include="..\Classes\PlayerUILayer.cpp" />
+    <ClCompile Include="..\Classes\Result.cpp" />
+    <ClCompile Include="..\Classes\sqlite\shell.c" />
+    <ClCompile Include="..\Classes\sqlite\sqlite3.c" />
     <ClCompile Include="..\Classes\TypingLayer.cpp" />
     <ClCompile Include="..\Classes\Unit.cpp" />
     <ClCompile Include="main.cpp" />
@@ -163,6 +167,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\ActionManager.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\BackMapLayer.h" />
+    <ClInclude Include="..\Classes\DataMgr.h" />
     <ClInclude Include="..\Classes\EnterGameLayer.h" />
     <ClInclude Include="..\Classes\FrontMapLayer.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
@@ -171,6 +176,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Monster.h" />
     <ClInclude Include="..\Classes\Player.h" />
     <ClInclude Include="..\Classes\PlayerUILayer.h" />
+    <ClInclude Include="..\Classes\Result.h" />
+    <ClInclude Include="..\Classes\sqlite\sqlite3.h" />
+    <ClInclude Include="..\Classes\sqlite\sqlite3ext.h" />
     <ClInclude Include="..\Classes\Types.h" />
     <ClInclude Include="..\Classes\TypingLayer.h" />
     <ClInclude Include="..\Classes\Unit.h" />

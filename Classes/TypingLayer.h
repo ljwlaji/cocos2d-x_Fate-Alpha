@@ -16,8 +16,8 @@ private:
 	virtual bool init();
 	TextFieldTTF* AccountTyping;
 	TextFieldTTF* PassWordTyping;
-	bool onTouchBegan(CCTouch* touch, CCEvent* ev);
-	void onTouchEnded(CCTouch* touch, CCEvent* ev);
+	bool onTouchBegan(Touch* touch, Event* ev);
+	void onTouchEnded(Touch* touch, Event* ev);
 
 	std::vector<Sprite*> TypingButtons;
 };

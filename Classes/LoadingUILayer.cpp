@@ -47,7 +47,7 @@ void LoadingUILayer::ShowLoadingLayer(LoadAddress _LoadAddress)
 {
 	setVisible(true);
 	scheduleUpdate();
-	setZOrder(Loading_Layer_Zorder);
+	setLocalZOrder(Loading_Layer_Zorder);
 }
 
 void LoadingUILayer::DisAppear()
@@ -55,7 +55,7 @@ void LoadingUILayer::DisAppear()
 	m_TimeBar->setPercentage(0);
 	unscheduleUpdate();
 	setVisible(false);
-	setZOrder(0 - Loading_Layer_Zorder);
+	setLocalZOrder(0 - Loading_Layer_Zorder);
 }
 
 void LoadingUILayer::InitTimeBar()
@@ -66,12 +66,12 @@ void LoadingUILayer::InitTimeBar()
 		Back->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.1f);
 		addChild(Back);
 
-		m_TimeBar = CCProgressTimer::create(Sprite::create("LoadingLayer_TimeBarImage.png"));
+		m_TimeBar = ProgressTimer::create(Sprite::create("LoadingLayer_TimeBarImage.png"));
 		m_TimeBar->setPosition(Back->getContentSize().width / 2, Back->getContentSize().height / 2);
 		m_TimeBar->setPercentage(0);
-		m_TimeBar->setBarChangeRate(ccp(1, 0));
-		m_TimeBar->setMidpoint(ccp(0, 0));
-		m_TimeBar->setType(kCCProgressTimerTypeBar);
+		m_TimeBar->setBarChangeRate(Vec2(1, 0));
+		m_TimeBar->setMidpoint(Vec2(0, 0));
+		m_TimeBar->setType(ProgressTimer::Type::BAR);
 		Back->addChild(m_TimeBar);
 	}
 }

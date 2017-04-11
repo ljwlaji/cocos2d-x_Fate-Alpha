@@ -34,17 +34,17 @@
     <Filter Include="src\Layers\EnterGameLayer">
       <UniqueIdentifier>{bcc105e4-4f1a-4dd8-9233-07a056187555}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\SpriteButton">
-      <UniqueIdentifier>{fe3475dd-a5fb-406b-838b-c13efebce57a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\SQLite">
-      <UniqueIdentifier>{f0e38cf9-6172-4c17-aefb-5c87b2b0a3d6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Layers\TypingLayer">
       <UniqueIdentifier>{2ad1621d-133d-42ba-94bd-96f8427f7bba}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Actions">
       <UniqueIdentifier>{499dfd56-1c89-40a5-aaf6-b18a3a18b870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\sql">
+      <UniqueIdentifier>{dc831669-96b0-4d0f-bfec-e29806f12649}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\sql\Result">
+      <UniqueIdentifier>{81993757-8ca6-43e4-9310-ffc11d087acf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +89,18 @@
     </ClCompile>
     <ClCompile Include="..\Classes\ActionManager.cpp">
       <Filter>src\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\DataMgr.cpp">
+      <Filter>src\sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\sqlite\shell.c">
+      <Filter>src\sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\sqlite\sqlite3.c">
+      <Filter>src\sql</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Result.cpp">
+      <Filter>src\sql\Result</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +148,18 @@
     </ClInclude>
     <ClInclude Include="..\Classes\ActionManager.h">
       <Filter>src\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\DataMgr.h">
+      <Filter>src\sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\sqlite\sqlite3.h">
+      <Filter>src\sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\sqlite\sqlite3ext.h">
+      <Filter>src\sql</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Result.h">
+      <Filter>src\sql\Result</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

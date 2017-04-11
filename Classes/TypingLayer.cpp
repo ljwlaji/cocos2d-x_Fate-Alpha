@@ -17,7 +17,7 @@ bool TypingLayer::init()
 	{
 		CC_BREAK_IF(!Layer::init());
 
-		Vec2 visablesize = Director::sharedDirector()->getVisibleSize();
+		Vec2 visablesize = Director::getInstance()->getVisibleSize();
 		Sprite* AccountFrame = Sprite::create("Typing_Frame.png");
 		AccountFrame->SetRealPosition(visablesize.x / 2, visablesize.y * 0.70f);
 		AccountFrame->setTag(0);
@@ -39,7 +39,7 @@ bool TypingLayer::init()
 
 		TypingButtons.push_back(AccountFrame);
 		TypingButtons.push_back(PassWordFrame);
-		setTouchMode(kCCTouchesOneByOne);
+		setTouchMode(Touch::DispatchMode::ONE_BY_ONE);
 		setTouchEnabled(true);
 
 		bRef = true;
@@ -48,18 +48,18 @@ bool TypingLayer::init()
 }
 
 
-bool TypingLayer::onTouchBegan(CCTouch* touch, CCEvent* ev)
+bool TypingLayer::onTouchBegan(Touch* touch, Event* ev)
 {
 	return true;
 }
 
 
-void TypingLayer::onTouchEnded(CCTouch* touch, CCEvent* ev)
+void TypingLayer::onTouchEnded(Touch* touch, Event* ev)
 {
-	for (int i = 0; i < TypingButtons.size(); i++)
+	for (int i = 0; i != TypingButtons.size(); i++)
 	{
 		Sprite* Temp = TypingButtons.at(i);
-		if (Temp->boundingBox().containsPoint(touch->getLocation()))
+		if (Temp->getBoundingBox().containsPoint(touch->getLocation()))
 		{
 			if (TextFieldTTF* ttf = (TextFieldTTF*)Temp->getChildByTag(1))
 				ttf->attachWithIME();

@@ -1,5 +1,5 @@
 #include "HelloWorldScene.h"
-
+#include "ActionManager.h"
 static  MainScene* _MainScene = nullptr;
 USING_NS_CC;
 
@@ -9,6 +9,7 @@ MainScene::MainScene()
 	CombatSign = false;
 	CanPlaySound = true;
 	_MainScene = this;
+	_player = nullptr;
 }
 MainScene::~MainScene(){}
 
@@ -122,61 +123,125 @@ void MainScene::DisTorySprite(Sprite* pSprite)
 	}
 }
 
+bool MainScene::IsMoveKey(EventKeyboard::KeyCode keyCode)
+{
+	switch (keyCode)
+	{
+		case EventKeyboard::KeyCode::KEY_A:
+		case EventKeyboard::KeyCode::KEY_S:
+		case EventKeyboard::KeyCode::KEY_D:
+		case EventKeyboard::KeyCode::KEY_W:
+		case EventKeyboard::KeyCode::KEY_K:
+			return true;
+	}
+	return false;
+}
 void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
 	//if (!player) return;
 	//if (sAction->CanDoAction(player))
-	switch (keyCode)
+	if (IsMoveKey(keyCode))
 	{
-		//移动//
-	case cocos2d::EventKeyboard::KeyCode::KEY_A:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_S:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_D:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_W:
-		break;
-		//移动//
-
-		//按键//
-	case cocos2d::EventKeyboard::KeyCode::KEY_J:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_L:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_I:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_U:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_O:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_P:
-		break;
-		//按键//
-
-		//快捷键//
-	case cocos2d::EventKeyboard::KeyCode::KEY_E:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_Q:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_F:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_R:
-		break;
+		switch (keyCode)
+		{
+		case EventKeyboard::KeyCode::KEY_A:
+			_player->SetMoveKeyEnable(MoveKey_Left, true);
+			break;
+		case EventKeyboard::KeyCode::KEY_S:
+			_player->SetMoveKeyEnable(MoveKey_Down, true);
+			break;
+		case EventKeyboard::KeyCode::KEY_D:
+			_player->SetMoveKeyEnable(MoveKey_Right, true);
+			break;
+		case EventKeyboard::KeyCode::KEY_W:
+			_player->SetMoveKeyEnable(MoveKey_Up, true);
+			break;
+		}
 	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_R)
+	{
+		if (!_player)
+		{
+			if (SkeletonAnimation* _SkeletonAnimation = SkeletonAnimation::createWithFile("spineboy.json", "spineboy.atlas", 0.5f))
+			{
+				_player = new Player(_SkeletonAnimation);
+				EnterLayer->AddPlayer(_player);
+			}
+		}
+	}
+	else
+	{
+		if (_player)
+		{
+			_player->PlayerActionMgr()->OnPlayerPressKey(keyCode);
+		}
+	}
+	//switch (keyCode)
+	//{
+	//	//移动//
+	//case cocos2d::EventKeyboard::KeyCode::KEY_A:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_S:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_D:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_W:
+	//	break;
+	//	//移动//
+	//
+	//	//按键//
+	//case cocos2d::EventKeyboard::KeyCode::KEY_J:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_L:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_I:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_U:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_O:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_P:
+	//	break;
+	//	//按键//
+	//
+	//	//快捷键//
+	//case cocos2d::EventKeyboard::KeyCode::KEY_E:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_Q:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_F:
+	//	break;
+	//case cocos2d::EventKeyboard::KeyCode::KEY_R:
+	//	if (!_player)
+	//	{
+	//		if (SkeletonAnimation* _SkeletonAnimation = SkeletonAnimation::createWithFile("spineboy.json", "spineboy.atlas", 0.5f))
+	//		{
+	//			_player = new Player(_SkeletonAnimation);
+	//			EnterLayer->AddPlayer(_player);
+	//		}
+	//	}
+	//	break;
+	//}
 }
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
-	switch (keyCode)
+	if (IsMoveKey(keyCode))
 	{
-	case cocos2d::EventKeyboard::KeyCode::KEY_A:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_S:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_D:
-		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_W:
-		break;
+		switch (keyCode)
+		{
+		case EventKeyboard::KeyCode::KEY_A:
+			_player->SetMoveKeyEnable(MoveKey_Left, false);
+			break;
+		case EventKeyboard::KeyCode::KEY_S:
+			_player->SetMoveKeyEnable(MoveKey_Down, false);
+			break;
+		case EventKeyboard::KeyCode::KEY_D:
+			_player->SetMoveKeyEnable(MoveKey_Right, false);
+			break;
+		case EventKeyboard::KeyCode::KEY_W:
+			_player->SetMoveKeyEnable(MoveKey_Up, false);
+			break;
+		}
 	}
 }

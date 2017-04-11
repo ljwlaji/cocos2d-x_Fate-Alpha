@@ -2,6 +2,7 @@
 #define __ENTER_GAME_LAYER_H__
 
 #include "cocos2d.h"
+#include "Player.h"
 USING_NS_CC;
 
 enum EnterGameButtonTags
@@ -42,6 +43,12 @@ public:
 	EnterGameLayer();
 	~EnterGameLayer();
 	CREATE_FUNC(EnterGameLayer);
+
+	void AddPlayer(Player* player)
+	{
+		player->SetRealPosition(Visablesize.x / 2, 0);
+		addChild(player);
+	}
 private:
 	bool RunActionWithButton(int _tag);
 	void onTouchEnded(Touch *touch, Event *unused_event);
@@ -54,7 +61,6 @@ private:
 	void EveryThingFadeOut();
 	void MainMenuShow();
 	void MainMenuDisAppear();
-
 	Sprite* SettingMenu;
 	Sprite* DiffcuteMenu;
 	int m_TouchedButton;

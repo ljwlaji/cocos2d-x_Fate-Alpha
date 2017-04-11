@@ -15,7 +15,7 @@ enum GameDiffcute
 	Rate_A,
 	Rate_S,
 };
-
+class Player;
 class MainScene : public Scene
 {
 public:
@@ -37,6 +37,7 @@ public:
 	bool GetCanPlaySound()				{ return CanPlaySound; }
 	void SwapLayer(Layer* instead, int removetag);
 private:
+	bool IsMoveKey(EventKeyboard::KeyCode keyCode);
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 	LoadingUILayer* LoadingLayer;
@@ -46,6 +47,7 @@ private:
 	bool CanShowDiffCuteImage;
 	bool CombatSign;
 	bool CanPlaySound;
+	Player* _player;
 protected:
 	GameDiffcute m_Diffcute;
 };

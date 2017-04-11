@@ -28,7 +28,7 @@ private:
 
 	// ±º‰Ãı
 	Sprite* BackGroundSprite;
-	CCProgressTimer* m_TimeBar;
+	ProgressTimer* m_TimeBar;
 	Size visibleSize;
 	Vec2 origin;
 };
