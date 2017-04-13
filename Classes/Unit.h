@@ -11,7 +11,7 @@ using namespace spine;
 class Unit : public Sprite
 {
 public:
-	Unit(SkeletonAnimation* UnitVision);
+	Unit(SkeletonAnimation* UnitVision, uint32 entry = 0, uint32 guid = 0);
 	~Unit();
 
 	float GetPositionX() { return getBoundingBox().origin.x + (getBoundingBox().size.width / 2); }
@@ -33,7 +33,11 @@ private:
 	MoveOrientation m_MoveOrgin;
 	uint8 m_Speed;
 	virtual void UpdateMoveStatus() = 0;
+	virtual bool LoadFromDB() = 0;
 	MoveType m_MoveType;
+
+	uint32 m_Entry;
+	uint32 m_Guid;
 };
 
 #endif

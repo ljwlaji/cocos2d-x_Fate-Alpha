@@ -40,6 +40,8 @@ private:
 	std::map<MoveKeyValue, bool> MoveKeyStatus;
 	virtual void UpdateMoveStatus();
 	float KeyVectorClearTimer;
+
+	virtual bool LoadFromDB(){ return true; };
 };
 
 #endif

@@ -19,6 +19,7 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation) : Unit(_SkeletonAnimation)
 
 Player::~Player()
 {
+	delete _ActionMgr;
 }
 
 Player* Player::GetInstance()

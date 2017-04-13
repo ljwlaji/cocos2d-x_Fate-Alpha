@@ -29,13 +29,6 @@ bool LoadingUILayer::init()
 		BackGroundSprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 		addChild(BackGroundSprite);
 
-		SkeletonAnimation* animation = new SkeletonAnimation("spineboy.json", "spineboy.atlas", 1.0f);
-		animation->setScaleX(-1.0f);
-		animation->autorelease();
-		_Player = new Player(animation);
-		_Player->setPosition(visibleSize.width / 2, 0);
-		addChild(_Player);
-
 		InitTimeBar();
 		bRef = true;
 	} while (0);

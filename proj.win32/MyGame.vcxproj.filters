@@ -49,6 +49,9 @@
     <Filter Include="src\MovementMgr">
       <UniqueIdentifier>{4ceebdc5-8d5b-4c28-a807-099af7d201c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Unit\NewFilter1">
+      <UniqueIdentifier>{ddf67ee1-ec1f-4ade-9ad4-c225f69e9d76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -107,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\MovementMgr.cpp">
       <Filter>src\MovementMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Npc.cpp">
+      <Filter>src\Unit\NewFilter1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +175,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\MovementMgr.h">
       <Filter>src\MovementMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Npc.h">
+      <Filter>src\Unit\NewFilter1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

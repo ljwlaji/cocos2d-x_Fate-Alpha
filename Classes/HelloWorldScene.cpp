@@ -1,5 +1,7 @@
 ﻿#include "HelloWorldScene.h"
 #include "ActionManager.h"
+#include "MainMapLayer.h"
+
 static  MainScene* _MainScene = nullptr;
 USING_NS_CC;
 

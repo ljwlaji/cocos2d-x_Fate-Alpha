@@ -1,9 +1,11 @@
 #include "Unit.h"
 
-Unit::Unit(SkeletonAnimation* _vision)
+Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 {
 	initWithFile("1.png");
 	autorelease();
+	if (entry) m_Entry = entry;
+	if (guid) m_Guid = guid;
 	m_UnitVision = _vision;
 	_vision->setPosition(getContentSize().width / 2, getContentSize().height / 2);
 	m_Facing = Facing_Left;
