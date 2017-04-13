@@ -1,6 +1,7 @@
 #include "EnterGameLayer.h"
 #include "HelloWorldScene.h"
 #include "TypingLayer.h"
+#include "MainMapLayer.h"
 EnterGameLayer::EnterGameLayer()
 {
 	Visablesize = Director::getInstance()->getVisibleSize();
@@ -71,8 +72,10 @@ bool EnterGameLayer::RunActionWithButton(int _tag)
 	switch (_tag)
 	{
 	case button_entergame:
-		if (TypingLayer* layer = TypingLayer::create())
+		if (Main_Map_Layer* layer = new Main_Map_Layer(1))
 		{
+			layer->init();
+			layer->autorelease();
 			sGame->SwapLayer(layer, getTag());
 			return false;
 		}

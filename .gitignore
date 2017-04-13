@@ -16,3 +16,4 @@ proj.win32/MyGame.sdf
 proj.android/bin/
 proj.android/
 proj.ios_mac/
+proj.win32/Release.win32/

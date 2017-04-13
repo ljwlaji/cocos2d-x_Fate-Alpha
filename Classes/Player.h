@@ -31,6 +31,7 @@ public:
 	uint8 GetClass()											{ return m_Class; }
 	void SetMoveKeyEnable(MoveKeyValue _key, bool enable)		{ MoveKeyStatus[_key] = enable; }
 	void ResetKeyTimer()										{ KeyVectorClearTimer = Base_Clear_Key_Time; }
+	virtual void DestorySelf() { removeFromParentAndCleanup(true); }
 private:
 	uint8 m_Level;
 	ActionType m_Action;

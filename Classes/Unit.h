@@ -27,6 +27,7 @@ public:
 	void SetMoving(MoveOrientation _var)					{ m_MoveOrgin = _var; }
 	void SetSpeed(uint8 _var)								{ m_Speed = _var; }
 	void SetMoveType(MoveType _var)							{ m_MoveType = _var; }
+	virtual void DestorySelf() = 0;
 private:
 	SkeletonAnimation* m_UnitVision;
 	Facing m_Facing;

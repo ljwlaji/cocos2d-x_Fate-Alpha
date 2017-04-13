@@ -1,6 +1,6 @@
 ﻿#include "ActionManager.h"
 #include "Player.h"
-
+#include "NotifyMgr.h"
 ActionMgr::ActionMgr(Player* _player)
 {
 	DoingAction = 0;
@@ -40,8 +40,14 @@ void ActionMgr::LoadActionFromDB()
 	Result _result;
 	if (sDataMgr->selectUnitDataList(msg, _result))
 	{
-		if (_result.empty()) return;
-
+		if (_result.empty())
+		{
+			sNotifyMgr->ShowNotify("Action Match Empty!");
+			return;
+		}
+		char msg[255];
+		snprintf(msg, 255, "%d", _result.size());
+		sNotifyMgr->ShowNotify(msg);
 		for (Result::iterator itr = _result.begin(); itr != _result.end(); itr++)
 		{
 			std::vector<RowInfo> row = itr->second;
@@ -60,6 +66,10 @@ void ActionMgr::LoadActionFromDB()
 			}
 			Actions.push_back(_SingleAction);
 		}
+	}
+	else
+	{
+
 	}
 }
 

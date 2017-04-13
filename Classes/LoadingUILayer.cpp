@@ -4,9 +4,10 @@
 #include "cocos\editor-support\spine\SkeletonAnimation.h"
 using namespace spine;
 
-
+static LoadingUILayer* _LoadingUILayer = nullptr;
 LoadingUILayer::LoadingUILayer()
 {
+	_LoadingUILayer = this;
 	visibleSize	= Director::getInstance()->getVisibleSize();
 	origin		= Director::getInstance()->getVisibleOrigin();
 	m_TimeBarPrescent = 0;
@@ -18,6 +19,13 @@ LoadingUILayer::~LoadingUILayer()
 {
 }
 
+LoadingUILayer* LoadingUILayer::GetInstance()
+{
+	if (!_LoadingUILayer)
+		return nullptr;
+	return _LoadingUILayer;
+}
+
 bool LoadingUILayer::init()
 {
 	bool bRef = false;
@@ -25,9 +33,18 @@ bool LoadingUILayer::init()
 	{
 		CC_BREAK_IF(!Layer::init());
 
-		BackGroundSprite = Sprite::create("main_back_0.jpg");
-		BackGroundSprite->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+		BackGroundSprite_c = Sprite::create("Loading_blackground.png");
+		BackGroundSprite_c->SetRealPosition(visibleSize.width / 2, visibleSize.height / 2);
+		BackGroundSprite_c->setScale(5.0f);
+		addChild(BackGroundSprite_c);
+
+		BackGroundSprite = Sprite::create("Loading_Back_1.png");
+		BackGroundSprite->SetRealPosition(visibleSize.width / 2, visibleSize.height / 2);
 		addChild(BackGroundSprite);
+		BackGroundSprite_a = Sprite::create("Loading_Back_2.png");
+		BackGroundSprite_a->SetRealPosition(visibleSize.width / 2, visibleSize.height / 2);
+		addChild(BackGroundSprite_a);
+
 
 		InitTimeBar();
 		bRef = true;
@@ -36,8 +53,18 @@ bool LoadingUILayer::init()
 	return bRef;
 }
 
-void LoadingUILayer::ShowLoadingLayer(LoadAddress _LoadAddress)
+void LoadingUILayer::Reset()
 {
+	RandomSetBackGroundImage();
+	BackGroundSprite->setOpacity(0.0f);
+	BackGroundSprite_a->setOpacity(255.0f);
+	m_TimeBarPrescent = 0;
+	m_TimeBar->setPercentage(0);
+}
+
+void LoadingUILayer::Show()
+{
+	Reset();
 	setVisible(true);
 	scheduleUpdate();
 	setLocalZOrder(Loading_Layer_Zorder);
@@ -45,7 +72,6 @@ void LoadingUILayer::ShowLoadingLayer(LoadAddress _LoadAddress)
 
 void LoadingUILayer::DisAppear()
 {
-	m_TimeBar->setPercentage(0);
 	unscheduleUpdate();
 	setVisible(false);
 	setLocalZOrder(0 - Loading_Layer_Zorder);
@@ -69,12 +95,35 @@ void LoadingUILayer::InitTimeBar()
 	}
 }
 
+void LoadingUILayer::RandomSetBackGroundImage()
+{
+	int i = 10 + rand() % 40;
+	i = i / 10;
+	char url[255];
+	snprintf(url, 255, "Loading_Back_%d.png", i);
+	BackGroundSprite->setTexture(url);
+	if (++i == 5)
+		i = 1;
+	char uarl[255];
+	snprintf(uarl, 255, "Loading_Back_%d.png", i);
+	BackGroundSprite_a->setTexture(uarl);
+}
+
 void LoadingUILayer::update(float diff)
 {
 	float p_now		= m_TimeBar->getPercentage();
+	if (p_now >= 100.0f)
+	{
+		DisAppear();
+		return;
+	}
 	float change	= (float)m_TimeBarPrescent - p_now;
 	if ((uint8)change)
 	{
 		change > 0 ? m_TimeBar->setPercentage(p_now + 1) : m_TimeBar->setPercentage(p_now - 1);
+		float modify = m_TimeBar->getPercentage();
+		float modify_op = modify * 255.0f / 100.0f;
+		BackGroundSprite_a->setOpacity(255.0f - modify_op);
+		BackGroundSprite->setOpacity(0 + modify_op);
 	}
 }

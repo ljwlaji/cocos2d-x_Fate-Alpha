@@ -14,6 +14,8 @@ public:
     AppDelegate();
     virtual ~AppDelegate();
 
+	bool CheckDBFile(const char* pFileName);
+	void CopyData(const char* pFileName);
     virtual void initGLContextAttrs();
 
     /**

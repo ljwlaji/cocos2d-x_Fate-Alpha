@@ -10,7 +10,7 @@ class Npc : public Unit
 public:
 	explicit Npc(SkeletonAnimation* _animation, uint32 entry, uint32 guid);
 	~Npc();
-
+	void DestorySelf() { removeFromParentAndCleanup(true); }
 private:
 	virtual void UpdateMoveStatus(){};
 	virtual bool LoadFromDB(){ return true; };

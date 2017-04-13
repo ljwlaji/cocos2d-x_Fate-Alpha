@@ -52,6 +52,9 @@
     <Filter Include="src\Unit\NewFilter1">
       <UniqueIdentifier>{ddf67ee1-ec1f-4ade-9ad4-c225f69e9d76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\NotifyMgr">
+      <UniqueIdentifier>{25fae8ea-adf0-4378-ae47-353e342f9994}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -77,12 +80,6 @@
     </ClCompile>
     <ClCompile Include="..\Classes\PlayerUILayer.cpp">
       <Filter>src\Layers\PlayerUILayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\BackMapLayer.cpp">
-      <Filter>src\Layers\MapLayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\FrontMapLayer.cpp">
-      <Filter>src\Layers\MapLayer</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\MainMapLayer.cpp">
       <Filter>src\Layers\MapLayer</Filter>
@@ -114,6 +111,9 @@
     <ClCompile Include="..\Classes\Npc.cpp">
       <Filter>src\Unit\NewFilter1</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\NotifyMgr.cpp">
+      <Filter>src\NotifyMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -142,12 +142,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\PlayerUILayer.h">
       <Filter>src\Layers\PlayerUILayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\BackMapLayer.h">
-      <Filter>src\Layers\MapLayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\FrontMapLayer.h">
-      <Filter>src\Layers\MapLayer</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\MainMapLayer.h">
       <Filter>src\Layers\MapLayer</Filter>
@@ -178,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Npc.h">
       <Filter>src\Unit\NewFilter1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\NotifyMgr.h">
+      <Filter>src\NotifyMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

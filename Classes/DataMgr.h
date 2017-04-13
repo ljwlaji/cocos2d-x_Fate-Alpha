@@ -1,4 +1,4 @@
-#ifndef __DATA_MGR_H__
+﻿#ifndef __DATA_MGR_H__
 #define __DATA_MGR_H__
 
 #include "sqlite\sqlite3.h"
@@ -19,8 +19,11 @@ public:
 	static DataMgr* GetInstance();
 	bool closeDB(sqlite3 *db);
 	sqlite3* openDB();
+	bool TestOpenDB();
+	bool PExcute(const char* args);
 	bool selectUnitDataList(const char* args, Result& _Result);
 private:
 	std::chrono::system_clock::time_point _dbOpenTime;
+	std::string DB_PATCH_URL;
 };
 #endif

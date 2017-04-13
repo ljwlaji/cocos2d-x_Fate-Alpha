@@ -8,6 +8,8 @@ class Monster : public Unit
 public:
 	explicit Monster(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid);
 	~Monster();
+
+	virtual void DestorySelf() { removeFromParentAndCleanup(true); }
 private:
 
 	virtual bool LoadFromDB(){ return true; };

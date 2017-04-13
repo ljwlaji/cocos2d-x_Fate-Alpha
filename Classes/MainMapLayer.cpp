@@ -3,7 +3,8 @@
 #include "Npc.h"
 #include "Monster.h"
 #include "DataMgr.h"
-
+#include "LoadingUILayer.h"
+#include "NotifyMgr.h"
 Main_Map_Layer* _Main_Map_Layer = nullptr;
 
 Main_Map_Layer::Main_Map_Layer(int MapId)
@@ -36,29 +37,20 @@ Main_Map_Layer* Main_Map_Layer::GetInstance()
 bool Main_Map_Layer::SwapMap(int insteadid)
 {
 	unscheduleUpdate();
-
+	sLoadingLayer->Show();
+	if (!insteadid) 
+		insteadid = m_Mapid;
 	removeAllChildrenWithCleanup(true);
 	ClearVectors();
-	LoadMapInfo(insteadid);
-
-
+	FillLoadVectors(insteadid);
 	scheduleUpdate();
-	return true;
-}
-
-bool Main_Map_Layer::LoadMapInfo(int mapid)
-{
-	if (!mapid)
-		mapid = m_Mapid;
-
-	FillLoadVectors(mapid);
-
 	return true;
 }
 
 void Main_Map_Layer::FillLoadVectors(int id)
 {
 	//读取地图信息添加到待载入列表
+	TotalLoadingSize = 0;
 	std::string LoadTemplateName = "";
 	for (std::map<MapObjectType, std::vector<WaitForLoadingObjectTemplate>>::iterator itr = m_WaitForLoadingObjects.begin(); itr != m_WaitForLoadingObjects.end(); itr++)
 	{
@@ -76,7 +68,9 @@ void Main_Map_Layer::FillLoadVectors(int id)
 		{
 			if (_Result.empty())
 			{
-				log("ErrDB: LoadMapInfo: Empty Template %s For Loading Map %d", LoadTemplateName.c_str(), id);	continue;
+				char msg[255];
+				snprintf(msg, 255, "ErrDB: LoadMapInfo: Empty Template %s For Loading Map %d", LoadTemplateName.c_str(), id);
+				sNotifyMgr->ShowNotify(msg);	continue;
 			}
 			else
 			{
@@ -89,10 +83,17 @@ void Main_Map_Layer::FillLoadVectors(int id)
 					_SingleTemplate.pos_x		= row.at(1).GetFloat();
 					_SingleTemplate.pos_y		= row.at(2).GetFloat();
 					itr->second.push_back(_SingleTemplate);
+					TotalLoadingSize++;
 				}
 			}
 		}
-		else { log("ErrDB: LoadMapInfo: Error Loading %s For Loading Map %d", LoadTemplateName.c_str(), id);	continue; }
+		else
+		{
+			char msg[255];
+			snprintf(msg, 255, "ErrDB: LoadMapInfo: Error Loading %s For Loading Map %d", LoadTemplateName.c_str(), id);
+			sNotifyMgr->ShowNotify(msg);
+			continue; 
+		}
 	}
 
 	for (int i = 0; i != 2; i++)
@@ -121,11 +122,13 @@ void Main_Map_Layer::FillLoadVectors(int id)
 					_SingleTemplate.guid	= row.at(4).GetInt();
 					_SingleTemplate.entry	= row.at(5).GetInt();
 					i ? m_WaitForLoadingNpcs.push_back(_SingleTemplate) : m_WaitForLoadingMonsters.push_back(_SingleTemplate);
+					TotalLoadingSize++;
 				}
 			}
 		}
 		else { log("ErrDB: LoadMapInfo: Error Loading %s For Loading Map %d", LoadTemplateName.c_str(), id);	continue; }
 	}
+	LoadedSize = 0;
 	NeedCreateObjects = true;
 }
 
@@ -171,6 +174,7 @@ void Main_Map_Layer::CreateObjects()
 		Npc* Temp = new Npc(sk, _template.entry, _template.guid);
 		Temp->SetRealPosition(_template.pos_x, _template.pos_y);
 		m_WaitForLoadingNpcs.pop_back();
+		m_NpcVector.push_back(Temp);
 		return;
 	}
 	if (!m_WaitForLoadingMonsters.empty())
@@ -181,6 +185,7 @@ void Main_Map_Layer::CreateObjects()
 		Monster* Temp = new Monster(sk, _template.entry, _template.guid);
 		Temp->SetRealPosition(_template.pos_x, _template.pos_y);
 		m_WaitForLoadingMonsters.pop_back();
+		m_MonsterVector.push_back(Temp);
 		return;
 	}
 
@@ -191,7 +196,10 @@ void Main_Map_Layer::update(float diff)
 {
 	if (NeedCreateObjects)
 	{
+		uint8 tage = ((float)LoadedSize / (float)TotalLoadingSize) * 100.0f;
+		sLoadingLayer->SetPretage(tage);
 		CreateObjects();
+		LoadedSize++;
 		return;
 	}
 }

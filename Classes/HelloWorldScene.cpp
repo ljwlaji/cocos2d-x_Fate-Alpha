@@ -1,9 +1,12 @@
 ﻿#include "HelloWorldScene.h"
 #include "ActionManager.h"
 #include "MainMapLayer.h"
+#include "DataMgr.h"
+#include "NotifyMgr.h"
+#include <iostream>
+#include <fstream>
 
 static  MainScene* _MainScene = nullptr;
-USING_NS_CC;
 
 MainScene::MainScene()
 {
@@ -32,14 +35,12 @@ bool MainScene::init()
 	{
 		CC_BREAK_IF(!Scene::init());
 		#ifdef WIN32 //Win32下创建键盘监听
-			auto listener = EventListenerKeyboard::create();
-			listener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
-			listener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
-			_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+		KeyBoardListener = EventListenerKeyboard::create();
+		KeyBoardListener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
+		KeyBoardListener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
+		_eventDispatcher->addEventListenerWithSceneGraphPriority(KeyBoardListener, this);
 		#else
 		#endif
-		
-
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);
 		
@@ -47,6 +48,9 @@ bool MainScene::init()
 		LoadingLayer->DisAppear();
 		addChild(LoadingLayer);
 
+		sNotifyMgr->setZOrder(Notify_Layer_Zorder);
+		addChild(sNotifyMgr);
+		scheduleUpdate();
 		bRef = true;
 	} while (0);
     
@@ -54,9 +58,21 @@ bool MainScene::init()
     return bRef;
 }
 
-void MainScene::LoadEverything()
+void MainScene::CheckDB()
 {
-
+	std::string dbFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename("Datas.db");
+	std::string writablePath = CCFileUtils::getInstance()->getWritablePath() + "Datas.db";
+	FILE* fp = fopen(writablePath.c_str(),"w+");
+	if (fp)
+	{
+		ssize_t dbSize;
+		CCFileUtils::sharedFileUtils()->getFileData(writablePath.c_str(), "r", &dbSize);
+		if (!dbSize){
+			std::fstream fsCopee(dbFilePath.c_str(), std::ios::binary | std::ios::in);
+			std::fstream fsCoper(writablePath.c_str(), std::ios::binary | std::ios::out);
+			fsCoper << fsCopee.rdbuf();
+		}
+	}
 }
 
 void MainScene::SwapLayer(Layer* _instead, int removetag)
@@ -180,52 +196,6 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 			sPlayer->PlayerActionMgr()->OnPlayerPressKey(keyCode);
 		}
 	}
-	//switch (keyCode)
-	//{
-	//	//移动//
-	//case cocos2d::EventKeyboard::KeyCode::KEY_A:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_S:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_D:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_W:
-	//	break;
-	//	//移动//
-	//
-	//	//按键//
-	//case cocos2d::EventKeyboard::KeyCode::KEY_J:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_L:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_I:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_U:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_O:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_P:
-	//	break;
-	//	//按键//
-	//
-	//	//快捷键//
-	//case cocos2d::EventKeyboard::KeyCode::KEY_E:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_Q:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_F:
-	//	break;
-	//case cocos2d::EventKeyboard::KeyCode::KEY_R:
-	//	if (!_player)
-	//	{
-	//		if (SkeletonAnimation* _SkeletonAnimation = SkeletonAnimation::createWithFile("spineboy.json", "spineboy.atlas", 0.5f))
-	//		{
-	//			_player = new Player(_SkeletonAnimation);
-	//			EnterLayer->AddPlayer(_player);
-	//		}
-	//	}
-	//	break;
-	//}
 }
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)

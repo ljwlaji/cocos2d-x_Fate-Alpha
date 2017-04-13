@@ -1,14 +1,17 @@
-#include "AppDelegate.h"
+﻿#include "AppDelegate.h"
 #include "HelloWorldScene.h"
-
+#include "DataMgr.h"
+#include <iostream>
+#include <fstream>
+using namespace std;
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
+static cocos2d::Size designResolutionSize = cocos2d::Size(480, 500);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(900, 768);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1280, 760);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 static cocos2d::Size big = cocos2d::Size(2560, 1440);
-static cocos2d::Size asdf = cocos2d::Size(1960, 1080);
+static cocos2d::Size asdf = cocos2d::Size(1920, 1080);
 AppDelegate::AppDelegate() {
 
 }
@@ -36,12 +39,15 @@ static int register_all_packages()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
+
+	//检查数据库文件是否已经提取
+	CopyData("Datas.db");//要使用的sqlite库文件
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-		glview = GLViewImpl::createWithRect("MyGame", Rect(0, 0, big.width, big.height));
+		glview = GLViewImpl::createWithRect("MyGame", Rect(0, 0, mediumResolutionSize.width, mediumResolutionSize.height));
 #else
         glview = GLViewImpl::create("MyGame");
 #endif
@@ -63,7 +69,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
     auto scene = MainScene::create();
-	scene->LoadEverything();
     // run
     director->runWithScene(scene);
 
@@ -84,4 +89,19 @@ void AppDelegate::applicationWillEnterForeground() {
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+}
+
+void AppDelegate::CopyData(const char* pFileName)
+{
+	std::string dbFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename("Datas.db");
+	std::string writablePath = CCFileUtils::getInstance()->getWritablePath() + pFileName;
+
+	ssize_t dbSize;
+	CCFileUtils::sharedFileUtils()->getFileData(writablePath.c_str(), "r", &dbSize);
+	if(!dbSize)
+	{
+		ssize_t asize;
+		Data data = CCFileUtils::getInstance()->getDataFromFile(dbFilePath.c_str());
+		CCFileUtils::getInstance()->writeDataToFile(data, writablePath);
+	}
 }

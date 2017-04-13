@@ -39,10 +39,9 @@ class Main_Map_Layer : public Layer
 public:
 	Main_Map_Layer(int MapId);
 	~Main_Map_Layer();
-
 	static Main_Map_Layer* GetInstance();
 	bool SwapMap(int insteadid);
-	Sprite* GetCurrentGroundSprite(int id)		{ if (m_MapGroundSpriteVector.size() + 1 <= id) return m_MapGroundSpriteVector.at(id); return nullptr; }
+	Sprite* GetCurrentGroundSprite(int id)		{ int size = m_MapGroundSpriteVector.size(); if (size + 1 <= id) return m_MapGroundSpriteVector.at(id); return nullptr; }
 	std::vector<Sprite*> GetGroundSprites()		{ return m_MapGroundSpriteVector; }
 	void ClearVectors();
 private:
@@ -55,7 +54,6 @@ private:
 	std::vector<Sprite*> m_MapFloatingObjectVector;
 	std::vector<Sprite*> m_MapBackGroundVector;
 	std::vector<Sprite*> m_MapForeGroundVector;
-	bool LoadMapInfo(int mapid = 0);
 	bool LoadGround();
 	bool LoadFloatingObjects();
 	bool LoadMonsters();
@@ -71,6 +69,9 @@ private:
 	std::vector<WaitFroLoadingUnitTemplate> m_WaitForLoadingMonsters;
 
 	bool NeedCreateObjects;
+
+	uint32 TotalLoadingSize;
+	uint32 LoadedSize;
 };
 
 #endif

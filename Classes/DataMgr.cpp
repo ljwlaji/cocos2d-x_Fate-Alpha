@@ -1,9 +1,11 @@
-#include "DataMgr.h"
+ï»¿#include "DataMgr.h"
+#include "NotifyMgr.h"
 DataMgr* _DataMgr = nullptr;
 
 DataMgr::DataMgr()
 {
 	_DataMgr = this;
+	DB_PATCH_URL = CCFileUtils::sharedFileUtils()->getWritablePath() + DB_FILE_NAME;
 }
 
 DataMgr::~DataMgr() {}
@@ -14,21 +16,34 @@ DataMgr* DataMgr::GetInstance()
 		_DataMgr = new DataMgr();
 	return _DataMgr;
 }
-sqlite3* DataMgr::openDB()
+
+bool DataMgr::TestOpenDB()
 {
-	// DB¥Õ¥¡¥¤¥ë¤òé_¤¤¤¿•rég¤òÓ›‘›¤·¤Æ¤ª¤¯£¨„IÀí•régÓ‹œy¤Î¤¿¤á£©
-	_dbOpenTime = std::chrono::system_clock::now();
-	// SQLite¤«¤éÕiÞz
-	std::string dbPath = FileUtils::getInstance()->getWritablePath() + DB_FILE_NAME;
 	sqlite3 *db = nullptr;
-	// DB¥Õ¥¡¥¤¥ë¥ª©`¥×¥ó
-	auto status = sqlite3_open(dbPath.c_str(), &db);
+	auto status = sqlite3_open(DB_PATCH_URL.c_str(), &db);
 	if (status != SQLITE_OK)
 	{
-		CCLOG("¨‹sqlite3_open failed.");
+		closeDB(db);
+		return false;
+	}
+	closeDB(db);
+	return true;
+}
+
+sqlite3* DataMgr::openDB()
+{
+	// DBãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã„ãŸæ™‚é–“ã‚’è¨˜æ†¶ã—ã¦ãŠãï¼ˆå‡¦ç†æ™‚é–“è¨ˆæ¸¬ã®ãŸã‚ï¼‰
+	_dbOpenTime = std::chrono::system_clock::now();
+	// SQLiteã‹ã‚‰èª­è¾¼
+	sqlite3 *db = nullptr;
+	// DBãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³
+	auto status = sqlite3_open(DB_PATCH_URL.c_str(), &db);
+	sNotifyMgr->ShowNotify(DB_PATCH_URL.c_str());
+	if (status != SQLITE_OK)
+	{
 		return nullptr;
 	}
-	CCLOG("¡ðDB opened successfully. File : %s", dbPath.c_str());
+	sNotifyMgr->ShowNotify("success open database");
 	return db;
 }
 
@@ -38,21 +53,40 @@ bool DataMgr::closeDB(sqlite3 *db)
 	auto status = sqlite3_close(db);
 	if (status != SQLITE_OK)
 	{
-		CCLOG("¨‹Closing DB failed.");
+		CCLOG("â–¼Closing DB failed.");
 		return false;
 	}
 	auto duration = std::chrono::system_clock::now() - _dbOpenTime;
-	CCLOG("¡ðDB Closed. time : %dms.", (int)std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());
+	CCLOG("â—‹DB Closed. time : %dms.", (int)std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());
 	return true;
 }
 
+bool DataMgr::PExcute(const char * args)
+{
+	sqlite3 *db = openDB();
+	int status = 0;
+	// ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ ¼ç´ç”¨
+	char* errorMessage = NULL;
+	status = sqlite3_exec(db, args, nullptr, nullptr, &errorMessage);
+	if (status != SQLITE_OK)
+	{
+		CCLOG("â–¼Inserting UnitData data failed. Message : %s", errorMessage);
+		return false;
+	}
+	return true;
+}
 bool DataMgr::selectUnitDataList(const char* args, Result& _Result)
 {
 	sqlite3 *db = openDB();
 	// Select
 	sqlite3_stmt *stmt = nullptr;
 	int rowcount = 0;
-	if (sqlite3_prepare_v2(db, args, -1, &stmt, nullptr) == SQLITE_OK)
+	int check = sqlite3_prepare_v2(db, args, -1, &stmt, nullptr);
+	char msg[255];
+	snprintf(msg, 255, "Error Code %d", check);
+	sNotifyMgr->ShowNotify(args);
+	sNotifyMgr->ShowNotify(msg);
+	if (check == SQLITE_OK)
 	{
 		while (sqlite3_step(stmt) == SQLITE_ROW)
 		{

@@ -69,5 +69,6 @@ enum MoveType
 #define Base_Clear_Key_Time	0.5f
 typedef std::map<int, std::vector<RowInfo>> Result;
 #define Loading_Layer_Zorder	9999
+#define Notify_Layer_Zorder		10000
 typedef std::vector<std::string> LoadAddress;
 #endif
