@@ -46,6 +46,9 @@
     <Filter Include="src\sql\Result">
       <UniqueIdentifier>{81993757-8ca6-43e4-9310-ffc11d087acf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\MovementMgr">
+      <UniqueIdentifier>{4ceebdc5-8d5b-4c28-a807-099af7d201c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -101,6 +104,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Result.cpp">
       <Filter>src\sql\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MovementMgr.cpp">
+      <Filter>src\MovementMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Result.h">
       <Filter>src\sql\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MovementMgr.h">
+      <Filter>src\MovementMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

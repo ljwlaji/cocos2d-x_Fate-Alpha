@@ -52,4 +52,4 @@ protected:
 	GameDiffcute m_Diffcute;
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+#endif

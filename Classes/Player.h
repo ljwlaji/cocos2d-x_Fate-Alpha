@@ -13,11 +13,16 @@ enum MoveKeyValue
 };
 
 class ActionMgr;
+
+#define sPlayer Player::GetInstance()
+
 class Player : public Unit
 {
 public:
 	explicit Player(SkeletonAnimation* _SkeletonAnimation);
 	~Player();
+
+	static Player* GetInstance();
 	void DoAction(ActionType _action);
 	bool CanCancelActionForMove();
 	uint8 GetLevel()											{ return m_Level; }

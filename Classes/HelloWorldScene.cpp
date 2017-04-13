@@ -29,10 +29,13 @@ bool MainScene::init()
 	do
 	{
 		CC_BREAK_IF(!Scene::init());
-		auto listener = EventListenerKeyboard::create();
-		listener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
-		listener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
-		_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+		#ifdef WIN32 //Win32下创建键盘监听
+			auto listener = EventListenerKeyboard::create();
+			listener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
+			listener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
+			_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+		#else
+		#endif
 		
 
 		EnterLayer = EnterGameLayer::create();
@@ -138,9 +141,7 @@ bool MainScene::IsMoveKey(EventKeyboard::KeyCode keyCode)
 }
 void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
-	//if (!player) return;
-	//if (sAction->CanDoAction(player))
-	if (IsMoveKey(keyCode))
+	if (sPlayer && IsMoveKey(keyCode))
 	{
 		switch (keyCode)
 		{
@@ -158,9 +159,10 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 			break;
 		}
 	}
+
 	if (keyCode == EventKeyboard::KeyCode::KEY_R)
 	{
-		if (!_player)
+		if (!sPlayer)
 		{
 			if (SkeletonAnimation* _SkeletonAnimation = SkeletonAnimation::createWithFile("spineboy.json", "spineboy.atlas", 0.5f))
 			{
@@ -171,9 +173,9 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	}
 	else
 	{
-		if (_player)
+		if (sPlayer)
 		{
-			_player->PlayerActionMgr()->OnPlayerPressKey(keyCode);
+			sPlayer->PlayerActionMgr()->OnPlayerPressKey(keyCode);
 		}
 	}
 	//switch (keyCode)

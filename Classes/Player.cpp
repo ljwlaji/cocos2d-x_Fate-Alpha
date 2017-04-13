@@ -1,7 +1,12 @@
 ﻿#include "Player.h"
 #include "ActionManager.h"
+#include "MovementMgr.h"
+
+static Player* _player = nullptr;
+
 Player::Player(SkeletonAnimation* _SkeletonAnimation) : Unit(_SkeletonAnimation)
 {
+	_player = this;
 	m_Class = 1;
 	ActionMgr* _mgr = new ActionMgr(this);
 	_ActionMgr = _mgr;
@@ -14,6 +19,14 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation) : Unit(_SkeletonAnimation)
 
 Player::~Player()
 {
+}
+
+Player* Player::GetInstance()
+{
+	if (!_player)
+		return nullptr;
+
+	return _player;
 }
 
 void Player::DoAction(ActionType _action)
@@ -74,8 +87,6 @@ void Player::UpdateMoveStatus()
 	if (MoveKeyStatus[MoveKey_Down])
 		Y_Modify -= Base_Y_MovePoint * Modify_Speed;
 
-	if (X_Modify)
-		X_Modify > 0 ? SetFacing(Facing_Right) : SetFacing(Facing_Left);
 	if (GetMoveType() == MoveType_Run)
 	{
 		X_Modify = X_Modify * 1.5f;
@@ -90,8 +101,35 @@ void Player::UpdateMoveStatus()
 			GetVision()->setAnimation(0, "walk", true);
 		}
 	}
-	//Result
-	setPosition(getPositionX() + X_Modify, getPositionY() + Y_Modify);
+
+	CheckMoveTo X_MoveFront;
+	CheckMoveTo Y_MoveFront;
+	float CheckPosX = 0;
+	float CheckPosY = 0;
+	if (X_Modify)
+	{
+		if (X_Modify > 0)
+		{
+			SetFacing(Facing_Right);
+			X_MoveFront = Move_To_Left;
+		}
+		else
+		{
+			SetFacing(Facing_Left);
+			X_MoveFront = Move_To_Right;
+		}
+		X_MoveFront == Move_To_Left ? CheckPosX = getBoundingBox().origin.x : CheckPosX = getBoundingBox().origin.x + getBoundingBox().size.width;
+		if (sMoveMgr->CanMoveTo(X_MoveFront, CheckPosX, abs(X_Modify)))
+			setPositionX(getPositionX() + X_Modify);
+	}
+
+	if (Y_Modify)
+	{
+		Y_Modify > 0 ? Y_MoveFront = Move_To_Up : Y_MoveFront = Move_To_Down;
+		Y_MoveFront == Move_To_Up ? CheckPosY = getBoundingBox().origin.y + getBoundingBox().size.width : CheckPosY = getBoundingBox().origin.y;
+		if (sMoveMgr->CanMoveTo(Y_MoveFront, CheckPosY, abs(Y_Modify)))
+			setPositionY(getPositionY() + Y_Modify);
+	}
 }
 
 void Player::update(float diff)
