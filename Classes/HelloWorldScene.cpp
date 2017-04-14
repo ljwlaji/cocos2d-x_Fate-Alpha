@@ -34,16 +34,18 @@ bool MainScene::init()
 	do
 	{
 		CC_BREAK_IF(!Scene::init());
-		#ifdef WIN32 //Win32下创建键盘监听
+
+#ifdef WIN32 //Win32下创建键盘监听
 		KeyBoardListener = EventListenerKeyboard::create();
 		KeyBoardListener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
 		KeyBoardListener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(KeyBoardListener, this);
-		#else
-		#endif
+#else
+#endif
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);
-		
+		EnterLayer->InitEveryThing();
+
 		LoadingLayer = LoadingUILayer::create();
 		LoadingLayer->DisAppear();
 		addChild(LoadingLayer);
@@ -51,6 +53,7 @@ bool MainScene::init()
 		sNotifyMgr->setZOrder(Notify_Layer_Zorder);
 		addChild(sNotifyMgr);
 		scheduleUpdate();
+
 		bRef = true;
 	} while (0);
     
@@ -60,19 +63,19 @@ bool MainScene::init()
 
 void MainScene::CheckDB()
 {
-	std::string dbFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename("Datas.db");
-	std::string writablePath = CCFileUtils::getInstance()->getWritablePath() + "Datas.db";
-	FILE* fp = fopen(writablePath.c_str(),"w+");
-	if (fp)
-	{
-		ssize_t dbSize;
-		CCFileUtils::sharedFileUtils()->getFileData(writablePath.c_str(), "r", &dbSize);
-		if (!dbSize){
-			std::fstream fsCopee(dbFilePath.c_str(), std::ios::binary | std::ios::in);
-			std::fstream fsCoper(writablePath.c_str(), std::ios::binary | std::ios::out);
-			fsCoper << fsCopee.rdbuf();
-		}
-	}
+	//std::string dbFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename("Datas.db");
+	//std::string writablePath = CCFileUtils::getInstance()->getWritablePath() + "Datas.db";
+	//FILE* fp = fopen(writablePath.c_str(),"w+");
+	//if (fp)
+	//{
+	//	ssize_t dbSize;
+	//	CCFileUtils::sharedFileUtils()->getFileData(writablePath.c_str(), "r", &dbSize);
+	//	if (!dbSize){
+	//		std::fstream fsCopee(dbFilePath.c_str(), std::ios::binary | std::ios::in);
+	//		std::fstream fsCoper(writablePath.c_str(), std::ios::binary | std::ios::out);
+	//		fsCoper << fsCopee.rdbuf();
+	//	}
+	//}
 }
 
 void MainScene::SwapLayer(Layer* _instead, int removetag)
@@ -182,7 +185,8 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 	{
 		if (!sPlayer)
 		{
-			if (SkeletonAnimation* _SkeletonAnimation = SkeletonAnimation::createWithFile("spineboy.json", "spineboy.atlas", 0.5f))
+			SkeletonAnimation* _SkeletonAnimation = SkeletonAnimation::createWithJsonFile("spineboy.json", "spineboy.atlas", 0.5f);
+			if (_SkeletonAnimation)
 			{
 				_player = new Player(_SkeletonAnimation);
 				EnterLayer->AddPlayer(_player);

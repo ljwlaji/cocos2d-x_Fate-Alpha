@@ -3,8 +3,14 @@
 
 #include "Types.h"
 #include "cocos2d.h"
+
+#ifdef WIN32
 #include "spine\spine.h"
 #include "cocos\editor-support\spine\SkeletonAnimation.h"
+#else
+#include "../cocos2d/cocos/editor-support/spine/spine.h"
+#include "../cocos2d/cocos/editor-support/spine/SkeletonAnimation.h"
+#endif
 
 USING_NS_CC;
 using namespace spine;

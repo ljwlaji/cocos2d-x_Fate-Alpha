@@ -71,7 +71,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto scene = MainScene::create();
     // run
     director->runWithScene(scene);
-
+	scene->CheckDB();
     return true;
 }
 
@@ -93,15 +93,15 @@ void AppDelegate::applicationWillEnterForeground() {
 
 void AppDelegate::CopyData(const char* pFileName)
 {
-	std::string dbFilePath = CCFileUtils::sharedFileUtils()->fullPathForFilename("Datas.db");
-	std::string writablePath = CCFileUtils::getInstance()->getWritablePath() + pFileName;
+	std::string dbFilePath = FileUtils::getInstance()->fullPathForFilename("Datas.db");
+	std::string writablePath = FileUtils::getInstance()->getWritablePath() + pFileName;
 
 	ssize_t dbSize;
-	CCFileUtils::sharedFileUtils()->getFileData(writablePath.c_str(), "r", &dbSize);
+	FileUtils::getInstance()->getFileData(writablePath.c_str(), "r", &dbSize);
 	if(!dbSize)
 	{
-		ssize_t asize;
-		Data data = CCFileUtils::getInstance()->getDataFromFile(dbFilePath.c_str());
-		CCFileUtils::getInstance()->writeDataToFile(data, writablePath);
+		ssize_t asize = 0;
+		Data data = FileUtils::getInstance()->getDataFromFile(dbFilePath.c_str());
+		FileUtils::getInstance()->writeDataToFile(data, writablePath);
 	}
 }

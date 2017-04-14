@@ -39,8 +39,8 @@ public:
 	bool GetCombatSign()				{ return CombatSign; }
 	GameDiffcute GetDiffCute()			{ return m_Diffcute; }
 	bool GetCanPlaySound()				{ return CanPlaySound; }
-private:
 	void CheckDB();
+private:
 	bool IsMoveKey(EventKeyboard::KeyCode keyCode);
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);

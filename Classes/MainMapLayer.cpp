@@ -5,6 +5,7 @@
 #include "DataMgr.h"
 #include "LoadingUILayer.h"
 #include "NotifyMgr.h"
+
 Main_Map_Layer* _Main_Map_Layer = nullptr;
 
 Main_Map_Layer::Main_Map_Layer(int MapId)
@@ -170,7 +171,7 @@ void Main_Map_Layer::CreateObjects()
 	if (!m_WaitForLoadingNpcs.empty())
 	{
 		WaitFroLoadingUnitTemplate _template = m_WaitForLoadingNpcs.at(m_WaitForLoadingNpcs.size() - 1);
-		SkeletonAnimation* sk = SkeletonAnimation::createWithFile(_template.json.c_str(), _template.atlas.c_str(), 1.0f);
+		SkeletonAnimation* sk = spine::SkeletonAnimation::createWithJsonFile(_template.json, _template.atlas, 1.0f);
 		Npc* Temp = new Npc(sk, _template.entry, _template.guid);
 		Temp->SetRealPosition(_template.pos_x, _template.pos_y);
 		m_WaitForLoadingNpcs.pop_back();
@@ -179,9 +180,8 @@ void Main_Map_Layer::CreateObjects()
 	}
 	if (!m_WaitForLoadingMonsters.empty())
 	{
-
 		WaitFroLoadingUnitTemplate _template = m_WaitForLoadingMonsters.at(m_WaitForLoadingMonsters.size() - 1);
-		SkeletonAnimation* sk = SkeletonAnimation::createWithFile(_template.json.c_str(), _template.atlas.c_str(), 1.0f);
+		SkeletonAnimation* sk = spine::SkeletonAnimation::createWithJsonFile(_template.json, _template.atlas, 1.0f);
 		Monster* Temp = new Monster(sk, _template.entry, _template.guid);
 		Temp->SetRealPosition(_template.pos_x, _template.pos_y);
 		m_WaitForLoadingMonsters.pop_back();

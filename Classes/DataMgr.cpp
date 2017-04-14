@@ -31,7 +31,7 @@ bool DataMgr::TestOpenDB()
 }
 
 sqlite3* DataMgr::openDB()
-{
+	{
 	// DBファイルを開いた時間を記憶しておく（処理時間計測のため）
 	_dbOpenTime = std::chrono::system_clock::now();
 	// SQLiteから読込

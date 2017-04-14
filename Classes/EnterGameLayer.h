@@ -43,7 +43,7 @@ public:
 	EnterGameLayer();
 	~EnterGameLayer();
 	CREATE_FUNC(EnterGameLayer);
-
+	void InitEveryThing();
 	void AddPlayer(Player* player)
 	{
 		player->SetRealPosition(Visablesize.x / 2, 0);

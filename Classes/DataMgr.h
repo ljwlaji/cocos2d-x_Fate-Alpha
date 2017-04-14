@@ -1,7 +1,10 @@
 ﻿#ifndef __DATA_MGR_H__
 #define __DATA_MGR_H__
-
+#ifdef __APPLE__
+#include "sqlite/sqlite3.h"
+#else
 #include "sqlite\sqlite3.h"
+#endif
 #include "cocos2d.h"
 #include "Types.h"
 

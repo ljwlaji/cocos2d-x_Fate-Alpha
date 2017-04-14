@@ -1,7 +1,13 @@
 ﻿#include "LoadingUILayer.h"
 #include "Player.h"
+#ifdef __APPLE__
+#include "spine/spine.h"
+#include "cocos/editor-support/spine/SkeletonAnimation.h"
+#else
 #include "spine\spine.h"
 #include "cocos\editor-support\spine\SkeletonAnimation.h"
+#endif
+
 using namespace spine;
 
 static LoadingUILayer* _LoadingUILayer = nullptr;
@@ -34,16 +40,18 @@ bool LoadingUILayer::init()
 		CC_BREAK_IF(!Layer::init());
 
 		BackGroundSprite_c = Sprite::create("Loading_blackground.png");
+		addChild(BackGroundSprite_c);
 		BackGroundSprite_c->SetRealPosition(visibleSize.width / 2, visibleSize.height / 2);
 		BackGroundSprite_c->setScale(5.0f);
-		addChild(BackGroundSprite_c);
 
 		BackGroundSprite = Sprite::create("Loading_Back_1.png");
-		BackGroundSprite->SetRealPosition(visibleSize.width / 2, visibleSize.height / 2);
 		addChild(BackGroundSprite);
+		BackGroundSprite->SetRealPosition(visibleSize.width / 2, visibleSize.height / 2);
+		
+		
 		BackGroundSprite_a = Sprite::create("Loading_Back_2.png");
-		BackGroundSprite_a->SetRealPosition(visibleSize.width / 2, visibleSize.height / 2);
 		addChild(BackGroundSprite_a);
+		BackGroundSprite_a->SetRealPosition(visibleSize.width / 2, visibleSize.height / 2);
 
 
 		InitTimeBar();
@@ -85,7 +93,8 @@ void LoadingUILayer::InitTimeBar()
 		Back->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.1f);
 		addChild(Back);
 
-		m_TimeBar = ProgressTimer::create(Sprite::create("LoadingLayer_TimeBarImage.png"));
+		Sprite* TimeBarSprite = Sprite::create("LoadingLayer_TimeBarImage.png");
+		m_TimeBar = ProgressTimer::create(TimeBarSprite);
 		m_TimeBar->setPosition(Back->getContentSize().width / 2, Back->getContentSize().height / 2);
 		m_TimeBar->setPercentage(0);
 		m_TimeBar->setBarChangeRate(Vec2(1, 0));
