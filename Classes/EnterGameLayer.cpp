@@ -23,30 +23,27 @@ bool EnterGameLayer::init()
 	do
 	{
 		CC_BREAK_IF(!Layer::init());
+		float SingleSize = Visablesize.y * 0.1f;
+		for (int i = button_entergame; i != menu_settings; i++)
+		{
+			char url[255];
+			snprintf(url, 255, "EnterGame_%u.png", i);
+			Sprite* TempButton = Sprite::create(url);
+			TempButton->SetRealPosition(Visablesize.x / 2, Visablesize.y * 0.4 - (i * SingleSize));
+			TempButton->setOpacity(0.0f);
+			TempButton->setTag(i);
+			this->addChild(TempButton);
+		}
+		EveryThingFadeIn();
+		InitListener();
+		InitSettingMenu();
+		InitDiffcuteMenu();
 		bRef = true;
 	} while (0);
 
 	return bRef;
 }
 
-void EnterGameLayer::InitEveryThing()
-{
-	float SingleSize = Visablesize.y * 0.1f;
-	for (int i = button_entergame; i != menu_settings; i++)
-	{
-		char url[255];
-		snprintf(url, 255, "EnterGame_%u.png", i);
-		Sprite* TempButton = Sprite::create(url);
-		TempButton->SetRealPosition(Visablesize.x / 2, Visablesize.y * 0.4 - (i * SingleSize));
-		TempButton->setOpacity(0.0f);
-		TempButton->setTag(i);
-		this->addChild(TempButton);
-	}
-	EveryThingFadeIn();
-	InitListener();
-	InitSettingMenu();
-	InitDiffcuteMenu();
-}
 
 void EnterGameLayer::EveryThingFadeIn()
 {

@@ -44,7 +44,6 @@ bool MainScene::init()
 #endif
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);
-		EnterLayer->InitEveryThing();
 
 		LoadingLayer = LoadingUILayer::create();
 		LoadingLayer->DisAppear();

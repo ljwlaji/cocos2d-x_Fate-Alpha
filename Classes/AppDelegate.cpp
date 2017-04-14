@@ -71,7 +71,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto scene = MainScene::create();
     // run
     director->runWithScene(scene);
-	scene->CheckDB();
     return true;
 }
 
