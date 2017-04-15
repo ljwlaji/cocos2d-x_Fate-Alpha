@@ -3,6 +3,7 @@
 #include "MainMapLayer.h"
 #include "DataMgr.h"
 #include "NotifyMgr.h"
+#include "PlayerUILayer.h"
 #include <iostream>
 #include <fstream>
 
@@ -44,6 +45,9 @@ bool MainScene::init()
 #endif
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);
+
+		PlayerUILayer* _PlayerUILayer = PlayerUILayer::create();
+		addChild(_PlayerUILayer);
 
 		LoadingLayer = LoadingUILayer::create();
 		LoadingLayer->DisAppear();
@@ -179,25 +183,9 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 			break;
 		}
 	}
-
-	if (keyCode == EventKeyboard::KeyCode::KEY_R)
+	if (sPlayer)
 	{
-		if (!sPlayer)
-		{
-			SkeletonAnimation* _SkeletonAnimation = SkeletonAnimation::createWithJsonFile("spineboy.json", "spineboy.atlas", 0.5f);
-			if (_SkeletonAnimation)
-			{
-				_player = new Player(_SkeletonAnimation);
-				EnterLayer->AddPlayer(_player);
-			}
-		}
-	}
-	else
-	{
-		if (sPlayer)
-		{
-			sPlayer->PlayerActionMgr()->OnPlayerPressKey(keyCode);
-		}
+		sPlayer->PlayerActionMgr()->OnPlayerPressKey(keyCode);
 	}
 }
 
