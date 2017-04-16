@@ -1,5 +1,5 @@
 #include "PlayerUILayer.h"
-
+#include "Player.h"
 PlayerUILayer::PlayerUILayer()
 {
 	visiablesize = Director::getInstance()->getVisibleSize();
@@ -66,25 +66,64 @@ bool PlayerUILayer::onTouchRockerBegan(Touch* touches, Event *event)
 
 void PlayerUILayer::onTouchRockerMoved(Touch* touches, Event *event)
 {
+	if (!sPlayer)
+		return;
 	Vec2 NowLoc = touches->getLocation();
 	float X_move = NowLoc.x - RockerLastPostion.x;
 	float Y_move = NowLoc.y - RockerLastPostion.y;
 	if (ccpDistance(Vec2(m_VirtualRoker_BackGround->getPositionY() - X_move, m_VirtualRoker_BackGround->getPositionY() - Y_move), m_VirtualRoker_Roker->getPosition()) < 140.0f)
 		m_VirtualRoker_Roker->setPosition(m_VirtualRoker_Roker->getPositionX() + X_move, m_VirtualRoker_Roker->getPositionY() + Y_move);
 
-	uint16 Orgin = GetVirtualRokerOrgin(m_VirtualRoker_BackGround->getPosition(), NowLoc);
+	float Orgin = GetVirtualRokerOrgin(m_VirtualRoker_BackGround->getPosition(), m_VirtualRoker_Roker->getPosition());
 	RockerLastPostion = touches->getLocation();
+	ResetVirtualRokerOrgin(Orgin);
+	log("%f", Orgin);
+}
+
+void PlayerUILayer::ResetVirtualRokerOrgin(float _orgin)
+{
+	if (_orgin > 22.5 && _orgin <= 135)
+	{
+		if (abs(_orgin - 90) < 20)
+			sPlayer->DealVirtualRoker(Roker_Left);
+		else
+			_orgin > 90 ? sPlayer->DealVirtualRoker(Roker_Left_Down) : sPlayer->DealVirtualRoker(Roker_Up_Left);
+	}
+	else if (_orgin > 135 && _orgin < 225)
+	{
+		if (abs(_orgin - 180) < 20)
+			sPlayer->DealVirtualRoker(Roker_Down);
+		else _orgin > 180 ? sPlayer->DealVirtualRoker(Roker_Down_Right) : sPlayer->DealVirtualRoker(Roker_Left_Down);
+	}
+	else if (_orgin > 225 && _orgin < 315)
+	{
+		if (abs(_orgin - 270) < 20)
+			sPlayer->DealVirtualRoker(Roker_Right);
+		else _orgin > 270 ? sPlayer->DealVirtualRoker(Roker_Up_Right) : sPlayer->DealVirtualRoker(Roker_Down_Right);
+	}
+	else
+	{
+		if (_orgin < 15 || _orgin > 345)
+			sPlayer->DealVirtualRoker(Roker_Up);
+		else if (_orgin < 45)
+			sPlayer->DealVirtualRoker(Roker_Up_Left);
+		else
+			sPlayer->DealVirtualRoker(Roker_Up_Right);
+	}
 }
 
 void PlayerUILayer::onTouchRockerEnded(Touch* touches, Event *event)
 {
+	if (!sPlayer)
+		return;
+	sPlayer->ResetMoveKeyForRoker();
 	if (m_VirtualRoker_Roker)
 		m_VirtualRoker_Roker->setPosition(m_VirtualRoker_BackGround->getContentSize().width / 2, m_VirtualRoker_BackGround->getContentSize().height / 2);
 
 	RockerLastPostion = Vec2(0, 0);
 }
 
-uint16 PlayerUILayer::GetVirtualRokerOrgin(Vec2 CenterPoint, Vec2 RokerPoint)
+float PlayerUILayer::GetVirtualRokerOrgin(Vec2 CenterPoint, Vec2 RokerPoint)
 {
 	float Correct_Orgin = atan(abs(RokerPoint.y - CenterPoint.y) / abs(RokerPoint.x - CenterPoint.x)) * (180.0f / 3.1415926f);
 	if (RokerPoint.x >= CenterPoint.x)
@@ -102,5 +141,5 @@ uint16 PlayerUILayer::GetVirtualRokerOrgin(Vec2 CenterPoint, Vec2 RokerPoint)
 	else
 		Correct_Orgin += 90.0f;
 
-	return (uint16)Correct_Orgin;
+	return Correct_Orgin;
 }

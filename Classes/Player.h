@@ -11,7 +11,17 @@ enum MoveKeyValue
 	MoveKey_Down,
 	MoveKey_Endl,
 };
-
+enum VirtualRockerOrginType
+{
+	Roker_Up,
+	Roker_Up_Left,
+	Roker_Up_Right,
+	Roker_Left,
+	Roker_Left_Down,
+	Roker_Down,
+	Roker_Down_Right,
+	Roker_Right,
+};
 class ActionMgr;
 
 #define sPlayer Player::GetInstance()
@@ -24,6 +34,8 @@ public:
 
 	static Player* GetInstance();
 	void DoAction(ActionType _action);
+	void DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType);
+	void ResetMoveKeyForRoker();
 	bool CanCancelActionForMove();
 	uint8 GetLevel()											{ return m_Level; }
 	ActionType GetDoingAction()									{ return m_Action; }

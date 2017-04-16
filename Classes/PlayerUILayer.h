@@ -14,11 +14,11 @@ public:
 private:
 	virtual bool init();
 	void CreateVirtualRoker();
-	uint16 GetVirtualRokerOrgin(Vec2 CenterPoint,Vec2 RokerPoint);
+	float GetVirtualRokerOrgin(Vec2 CenterPoint,Vec2 RokerPoint);
 	virtual bool onTouchRockerBegan(Touch* touches, Event *_event);
 	virtual void onTouchRockerMoved(Touch* touches, Event *_event);
 	virtual void onTouchRockerEnded(Touch* touches, Event *_event);
-
+	void ResetVirtualRokerOrgin(float Orgin);
 	Layer* m_VirtualRokerLayer;
 	Sprite* m_VirtualRoker_BackGround;
 	Sprite* m_VirtualRoker_Roker;

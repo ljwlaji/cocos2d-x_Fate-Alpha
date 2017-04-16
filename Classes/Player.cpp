@@ -30,6 +30,51 @@ Player* Player::GetInstance()
 	return _player;
 }
 
+void Player::ResetMoveKeyForRoker()
+{
+	for (int i = 0; i != MoveKey_Endl; i++)
+		MoveKeyStatus[(MoveKeyValue)i] = false;
+}
+void Player::DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType)
+{
+	switch (_VirtualRockerOrginType)
+	{
+	case Roker_Up:
+		for (int i = 0; i != MoveKey_Endl; i++)
+			i == MoveKey_Up ? MoveKeyStatus[(MoveKeyValue)i] = true : MoveKeyStatus[(MoveKeyValue)i] = false;
+		break;
+	case Roker_Up_Left:
+		for (int i = 0; i != MoveKey_Endl; i++)
+			(i == MoveKey_Up || i == MoveKey_Left) ? MoveKeyStatus[(MoveKeyValue)i] = true : MoveKeyStatus[(MoveKeyValue)i] = false;
+		break;
+	case Roker_Up_Right:
+		for (int i = 0; i != MoveKey_Endl; i++)
+			(i == MoveKey_Up || i == MoveKey_Right) ? MoveKeyStatus[(MoveKeyValue)i] = true : MoveKeyStatus[(MoveKeyValue)i] = false;
+		break;
+	case Roker_Left:
+		for (int i = 0; i != MoveKey_Endl; i++)
+			(i == MoveKey_Left) ? MoveKeyStatus[(MoveKeyValue)i] = true : MoveKeyStatus[(MoveKeyValue)i] = false;
+		break;
+	case Roker_Left_Down:
+		for (int i = 0; i != MoveKey_Endl; i++)
+			(i == MoveKey_Down || i == MoveKey_Left) ? MoveKeyStatus[(MoveKeyValue)i] = true : MoveKeyStatus[(MoveKeyValue)i] = false;
+		break;
+	case Roker_Down:
+		for (int i = 0; i != MoveKey_Endl; i++)
+			(i == MoveKey_Down) ? MoveKeyStatus[(MoveKeyValue)i] = true : MoveKeyStatus[(MoveKeyValue)i] = false;
+		break;
+	case Roker_Down_Right:
+		for (int i = 0; i != MoveKey_Endl; i++)
+			(i == MoveKey_Down || i == MoveKey_Right) ? MoveKeyStatus[(MoveKeyValue)i] = true : MoveKeyStatus[(MoveKeyValue)i] = false;
+		break;
+	case Roker_Right:
+		for (int i = 0; i != MoveKey_Endl; i++)
+			(i == MoveKey_Right) ? MoveKeyStatus[(MoveKeyValue)i] = true : MoveKeyStatus[(MoveKeyValue)i] = false;
+		break;
+	}
+
+}
+
 void Player::DoAction(ActionType _action)
 {
 	GetVision()->clearTracks();
