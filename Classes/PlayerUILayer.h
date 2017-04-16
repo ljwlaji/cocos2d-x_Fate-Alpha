@@ -14,7 +14,7 @@ public:
 private:
 	virtual bool init();
 	void CreateVirtualRoker();
-	uint16 GetVirtualRokerOrgin(const Vec2& CenterPoint,const Vec2& RokerPoint);
+	uint16 GetVirtualRokerOrgin(Vec2 CenterPoint,Vec2 RokerPoint);
 	virtual bool onTouchRockerBegan(Touch* touches, Event *_event);
 	virtual void onTouchRockerMoved(Touch* touches, Event *_event);
 	virtual void onTouchRockerEnded(Touch* touches, Event *_event);
@@ -23,5 +23,6 @@ private:
 	Sprite* m_VirtualRoker_BackGround;
 	Sprite* m_VirtualRoker_Roker;
 	Vec2 visiablesize;
+	Vec2 RockerLastPostion;
 };
 #endif

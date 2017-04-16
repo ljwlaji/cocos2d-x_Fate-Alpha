@@ -15,7 +15,6 @@ MainScene::MainScene()
 	CombatSign = false;
 	CanPlaySound = true;
 	_MainScene = this;
-	_player = nullptr;
 }
 MainScene::~MainScene(){}
 
@@ -170,16 +169,16 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 		switch (keyCode)
 		{
 		case EventKeyboard::KeyCode::KEY_A:
-			_player->SetMoveKeyEnable(MoveKey_Left, true);
+			sPlayer->SetMoveKeyEnable(MoveKey_Left, true);
 			break;
 		case EventKeyboard::KeyCode::KEY_S:
-			_player->SetMoveKeyEnable(MoveKey_Down, true);
+			sPlayer->SetMoveKeyEnable(MoveKey_Down, true);
 			break;
 		case EventKeyboard::KeyCode::KEY_D:
-			_player->SetMoveKeyEnable(MoveKey_Right, true);
+			sPlayer->SetMoveKeyEnable(MoveKey_Right, true);
 			break;
 		case EventKeyboard::KeyCode::KEY_W:
-			_player->SetMoveKeyEnable(MoveKey_Up, true);
+			sPlayer->SetMoveKeyEnable(MoveKey_Up, true);
 			break;
 		}
 	}
@@ -196,16 +195,16 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 		switch (keyCode)
 		{
 		case EventKeyboard::KeyCode::KEY_A:
-			_player->SetMoveKeyEnable(MoveKey_Left, false);
+			sPlayer->SetMoveKeyEnable(MoveKey_Left, false);
 			break;
 		case EventKeyboard::KeyCode::KEY_S:
-			_player->SetMoveKeyEnable(MoveKey_Down, false);
+			sPlayer->SetMoveKeyEnable(MoveKey_Down, false);
 			break;
 		case EventKeyboard::KeyCode::KEY_D:
-			_player->SetMoveKeyEnable(MoveKey_Right, false);
+			sPlayer->SetMoveKeyEnable(MoveKey_Right, false);
 			break;
 		case EventKeyboard::KeyCode::KEY_W:
-			_player->SetMoveKeyEnable(MoveKey_Up, false);
+			sPlayer->SetMoveKeyEnable(MoveKey_Up, false);
 			break;
 		}
 	}

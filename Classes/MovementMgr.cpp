@@ -20,6 +20,7 @@ MovementMgr* MovementMgr::GetInstance()
 
 bool MovementMgr::CanMoveTo(CheckMoveTo front, float current, float modify)
 {
+	return true;
 	std::vector<Sprite*> SpriteVector = sMainMap->GetGroundSprites();
 
 	if (SpriteVector.empty())

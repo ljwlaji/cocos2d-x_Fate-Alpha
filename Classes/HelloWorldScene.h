@@ -51,10 +51,8 @@ private:
 	bool CanShowDiffCuteImage;
 	bool CombatSign;
 	bool CanPlaySound;
-	Player* _player;
 	EventListenerKeyboard* KeyBoardListener;
 	LabelTTF* Temp;
-	AssetsManager* pAssets;
 protected:
 	GameDiffcute m_Diffcute;
 };
