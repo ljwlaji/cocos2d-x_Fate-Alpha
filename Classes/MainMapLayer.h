@@ -29,6 +29,7 @@ struct WaitFroLoadingUnitTemplate
 	float pos_y;
 	uint32 entry;
 	uint32 guid;
+	float Scale = 1.0f;
 };
 #define sMainMap Main_Map_Layer::GetInstance()
 class Monster;
@@ -72,6 +73,9 @@ private:
 
 	uint32 TotalLoadingSize;
 	uint32 LoadedSize;
+
+
+	Vec2 Visablesize;
 };
 
 #endif

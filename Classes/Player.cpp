@@ -1,17 +1,28 @@
 ﻿#include "Player.h"
 #include "ActionManager.h"
 #include "MovementMgr.h"
-
+#include "HelloWorldScene.h"
 static Player* _player = nullptr;
 
-Player::Player(SkeletonAnimation* _SkeletonAnimation) : Unit(_SkeletonAnimation)
+Player::Player(SkeletonAnimation* _SkeletonAnimation, uint32 guid) : Unit(_SkeletonAnimation)
 {
 	_player = this;
-	m_Class = 1;
+	SetGuid(guid);
+	if (!LoadFromDB())
+	{
+		delete this;
+		return;
+	}
+	if (!UpdateUnitValues())
+	{
+		delete this;
+		return;
+	}
 	ActionMgr* _mgr = new ActionMgr(this);
 	_ActionMgr = _mgr;
 	for (int i = MoveKey_Left; i != MoveKey_Endl; i++)
 		MoveKeyStatus[(MoveKeyValue)i] = false;
+
 
 	KeyVectorClearTimer = Base_Clear_Key_Time;
 	scheduleUpdate();
@@ -19,7 +30,9 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation) : Unit(_SkeletonAnimation)
 
 Player::~Player()
 {
-	delete _ActionMgr;
+	if (_ActionMgr)
+		delete _ActionMgr;
+	removeFromParentAndCleanup(true);
 }
 
 Player* Player::GetInstance()
@@ -213,4 +226,14 @@ bool Player::CanCancelActionForMove()
 	default:
 		return false;
 	}
+}
+
+bool Player::LoadFromDB()
+{
+	return true;
+}
+
+void Player::SaveToDB()
+{
+
 }

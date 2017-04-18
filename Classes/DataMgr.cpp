@@ -38,12 +38,10 @@ sqlite3* DataMgr::openDB()
 	sqlite3 *db = nullptr;
 	// DBファイルオープン
 	auto status = sqlite3_open(DB_PATCH_URL.c_str(), &db);
-	sNotifyMgr->ShowNotify(DB_PATCH_URL.c_str());
 	if (status != SQLITE_OK)
 	{
 		return nullptr;
 	}
-	sNotifyMgr->ShowNotify("success open database");
 	return db;
 }
 
@@ -53,11 +51,9 @@ bool DataMgr::closeDB(sqlite3 *db)
 	auto status = sqlite3_close(db);
 	if (status != SQLITE_OK)
 	{
-		CCLOG("▼Closing DB failed.");
 		return false;
 	}
 	auto duration = std::chrono::system_clock::now() - _dbOpenTime;
-	CCLOG("○DB Closed. time : %dms.", (int)std::chrono::duration_cast<std::chrono::milliseconds>(duration).count());
 	return true;
 }
 
@@ -70,7 +66,6 @@ bool DataMgr::PExcute(const char * args)
 	status = sqlite3_exec(db, args, nullptr, nullptr, &errorMessage);
 	if (status != SQLITE_OK)
 	{
-		CCLOG("▼Inserting UnitData data failed. Message : %s", errorMessage);
 		return false;
 	}
 	return true;
@@ -83,9 +78,6 @@ bool DataMgr::selectUnitDataList(const char* args, Result& _Result)
 	int rowcount = 0;
 	int check = sqlite3_prepare_v2(db, args, -1, &stmt, nullptr);
 	char msg[255];
-	snprintf(msg, 255, "Error Code %d", check);
-	sNotifyMgr->ShowNotify(args);
-	sNotifyMgr->ShowNotify(msg);
 	if (check == SQLITE_OK)
 	{
 		while (sqlite3_step(stmt) == SQLITE_ROW)

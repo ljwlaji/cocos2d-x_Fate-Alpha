@@ -1,5 +1,6 @@
 #include "PlayerUILayer.h"
 #include "Player.h"
+#include "HelloWorldScene.h"
 PlayerUILayer::PlayerUILayer()
 {
 	visiablesize = Director::getInstance()->getVisibleSize();
@@ -24,10 +25,39 @@ bool PlayerUILayer::init()
 //#ifndef WIN32
 		CreateVirtualRoker();
 //#endif
+
+		InitUI();
+
+
+		scheduleUpdate();
 		bRef = true;
 	} while (0);
 
 	return bRef;
+}
+
+void PlayerUILayer::InitUI()
+{
+	m_Player_Info_UI = Sprite::create("Player_UI_Info.png");
+	m_Player_Info_UI->SetRealPosition(m_Player_Info_UI->getBoundingBox().size.width / 2, visiablesize.y - m_Player_Info_UI->getBoundingBox().size.height / 2);
+	addChild(m_Player_Info_UI);
+
+
+	m_Player_Info_UI_Hp = ProgressTimer::create(Sprite::create("Player_UI_Info_HP.png"));
+	m_Player_Info_UI_Hp->setPosition(m_Player_Info_UI->getContentSize().width * 0.70f, m_Player_Info_UI->getContentSize().height * 0.4f);
+	m_Player_Info_UI_Hp->setPercentage(0);
+	m_Player_Info_UI_Hp->setBarChangeRate(Vec2(1, 0));
+	m_Player_Info_UI_Hp->setMidpoint(Vec2(0, 0));
+	m_Player_Info_UI_Hp->setType(ProgressTimer::Type::BAR);
+	m_Player_Info_UI_Hp_Back = Sprite::create("Player_UI_Info_HP_Back.png");
+	m_Player_Info_UI_Hp_Back->setPosition(m_Player_Info_UI_Hp->getPosition());
+	m_Player_Info_UI->addChild(m_Player_Info_UI_Hp_Back);
+	m_Player_Info_UI->addChild(m_Player_Info_UI_Hp);
+
+	m_Player_Info_UI_Level = sGame->GetNumberSpriteByInt(0);
+	m_Player_Info_UI_Level->setPosition(m_Player_Info_UI->getBoundingBox().size.width * 0.285f, m_Player_Info_UI->getBoundingBox().size.height * 0.4f);
+	m_Player_Info_UI_Level->setScale(0.5f);
+	m_Player_Info_UI->addChild(m_Player_Info_UI_Level);
 }
 
 void PlayerUILayer::CreateVirtualRoker()
@@ -84,22 +114,22 @@ void PlayerUILayer::ResetVirtualRokerOrgin(float _orgin)
 {
 	if (_orgin > 22.5 && _orgin <= 135)
 	{
-		if (abs(_orgin - 90) < 20)
+		if (abs(_orgin - 90) < 15)
 			sPlayer->DealVirtualRoker(Roker_Left);
 		else
 			_orgin > 90 ? sPlayer->DealVirtualRoker(Roker_Left_Down) : sPlayer->DealVirtualRoker(Roker_Up_Left);
 	}
 	else if (_orgin > 135 && _orgin < 225)
 	{
-		if (abs(_orgin - 180) < 20)
+		if (abs(_orgin - 180) < 15)
 			sPlayer->DealVirtualRoker(Roker_Down);
 		else _orgin > 180 ? sPlayer->DealVirtualRoker(Roker_Down_Right) : sPlayer->DealVirtualRoker(Roker_Left_Down);
 	}
 	else if (_orgin > 225 && _orgin < 315)
 	{
-		if (abs(_orgin - 270) < 20)
+		if (abs(_orgin - 270) < 15)
 			sPlayer->DealVirtualRoker(Roker_Right);
-		else _orgin > 270 ? sPlayer->DealVirtualRoker(Roker_Up_Right) : sPlayer->DealVirtualRoker(Roker_Down_Right);
+		else _orgin > 280 ? sPlayer->DealVirtualRoker(Roker_Up_Right) : sPlayer->DealVirtualRoker(Roker_Down_Right);
 	}
 	else
 	{
@@ -142,4 +172,13 @@ float PlayerUILayer::GetVirtualRokerOrgin(Vec2 CenterPoint, Vec2 RokerPoint)
 		Correct_Orgin += 90.0f;
 
 	return Correct_Orgin;
+}
+
+void PlayerUILayer::update(float diff)
+{
+	if (m_Player_Info_UI_Hp->getPercentage() != 100.0f)
+	{
+		float posnow = m_Player_Info_UI_Hp->getPercentage();
+		m_Player_Info_UI_Hp->setPercentage(posnow + 1);
+	}
 }

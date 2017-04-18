@@ -33,6 +33,35 @@ enum ActionType
 	Move_Run_Left				= 8,
 };
 
+enum UnitClasses
+{
+	Class_None,
+	Saber,
+	Archer,
+	Caster,
+	Lancer,
+	Assasin,
+	Rider,
+	Avenger,
+	Berserker,
+	Class_End,
+};
+
+struct ClassInfo
+{
+	std::string ClassName = "";
+	float ModifyStrPerLevel;
+	float ModifyDexPerLevel;
+	float ModifyIntPerLevel;
+	float ModifyDefPerLevel;
+	float ModifyHpPerLevel;
+	float BaseHp;
+	float BaseStr;
+	float BaseInt;
+	float BaseDex;
+	float BaseDef;
+};
+
 enum UnitAnimationTrack
 {
 	Track_Idle,
@@ -69,6 +98,8 @@ enum MoveType
 #define Base_Clear_Key_Time	0.5f
 typedef std::map<int, std::vector<RowInfo>> Result;
 #define Loading_Layer_Zorder	9999
-#define Notify_Layer_Zorder		10000
+#define Notify_Layer_Zorder		10001
+#define UI_LAYER_ZORDER			9998
+#define PLAYER_ZORDER 			10000
 typedef std::vector<std::string> LoadAddress;
 #endif

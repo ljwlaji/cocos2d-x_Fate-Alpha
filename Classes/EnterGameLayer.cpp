@@ -34,14 +34,6 @@ bool EnterGameLayer::init()
 			TempButton->setOpacity(0.0f);
 			TempButton->setTag(i);
 			this->addChild(TempButton);
-
-			if (!sPlayer)
-			{
-				SkeletonAnimation* sk = SkeletonAnimation::createWithJsonFile("black_saber_edit.json", "black_saber_edit.atlas", 0.3f);
-				Player* _player = new Player(sk);
-				_player->SetRealPosition(Visablesize.x / 2, 0);
-				addChild(_player);
-			}
 		}
 		EveryThingFadeIn();
 		InitListener();

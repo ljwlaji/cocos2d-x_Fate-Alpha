@@ -11,6 +11,7 @@ enum MoveKeyValue
 	MoveKey_Down,
 	MoveKey_Endl,
 };
+
 enum VirtualRockerOrginType
 {
 	Roker_Up,
@@ -29,7 +30,7 @@ class ActionMgr;
 class Player : public Unit
 {
 public:
-	explicit Player(SkeletonAnimation* _SkeletonAnimation);
+	explicit Player(SkeletonAnimation* _SkeletonAnimation, uint32 guid);
 	~Player();
 
 	static Player* GetInstance();
@@ -37,24 +38,21 @@ public:
 	void DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType);
 	void ResetMoveKeyForRoker();
 	bool CanCancelActionForMove();
-	uint8 GetLevel()											{ return m_Level; }
+	void SaveToDB();
+	bool UpdatePlayerValues();
 	ActionType GetDoingAction()									{ return m_Action; }
 	ActionMgr* PlayerActionMgr()								{ return _ActionMgr; }
-	uint8 GetClass()											{ return m_Class; }
 	void SetMoveKeyEnable(MoveKeyValue _key, bool enable)		{ MoveKeyStatus[_key] = enable; }
 	void ResetKeyTimer()										{ KeyVectorClearTimer = Base_Clear_Key_Time; }
-	virtual void DestorySelf() { removeFromParentAndCleanup(true); }
+	virtual void DestorySelf()									{ removeFromParentAndCleanup(true); }
 private:
-	uint8 m_Level;
 	ActionType m_Action;
 	virtual void update(float diff);
 	ActionMgr* _ActionMgr;
-	uint8 m_Class;
 	std::map<MoveKeyValue, bool> MoveKeyStatus;
 	virtual void UpdateMoveStatus();
 	float KeyVectorClearTimer;
-
-	virtual bool LoadFromDB(){ return true; };
+	virtual bool LoadFromDB();
 };
 
 #endif

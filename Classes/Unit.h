@@ -3,7 +3,6 @@
 
 #include "Types.h"
 #include "cocos2d.h"
-
 #ifdef WIN32
 #include "spine\spine.h"
 #include "cocos\editor-support\spine\SkeletonAnimation.h"
@@ -13,6 +12,24 @@
 #endif
 
 USING_NS_CC;
+
+enum UnitInt32Value
+{
+	Max_HP,
+	Curr_HP,
+	Max_Rage,
+	Curr_Rage,
+	Base_Att,
+	Base_Def,
+	Base_Str,
+	Base_Dex,
+	Base_Int,
+	Faction,
+	Level,
+
+	UnitInt32_Value_End,
+};
+
 using namespace spine;
 class Unit : public Sprite
 {
@@ -23,13 +40,21 @@ public:
 	float GetPositionX() { return getBoundingBox().origin.x + (getBoundingBox().size.width / 2); }
 	float GetPositionZ() { return getBoundingBox().origin.y; }
 	//由Jump原点获取
+	bool UpdateUnitValues();
 	float GetPositionY();
 	void SetFacing(Facing _var);
+	uint8 GetLevel()										{ return m_Level; }
+	UnitClasses GetClass()									{ return m_Class; }
 	MoveType GetMoveType()									{ return m_MoveType; }
 	uint8 GetSpeed()										{ return m_Speed; }
 	MoveOrientation GetMoveOrgin()							{ return m_MoveOrgin; }
 	virtual SkeletonAnimation* GetVision() final			{ return m_UnitVision; }
 	Facing GetFacing()										{ return m_Facing; }
+	int32 GetUnitInt32Value(UnitInt32Value _UnitInt32Value)	{ return m_UnitInt32Value[_UnitInt32Value]; }
+	uint32 GetGuid()										{ return m_Guid; }
+	void SetClass(UnitClasses _var)							{ m_Class = _var; }
+	void SetGuid(uint32 _var)								{ m_Guid = _var; }
+	void SetUnitInt32Value(UnitInt32Value val, int _var)	{ m_UnitInt32Value[val] = _var; }
 	void SetMoving(MoveOrientation _var)					{ m_MoveOrgin = _var; }
 	void SetSpeed(uint8 _var)								{ m_Speed = _var; }
 	void SetMoveType(MoveType _var)							{ m_MoveType = _var; }
@@ -43,6 +68,9 @@ private:
 	virtual bool LoadFromDB() = 0;
 	MoveType m_MoveType;
 
+	uint8 m_Level;
+	UnitClasses m_Class;
+	std::map<UnitInt32Value, int32> m_UnitInt32Value;
 	uint32 m_Entry;
 	uint32 m_Guid;
 };
