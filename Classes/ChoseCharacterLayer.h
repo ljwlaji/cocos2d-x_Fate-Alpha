@@ -26,7 +26,12 @@ struct CharacterEnumInfo
 	float Pos_Y = 0;
 };
 
-
+enum FadeType
+{
+	BackToMenu,
+	GoToCreate,
+	EnterGame,
+};
 class Chose_Character_Layer : public Layer
 {
 public:
@@ -42,6 +47,8 @@ private:
 	void SetChoseedCharacter(uint32 CharacterGuid);
 	void SwapChosedCharacter(uint32 CharacterGuid);
 	void SpritesFadeIn();
+	void SpritesFadeOut(FadeType _FadeType);
+	void _SwapLayer(FadeType _FadeType);
 	std::vector<Sprite*> DisplaySprites;
 
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);

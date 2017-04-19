@@ -147,6 +147,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\ActionManager.cpp" />
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\ChoseCharacterLayer.cpp" />
+    <ClCompile Include="..\Classes\CreateCharacterLayer.cpp" />
     <ClCompile Include="..\Classes\DataMgr.cpp" />
     <ClCompile Include="..\Classes\EnterGameLayer.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
@@ -169,6 +170,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\ActionManager.h" />
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\ChoseCharacterLayer.h" />
+    <ClInclude Include="..\Classes\CreateCharacterLayer.h" />
     <ClInclude Include="..\Classes\DataMgr.h" />
     <ClInclude Include="..\Classes\EnterGameLayer.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />

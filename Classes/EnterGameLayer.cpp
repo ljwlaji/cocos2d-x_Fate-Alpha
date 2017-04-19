@@ -78,13 +78,6 @@ bool EnterGameLayer::RunActionWithButton(int _tag)
 	case button_entergame:
 			sGame->SwapLayer(sChoseCharacter, getTag());
 			return false;
-		//if (Main_Map_Layer* layer = new Main_Map_Layer(1))
-		//{
-		//	layer->init();
-		//	layer->autorelease();
-		//	sGame->SwapLayer(layer, getTag());
-		//	return false;
-		//}
 		break;
 	case button_settings:
 		SettingMenu->setVisible(true);

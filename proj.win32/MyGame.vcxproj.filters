@@ -58,6 +58,9 @@
     <Filter Include="src\Layers\ChoseCharacterLayer">
       <UniqueIdentifier>{1c721a64-3823-4c2c-9fe3-ff02e811b831}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\CreateCharacterLayer">
+      <UniqueIdentifier>{74412e00-d33d-49e8-b022-aa52ed1a430d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\ChoseCharacterLayer.cpp">
       <Filter>src\Layers\ChoseCharacterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CreateCharacterLayer.cpp">
+      <Filter>src\Layers\CreateCharacterLayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\ChoseCharacterLayer.h">
       <Filter>src\Layers\ChoseCharacterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CreateCharacterLayer.h">
+      <Filter>src\Layers\CreateCharacterLayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

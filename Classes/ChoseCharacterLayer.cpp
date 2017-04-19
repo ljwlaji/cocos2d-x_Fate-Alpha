@@ -2,7 +2,7 @@
 #include "DataMgr.h"
 #include "HelloWorldScene.h"
 #include "MainMapLayer.h"
-
+#include "CreateCharacterLayer.h"
 static Chose_Character_Layer* _Chose_Character_Layer = nullptr;
 
 Chose_Character_Layer::Chose_Character_Layer()
@@ -20,6 +20,7 @@ Chose_Character_Layer::Chose_Character_Layer()
 
 Chose_Character_Layer::~Chose_Character_Layer()
 {
+	removeAllChildrenWithCleanup(true);
 	_Chose_Character_Layer = nullptr;
 }
 
@@ -78,6 +79,8 @@ void Chose_Character_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 	if (m_TouchedSprite)
 		m_TouchedSprite->setScale(1.0f);
 
+	if (!m_TouchedSprite->getBoundingBox().containsPoint(touch->getLocation()))
+		return;
 	switch (m_TouchType)
 	{
 	case Button:
@@ -85,23 +88,28 @@ void Chose_Character_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 		{
 			if (m_ChosedInfo.guid)
 			{
-				if (Main_Map_Layer* layer = new Main_Map_Layer(m_ChosedInfo.Mapid))
-				{
-					layer->init();
-					layer->autorelease();
-					sGame->SwapLayer(layer, getTag());
-					return;
-				}
+				SpritesFadeOut(EnterGame);
+				//if (Main_Map_Layer* layer = new Main_Map_Layer(m_ChosedInfo.Mapid))
+				//{
+				//	layer->init();
+				//	layer->autorelease();
+				//	sGame->SwapLayer(layer, getTag());
+				//}
+				return;
 			}
 			else
 			{
-
+				SpritesFadeOut(GoToCreate);
+				//if (Create_Character_Layer* layer = Create_Character_Layer::create())
+				//	sGame->SwapLayer(layer, getTag());
+				return;
 			}
 		}
 		else
 		{
-			EnterGameLayer* _layer = EnterGameLayer::create();
-			sGame->SwapLayer(_layer, getTag());
+			SpritesFadeOut(BackToMenu);
+			//EnterGameLayer* _layer = EnterGameLayer::create();
+			//sGame->SwapLayer(_layer, getTag());
 			return;
 		}
 		break;
@@ -115,7 +123,8 @@ void Chose_Character_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 			CreateOrEnterGameButton->setTexture("Button_Create_Character.png");
 			CreateOrEnterGameButton->setOpacity(140.0f);
 			m_ChosedInfo.guid = 0;
-			CharacterEnumSprite->setVisible(false);
+			if (CharacterEnumSprite)
+				CharacterEnumSprite->setVisible(false);
 		}
 		break;
 	}
@@ -239,6 +248,57 @@ void Chose_Character_Layer::InitFrames()
 	SpritesFadeIn();
 }
 
+void Chose_Character_Layer::_SwapLayer(FadeType _FadeType)
+{
+	Layer* pLayer;
+	switch (_FadeType)
+	{
+	case BackToMenu:
+		pLayer = EnterGameLayer::create();
+		break;
+	case GoToCreate:
+		pLayer = Create_Character_Layer::create();
+		break;
+	case EnterGame:
+		if (pLayer = new Main_Map_Layer(m_ChosedInfo.Mapid))
+		{
+			pLayer->init();
+			pLayer->autorelease();
+		}
+		break;
+	default:
+		break;
+	}
+	if (pLayer)
+		sGame->SwapLayer(pLayer, getTag());
+	return;
+}
+
+void Chose_Character_Layer::SpritesFadeOut(FadeType _FadeType)
+{
+	setTouchEnabled(false);
+	Taiji->runAction(ScaleTo::create(1.0f, 0.0f));
+	for (int i = 0; i != CharacterEnumFrame.size(); i++)
+	{
+		if (Sprite* Temp = CharacterEnumFrame.at(i))
+			Temp->runAction(MoveTo::create(1.0f, Vec2(Temp->getPositionX() + Temp->getBoundingBox().size.width, Temp->getPositionY())));
+	}
+	for (int i = 0; i != DisplaySprites.size(); i++)
+	{
+		if (Sprite* TempSprite = DisplaySprites.at(i))
+		{
+			Vec2 Pos;
+			if (Title == TempSprite)
+				Pos = Vec2(0 - TempSprite->getPositionX(), TempSprite->getPositionY());
+			else
+				Pos = Vec2(TempSprite->getPositionX(), 0 - TempSprite->getPositionY());
+
+			Sequence* TempSQ = Sequence::create(CCMoveTo::create(1.0f, Pos), DelayTime::create(1.0f), CallFunc::create(CC_CALLBACK_0(Chose_Character_Layer::_SwapLayer, this, _FadeType)), NULL);
+			TempSprite->runAction(TempSQ);
+		}
+	}
+}
+
 void Chose_Character_Layer::SpritesFadeIn()
 {
 	float DelayTime = 0;
@@ -281,6 +341,7 @@ bool Chose_Character_Layer::LoadCharacters()
 				CharacterEnumMap[(UnitClasses)row.at(0).GetInt()]		= _info;
 				TotalCharacterCount++;
 			}
+            return true;
 		}
 	}
 	else
