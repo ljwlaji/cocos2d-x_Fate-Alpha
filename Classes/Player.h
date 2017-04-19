@@ -34,11 +34,13 @@ public:
 	~Player();
 
 	static Player* GetInstance();
+	bool CreatePlayer();
 	void DoAction(ActionType _action);
 	void DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType);
 	void ResetMoveKeyForRoker();
 	bool CanCancelActionForMove();
 	void SaveToDB();
+	virtual bool LoadFromDB();
 	bool UpdatePlayerValues();
 	ActionType GetDoingAction()									{ return m_Action; }
 	ActionMgr* PlayerActionMgr()								{ return _ActionMgr; }
@@ -52,7 +54,6 @@ private:
 	std::map<MoveKeyValue, bool> MoveKeyStatus;
 	virtual void UpdateMoveStatus();
 	float KeyVectorClearTimer;
-	virtual bool LoadFromDB();
 };
 
 #endif

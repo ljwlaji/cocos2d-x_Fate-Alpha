@@ -17,7 +17,7 @@
 #define EnterGame_Layer_Tag			1000
 #define Loading_Layer_Tag			2000
 #define Typing_Layer_Tag			3000
-
+#define Chose_Character_Layer_Tag	4000
 #define Base_X_MovePoint	2.0f
 #define Base_Y_MovePoint	1.0f
 enum ActionType

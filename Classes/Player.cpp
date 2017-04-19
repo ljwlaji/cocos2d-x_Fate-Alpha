@@ -8,22 +8,10 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation, uint32 guid) : Unit(_Skele
 {
 	_player = this;
 	SetGuid(guid);
-	if (!LoadFromDB())
-	{
-		delete this;
-		return;
-	}
-	if (!UpdateUnitValues())
-	{
-		delete this;
-		return;
-	}
 	ActionMgr* _mgr = new ActionMgr(this);
 	_ActionMgr = _mgr;
 	for (int i = MoveKey_Left; i != MoveKey_Endl; i++)
 		MoveKeyStatus[(MoveKeyValue)i] = false;
-
-
 	KeyVectorClearTimer = Base_Clear_Key_Time;
 	scheduleUpdate();
 }
@@ -32,7 +20,6 @@ Player::~Player()
 {
 	if (_ActionMgr)
 		delete _ActionMgr;
-	removeFromParentAndCleanup(true);
 }
 
 Player* Player::GetInstance()
@@ -228,8 +215,19 @@ bool Player::CanCancelActionForMove()
 	}
 }
 
+bool Player::CreatePlayer()
+{
+	if (LoadFromDB() && UpdateUnitValues())
+		return true;
+
+	_player = nullptr;
+	removeFromParentAndCleanup(true);
+	return false;
+}
+
 bool Player::LoadFromDB()
 {
+
 	return true;
 }
 

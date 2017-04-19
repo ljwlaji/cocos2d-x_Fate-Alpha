@@ -55,6 +55,9 @@
     <Filter Include="src\NotifyMgr">
       <UniqueIdentifier>{25fae8ea-adf0-4378-ae47-353e342f9994}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\ChoseCharacterLayer">
+      <UniqueIdentifier>{1c721a64-3823-4c2c-9fe3-ff02e811b831}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\NotifyMgr.cpp">
       <Filter>src\NotifyMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ChoseCharacterLayer.cpp">
+      <Filter>src\Layers\ChoseCharacterLayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\NotifyMgr.h">
       <Filter>src\NotifyMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ChoseCharacterLayer.h">
+      <Filter>src\Layers\ChoseCharacterLayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

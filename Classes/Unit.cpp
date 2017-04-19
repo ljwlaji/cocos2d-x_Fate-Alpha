@@ -42,8 +42,6 @@ bool Unit::UpdateUnitValues()
 			case Max_HP:
 				CurrentNumber = _info.BaseHp + (Level * _info.ModifyHpPerLevel);
 				break;
-			case Base_Att:
-				break;
 			case Base_Def:
 				CurrentNumber = _info.BaseDef + (Level * _info.ModifyDefPerLevel);
 				break;
@@ -55,6 +53,8 @@ bool Unit::UpdateUnitValues()
 				break;
 			case Base_Int:
 				CurrentNumber = _info.BaseInt + (Level * _info.ModifyIntPerLevel);
+				break;
+			case Base_Att:
 				break;
 			}
 			SetUnitInt32Value((UnitInt32Value)i, CurrentNumber);

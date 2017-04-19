@@ -19,14 +19,13 @@ enum UnitInt32Value
 	Curr_HP,
 	Max_Rage,
 	Curr_Rage,
-	Base_Att,
 	Base_Def,
 	Base_Str,
 	Base_Dex,
 	Base_Int,
 	Faction,
 	Level,
-
+	Base_Att,
 	UnitInt32_Value_End,
 };
 

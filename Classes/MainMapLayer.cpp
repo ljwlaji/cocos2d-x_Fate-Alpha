@@ -28,6 +28,7 @@ Main_Map_Layer::Main_Map_Layer(int MapId)
 
 Main_Map_Layer::~Main_Map_Layer()
 {
+	_Main_Map_Layer = nullptr;
 }
 
 Main_Map_Layer* Main_Map_Layer::GetInstance()
@@ -203,11 +204,16 @@ void Main_Map_Layer::CreateObjects()
 	{
 		SkeletonAnimation* sk = SkeletonAnimation::createWithJsonFile("black_saber_edit.json", "black_saber_edit.atlas", 0.5f);
 		Player* _player = new Player(sk, 1);
-		_player->SetRealPosition(Visablesize.x / 2, 0);
-		_player->setLocalZOrder(PLAYER_ZORDER);
-		addChild(_player);
-		CCSize s = CCDirector::sharedDirector()->getWinSize();
-		runAction(CCFollow::create(sPlayer, CCRectMake(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), m_MapGroundSpriteVector.at(0)->getBoundingBox().size.height)));
+		do
+		{
+			if (!_player->CreatePlayer())
+				break;
+			_player->SetRealPosition(Visablesize.x / 2, 0);
+			_player->setLocalZOrder(PLAYER_ZORDER);
+			addChild(_player);
+			CCSize s = CCDirector::sharedDirector()->getWinSize();
+			runAction(CCFollow::create(sPlayer, CCRectMake(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), m_MapGroundSpriteVector.at(0)->getBoundingBox().size.height)));
+		} while (0);
 	}
 
 	PlayerUILayer* _PlayerUILayer = PlayerUILayer::create();

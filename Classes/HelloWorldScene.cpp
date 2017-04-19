@@ -209,7 +209,7 @@ void MainScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
-	if (IsMoveKey(keyCode))
+	if (sPlayer && IsMoveKey(keyCode))
 	{
 		switch (keyCode)
 		{
