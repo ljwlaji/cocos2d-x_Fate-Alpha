@@ -7,4 +7,5 @@ ScriptAI::ScriptAI(Creature* pCreature)
 
 ScriptAI::~ScriptAI()
 {
+
 }

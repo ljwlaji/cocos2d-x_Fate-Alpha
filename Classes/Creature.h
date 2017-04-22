@@ -14,6 +14,8 @@ public:
 	virtual ~Creature();
 
 private:
+	bool HasScript() { bool re; m_script_ai ? re = true : re = false; return re; }
+	virtual void update(float diff);
 	void FindScript();
 	virtual void UpdateMoveStatus();
 	virtual bool LoadFromDB();

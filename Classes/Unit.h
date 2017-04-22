@@ -30,8 +30,8 @@ enum UnitInt32Value
 };
 enum UnitDeathStatus
 {
-	Alive,
 	Dead,
+	Alive,
 };
 using namespace spine;
 
@@ -48,6 +48,7 @@ public:
 	bool UpdateUnitValues();
 	float GetPositionY();
 	void SetFacing(Facing _var);
+	bool IsAlive()											{ return m_DeathStatus; }
 	uint8 GetLevel()										{ return m_Level; }
 	UnitClasses GetClass()									{ return m_Class; }
 	MoveType GetMoveType()									{ return m_MoveType; }
@@ -75,7 +76,7 @@ private:
 	virtual void UpdateMoveStatus() = 0;
 	virtual bool LoadFromDB() = 0;
 	MoveType m_MoveType;
-
+	UnitDeathStatus m_DeathStatus;
 	uint8 m_Level;
 	UnitClasses m_Class;
 	std::map<UnitInt32Value, int32> m_UnitInt32Value;
