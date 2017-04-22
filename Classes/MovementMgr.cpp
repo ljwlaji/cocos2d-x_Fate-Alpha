@@ -18,15 +18,14 @@ MovementMgr* MovementMgr::GetInstance()
 	return sMovement;
 }
 
-bool MovementMgr::CanMoveTo(CheckMoveTo front, float current, float modify)
+bool MovementMgr::CanMoveTo(Unit* pUnit, CheckMoveTo front, float modify)
 {
-	return true;
 	std::vector<Sprite*> SpriteVector = sMainMap->GetGroundSprites();
 
 	if (SpriteVector.empty())
 		return false;
 
-	if (!CheckEdge(front))
+	if (!CheckEdge(pUnit, front))
 		return false;
 
 	Sprite* Checked = nullptr;
@@ -35,50 +34,50 @@ bool MovementMgr::CanMoveTo(CheckMoveTo front, float current, float modify)
 	{
 		if (Checked = SpriteVector.at(i))
 		{
-			if (NeedCheckThisGroundSprite(Checked, front))
+			Rect UnitRect = pUnit->getBoundingBox();
+			switch (front)
+			{
+			case Move_To_Left:
+				UnitRect.origin.x -= modify;
 				break;
-			else Checked = nullptr;
+			case Move_To_Right:
+				UnitRect.size.width += modify;
+				break;
+			case Move_To_Up:
+				UnitRect.size.height += modify;
+				break;
+			case Move_To_Down:
+				UnitRect.origin.y -= modify;
+				break;
+			}
+
+			if (UnitRect.intersectsRect(Checked->getBoundingBox()))
+				return false;
 		}
 	}
-
-	//判断
-	if (Checked)
-	{
-
-	}
-
 	return true;
 }
 
-bool MovementMgr::CheckEdge(CheckMoveTo front)
+bool MovementMgr::CheckEdge(Unit* pUnit, CheckMoveTo front)
 {
 	switch (front)
 	{
 	case Move_To_Left:
+		if (pUnit->getBoundingBox().origin.x < 0)
+			return false;
+		return true;
 	case Move_To_Right:
-		break;
+		if (pUnit->getBoundingBox().origin.x + pUnit->getBoundingBox().size.width > (sMainMap->GetGroundSprites().at(0)->getBoundingBox().size.width * sMainMap->GetGroundSprites().size()))
+			return false;
+		return true;
 	case Move_To_Up:
-		break;
+		if (pUnit->getBoundingBox().origin.y + pUnit->getBoundingBox().size.height > Director::getInstance()->getVisibleSize().height)
+			return false;
+		return true;
 	case Move_To_Down:
-		break;
+		if (pUnit->getBoundingBox().origin.x < 0)
+			return false;
+		return true;
 	}
-
-	return true;
-}
-
-bool MovementMgr::NeedCheckThisGroundSprite(Sprite* pSprite, CheckMoveTo front)
-{
-	switch (front)
-	{
-	case Move_To_Left:
-		break;
-	case Move_To_Right:
-		break;
-	case Move_To_Up:
-		break;
-	case Move_To_Down:
-		break;
-	}
-
 	return false;
 }

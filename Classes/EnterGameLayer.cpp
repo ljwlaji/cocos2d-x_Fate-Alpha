@@ -76,8 +76,8 @@ bool EnterGameLayer::RunActionWithButton(int _tag)
 	switch (_tag)
 	{
 	case button_entergame:
-			sGame->SwapLayer(sChoseCharacter, getTag());
-			return false;
+		sGame->SwapLayer(Chose_Character_Layer_Tag, getTag());
+		return false;
 		break;
 	case button_settings:
 		SettingMenu->setVisible(true);

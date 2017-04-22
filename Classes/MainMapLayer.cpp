@@ -12,8 +12,11 @@ Main_Map_Layer* _Main_Map_Layer = nullptr;
 
 Main_Map_Layer::Main_Map_Layer(int MapId)
 {
-	Visablesize = Director::getInstance()->getVisibleSize();
 	_Main_Map_Layer = this;
+	init();
+	autorelease();
+	Visablesize = Director::getInstance()->getVisibleSize();
+	setTag(Main_Map_Layer_Tag);
 	m_Mapid = MapId;
 	m_WaitForLoadingNpcs.clear();
 	m_WaitForLoadingMonsters.clear();
@@ -41,9 +44,10 @@ Main_Map_Layer* Main_Map_Layer::GetInstance()
 
 bool Main_Map_Layer::SwapMap(int insteadid)
 {
+	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	unscheduleUpdate();
 	sLoadingLayer->Show();
-	if (!insteadid) 
+	if (!insteadid)
 		insteadid = m_Mapid;
 	removeAllChildrenWithCleanup(true);
 	ClearVectors();
@@ -161,7 +165,7 @@ void Main_Map_Layer::CreateObjects()
 			WaitForLoadingObjectTemplate _template = itr->second.at(itr->second.size() - 1);
 			Sprite* Temp = Sprite::create(_template.url.c_str());
 			if (itr->first == Object_GroundSprite)
-				Temp->SetRealPosition(Temp->getBoundingBox().size.width * 0.5 + (itr->second.size() - 1) * Temp->getBoundingBox().size.width, Temp->getBoundingBox().size.height / 2);
+				Temp->SetRealPosition(Temp->getBoundingBox().size.width * 0.5 + (itr->second.size() - 1) * Temp->getBoundingBox().size.width, _template.pos_y);
 			else
 				Temp->SetRealPosition(_template.pos_x, _template.pos_y);
 			addChild(Temp);
@@ -193,28 +197,32 @@ void Main_Map_Layer::CreateObjects()
 		WaitFroLoadingUnitTemplate _template = m_WaitForLoadingMonsters.at(m_WaitForLoadingMonsters.size() - 1);
 		SkeletonAnimation* sk = spine::SkeletonAnimation::createWithJsonFile(_template.json, _template.atlas, _template.Scale);
 		Monster* Temp = new Monster(sk, _template.entry, _template.guid);
-		Temp->SetRealPosition(_template.pos_x, _template.pos_y);
+		Temp->SetRealPosition(Visablesize.x * _template.pos_x / 100, Visablesize.y * _template.pos_y / 100);
 		sk->setAnimation(0, "idle", true);
 		m_WaitForLoadingMonsters.pop_back();
 		m_MonsterVector.push_back(Temp);
+		addChild(Temp);
 		return;
 	}
 
-	if (!sPlayer)
-	{
-		SkeletonAnimation* sk = SkeletonAnimation::createWithJsonFile("black_saber_edit.json", "black_saber_edit.atlas", 0.5f);
-		Player* _player = new Player(sk, 1);
-		do
-		{
-			if (!_player->CreatePlayer())
-				break;
-			_player->SetRealPosition(Visablesize.x / 2, 0);
-			_player->setLocalZOrder(PLAYER_ZORDER);
-			addChild(_player);
-			CCSize s = CCDirector::sharedDirector()->getWinSize();
-			runAction(CCFollow::create(sPlayer, CCRectMake(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), m_MapGroundSpriteVector.at(0)->getBoundingBox().size.height)));
-		} while (0);
-	}
+	//if (!sPlayer)
+	//{
+	//	SkeletonAnimation* sk = SkeletonAnimation::createWithJsonFile("black_saber_edit.json", "black_saber_edit.atlas", 0.5f);
+	//	Player* _player = new Player(sk, 1);
+	//	do
+	//	{
+	//		if (!_player->CreatePlayer())
+	//			break;
+	//		_player->SetRealPosition(Visablesize.x / 2, 0);
+	//		_player->setLocalZOrder(PLAYER_ZORDER);
+	//		addChild(_player);
+	//		CCSize s = CCDirector::sharedDirector()->getWinSize();
+	//		runAction(CCFollow::create(sPlayer, CCRectMake(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), m_MapGroundSpriteVector.at(0)->getBoundingBox().size.height)));
+	//	} while (0);
+	//}
+
+	CCSize s = CCDirector::sharedDirector()->getWinSize();
+	runAction(CCFollow::create(sPlayer, CCRectMake(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), s.height)));
 
 	PlayerUILayer* _PlayerUILayer = PlayerUILayer::create();
 	_PlayerUILayer->setLocalZOrder(UI_LAYER_ZORDER);

@@ -2,7 +2,7 @@
 #define __MOVEMENT_MGR_H__
 
 #include "MainMapLayer.h"
-
+#include "Unit.h"
 #define sMoveMgr MovementMgr::GetInstance()
 enum CheckMoveTo
 {
@@ -17,11 +17,9 @@ public:
 	MovementMgr();
 	~MovementMgr();
 	static MovementMgr* GetInstance();
-	bool CanMoveTo(CheckMoveTo front, float current, float modify);
+	bool CanMoveTo(Unit* pUnit, CheckMoveTo front, float modify);
 private:
-
-	bool NeedCheckThisGroundSprite(Sprite* pSprite, CheckMoveTo front);
-	bool CheckEdge(CheckMoveTo front);
+	bool CheckEdge(Unit* pUnit, CheckMoveTo front);
 };
 
 

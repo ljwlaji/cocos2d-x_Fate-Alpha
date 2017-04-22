@@ -19,6 +19,7 @@
 #define Typing_Layer_Tag			3000
 #define Chose_Character_Layer_Tag	4000
 #define Create_Character_Layer_Tag	5000
+#define Main_Map_Layer_Tag			6000
 #define Base_X_MovePoint	2.0f
 #define Base_Y_MovePoint	1.0f
 enum ActionType
@@ -46,6 +47,19 @@ enum UnitClasses
 	Avenger,
 	Berserker,
 	Class_End,
+};
+
+struct CharacterEnumInfo
+{
+	uint32 guid = 0;
+	std::string name = "";
+	UnitClasses Class = Class_None;
+	uint32 Money = 0;
+	uint32 Exp = 0;
+	uint32 Level = 0;
+	uint16 Mapid = 0;
+	float Pos_X = 0;
+	float Pos_Y = 0;
 };
 
 struct ClassInfo

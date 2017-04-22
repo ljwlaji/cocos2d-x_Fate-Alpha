@@ -54,7 +54,9 @@ void PlayerUILayer::InitUI()
 	m_Player_Info_UI->addChild(m_Player_Info_UI_Hp_Back);
 	m_Player_Info_UI->addChild(m_Player_Info_UI_Hp);
 
-	m_Player_Info_UI_Level = sGame->GetNumberSpriteByInt(1234);
+	int Level;
+	sPlayer ? Level = sPlayer->GetLevel() : Level = 0;
+	m_Player_Info_UI_Level = sGame->GetNumberSpriteByInt(Level);
 	m_Player_Info_UI_Level->setPosition(m_Player_Info_UI->getBoundingBox().size.width * 0.285f, m_Player_Info_UI->getBoundingBox().size.height * 0.4f);
 	m_Player_Info_UI_Level->setScale(0.5f);
 	m_Player_Info_UI->addChild(m_Player_Info_UI_Level);
@@ -85,6 +87,8 @@ void PlayerUILayer::CreateVirtualRoker()
 
 bool PlayerUILayer::onTouchRockerBegan(Touch* touches, Event *event)
 {
+	if (!sPlayer)
+		return false;
 	if (m_VirtualRoker_Roker && m_VirtualRoker_Roker->getBoundingBox().containsPoint(touches->getLocation()))
 	{
 		RockerLastPostion = touches->getLocation();

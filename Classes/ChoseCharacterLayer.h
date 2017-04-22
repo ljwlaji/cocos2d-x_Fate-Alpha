@@ -3,6 +3,14 @@
 
 #include "cocos2d.h"
 #include "Types.h"
+#ifdef __APPLE__
+#include "spine/spine.h"
+#include "cocos/editor-support/spine/SkeletonAnimation.h"
+#else
+#include "spine\spine.h"
+#include "cocos\editor-support\spine\SkeletonAnimation.h"
+#endif
+using namespace spine;
 USING_NS_CC;
 
 #define sChoseCharacter Chose_Character_Layer::GetInstance()
@@ -13,18 +21,6 @@ enum TouchType
 	Button,
 	PlayerFrame,
 };
-struct CharacterEnumInfo
-{
-	uint32 guid = 0;
-	std::string name = "";
-	UnitClasses Class = Class_None;
-	uint32 Money = 0;
-	uint32 Exp = 0;
-	uint32 Level = 0;
-	uint16 Mapid = 0;
-	float Pos_X = 0;
-	float Pos_Y = 0;
-};
 
 enum FadeType
 {
@@ -32,6 +28,7 @@ enum FadeType
 	GoToCreate,
 	EnterGame,
 };
+
 class Chose_Character_Layer : public Layer
 {
 public:
@@ -58,7 +55,7 @@ private:
 	Sprite* Taiji;
 	Sprite* CreateOrEnterGameButton;
 	Sprite* CanCelButton;
-	Sprite* CharacterEnumSprite;
+	SkeletonAnimation* CharacterEnumSprite;
 	std::vector<Sprite*> CharacterEnumFrame;
 	Vec2 VisableSize;
 	uint8 TotalCharacterCount;

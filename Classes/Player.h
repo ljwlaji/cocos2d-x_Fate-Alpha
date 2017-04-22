@@ -30,7 +30,7 @@ class ActionMgr;
 class Player : public Unit
 {
 public:
-	explicit Player(SkeletonAnimation* _SkeletonAnimation, uint32 guid);
+	explicit Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info);
 	~Player();
 
 	static Player* GetInstance();
@@ -44,9 +44,15 @@ public:
 	bool UpdatePlayerValues();
 	ActionType GetDoingAction()									{ return m_Action; }
 	ActionMgr* PlayerActionMgr()								{ return _ActionMgr; }
+	uint32 GetMoney()											{ return m_Money; }
+	uint32 GetExp()												{ return m_Exp; }
+	uint32 GetMapid()											{ return m_Mapid; }
+	void SetMapid(uint32 _var)									{ m_Mapid = _var; }
+	void SetExp(uint32 _var)									{ m_Exp = _var; }
 	void SetMoveKeyEnable(MoveKeyValue _key, bool enable)		{ MoveKeyStatus[_key] = enable; }
 	void ResetKeyTimer()										{ KeyVectorClearTimer = Base_Clear_Key_Time; }
 	virtual void DestorySelf()									{ removeFromParentAndCleanup(true); }
+	void SetMoney(uint32 _var)									{ m_Money = _var; }
 private:
 	ActionType m_Action;
 	virtual void update(float diff);
@@ -54,6 +60,10 @@ private:
 	std::map<MoveKeyValue, bool> MoveKeyStatus;
 	virtual void UpdateMoveStatus();
 	float KeyVectorClearTimer;
+
+	uint32 m_Money;
+	uint32 m_Exp;
+	uint32 m_Mapid;
 };
 
 #endif

@@ -51,6 +51,9 @@ public:
 	Facing GetFacing()										{ return m_Facing; }
 	int32 GetUnitInt32Value(UnitInt32Value _UnitInt32Value)	{ return m_UnitInt32Value[_UnitInt32Value]; }
 	uint32 GetGuid()										{ return m_Guid; }
+	std::string GetName()									{ return m_Name; }
+	void SetLevel(uint8 _var)								{ m_Level = _var; }
+	void SetName(std::string _var)							{ m_Name = _var; }
 	void SetClass(UnitClasses _var)							{ m_Class = _var; }
 	void SetGuid(uint32 _var)								{ m_Guid = _var; }
 	void SetUnitInt32Value(UnitInt32Value val, int _var)	{ m_UnitInt32Value[val] = _var; }
@@ -72,6 +75,7 @@ private:
 	std::map<UnitInt32Value, int32> m_UnitInt32Value;
 	uint32 m_Entry;
 	uint32 m_Guid;
+	std::string m_Name;
 };
 
 #endif

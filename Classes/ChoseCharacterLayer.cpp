@@ -3,6 +3,7 @@
 #include "HelloWorldScene.h"
 #include "MainMapLayer.h"
 #include "CreateCharacterLayer.h"
+
 static Chose_Character_Layer* _Chose_Character_Layer = nullptr;
 
 Chose_Character_Layer::Chose_Character_Layer()
@@ -34,7 +35,6 @@ bool Chose_Character_Layer::init()
 		//if (TotalCharacterCount)
 		//	SetChoseedCharacter(CharacterEnumMap.begin()->second.guid);
 		InitFrames();
-
 		auto listener = EventListenerTouchOneByOne::create();
 		listener->setSwallowTouches(true);
 		listener->onTouchBegan = CC_CALLBACK_2(Chose_Character_Layer::onTouchBegan, this);
@@ -89,27 +89,18 @@ void Chose_Character_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 			if (m_ChosedInfo.guid)
 			{
 				SpritesFadeOut(EnterGame);
-				//if (Main_Map_Layer* layer = new Main_Map_Layer(m_ChosedInfo.Mapid))
-				//{
-				//	layer->init();
-				//	layer->autorelease();
-				//	sGame->SwapLayer(layer, getTag());
-				//}
 				return;
 			}
 			else
 			{
-				SpritesFadeOut(GoToCreate);
-				//if (Create_Character_Layer* layer = Create_Character_Layer::create())
-				//	sGame->SwapLayer(layer, getTag());
+				if (CharacterEnumMap.size() < 5)
+					SpritesFadeOut(GoToCreate);
 				return;
 			}
 		}
 		else
 		{
 			SpritesFadeOut(BackToMenu);
-			//EnterGameLayer* _layer = EnterGameLayer::create();
-			//sGame->SwapLayer(_layer, getTag());
 			return;
 		}
 		break;
@@ -150,19 +141,21 @@ void Chose_Character_Layer::SetChoseedCharacter(uint32 guid)
 	}
 }
 
+
 void Chose_Character_Layer::SwapChosedCharacter(uint32 CharacterGuid)
 {
+	if (CharacterEnumSprite)
+		CharacterEnumSprite->removeFromParentAndCleanup(true);
+	CharacterEnumSprite = sGame->GetAnimationByClass(m_ChosedInfo.Class);
 	if (!CharacterEnumSprite)
-	{
-		CharacterEnumSprite = Sprite::create("test.png");
-		CharacterEnumSprite->setZOrder(5);
-		addChild(CharacterEnumSprite);
-		CharacterEnumSprite->setAnchorPoint(Vec2(0.5, 0));
-	}
-	CharacterEnumSprite->setTexture("test.png");
-	CharacterEnumSprite->setPosition(Taiji->getPosition());
-	CharacterEnumSprite->setVisible(true);
-
+		return;
+	CharacterEnumSprite->setZOrder(5);
+	CharacterEnumSprite->setAnchorPoint(Vec2(0.5, 0));
+	CharacterEnumSprite->setPosition(Taiji->getPositionX(), Taiji->getPositionY() * 1.1f);
+	CharacterEnumSprite->setAnimation(0, "idle_chose_character", true);
+	addChild(CharacterEnumSprite);
+	//SpriteFrameCache::getInstance()->removeSpriteFrames();
+	//SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 }
 
 void Chose_Character_Layer::InitFrames()
@@ -250,24 +243,29 @@ void Chose_Character_Layer::InitFrames()
 
 void Chose_Character_Layer::_SwapLayer(FadeType _FadeType)
 {
-	Layer* pLayer;
+	int pLayer;
 	switch (_FadeType)
 	{
 	case BackToMenu:
-		pLayer = EnterGameLayer::create();
+		pLayer = EnterGame_Layer_Tag;
 		break;
 	case GoToCreate:
-		pLayer = Create_Character_Layer::create();
+		pLayer = Create_Character_Layer_Tag;
 		break;
 	case EnterGame:
-		if (pLayer = new Main_Map_Layer(m_ChosedInfo.Mapid))
+		if (!sPlayer)
 		{
-			pLayer->init();
-			pLayer->autorelease();
+			SkeletonAnimation* sk = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 0.4f);
+			Player* _player = new Player(sk, m_ChosedInfo);
+			if (!_player->CreatePlayer())
+				return;
 		}
-		break;
-	default:
-		break;
+		sGame->SwapLayer(Main_Map_Layer_Tag, getTag(), sPlayer->GetMapid());
+		if (sMainMap && sPlayer)
+		{
+			sMainMap->addChild(sPlayer);
+		}
+		return;
 	}
 	if (pLayer)
 		sGame->SwapLayer(pLayer, getTag());

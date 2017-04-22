@@ -3,9 +3,23 @@
 #include "MainMapLayer.h"
 #include "DataMgr.h"
 #include "NotifyMgr.h"
+#include "EnterGameLayer.h"
+#include "LoadingUILayer.h"
+#include "TypingLayer.h"
+#include "ChoseCharacterLayer.h"
+#include "CreateCharacterLayer.h"
+
+#ifdef __APPLE__
+#include "spine/spine.h"
+#include "cocos/editor-support/spine/SkeletonAnimation.h"
+#else
+#include "spine\spine.h"
+#include "cocos\editor-support\spine\SkeletonAnimation.h"
+#endif
 #include <iostream>
 #include <fstream>
 
+using namespace spine;
 static  MainScene* _MainScene = nullptr;
 
 MainScene::MainScene()
@@ -99,12 +113,85 @@ void MainScene::LoadUnitClassInfo()
 	}
 }
 
-void MainScene::SwapLayer(Layer* _instead, int removetag)
+SkeletonAnimation* MainScene::GetAnimationByClass(UnitClasses _class)
 {
-	if (Layer* pLayer = (Layer*)getChildByTag(removetag))
+	SkeletonAnimation* SkeletonAnimation = nullptr;
+	switch (_class)
 	{
-		pLayer->removeFromParentAndCleanup(true);
-		addChild(_instead);
+	case Saber:
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		break;
+	case Archer:
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		break;
+	case Caster:
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		break;
+	case Lancer:
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		break;
+	case Assasin:
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		break;
+	case Rider:
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		break;
+	case Avenger:
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		break;
+	case Berserker:
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		break;
+	}
+	return SkeletonAnimation;
+}
+
+void MainScene::SwapLayer(int _instead, int removetag,int mapid)
+{
+	Director::getInstance()->getTextureCache()->removeUnusedTextures();
+	if (Layer* OldLayer = (Layer*)getChildByTag(removetag))
+	{
+		OldLayer->removeFromParentAndCleanup(true);
+		Layer* NewLayer = nullptr;
+		switch (_instead)
+		{
+			case EnterGame_Layer_Tag:
+			{
+				NewLayer = EnterGameLayer::create();
+				addChild(NewLayer);
+				break;
+			}
+			case Loading_Layer_Tag:
+			{
+				NewLayer = LoadingUILayer::create();
+				addChild(NewLayer);
+				break;
+			}
+			case Typing_Layer_Tag:
+			{
+				NewLayer = TypingLayer::create();
+				addChild(NewLayer);
+				break;
+			}
+			case Chose_Character_Layer_Tag:
+			{
+				NewLayer = Chose_Character_Layer::create();
+				addChild(NewLayer);
+				break;
+			}
+			case Create_Character_Layer_Tag:
+			{
+				NewLayer = Create_Character_Layer::create();
+				addChild(NewLayer);
+				break;
+			}
+			case Main_Map_Layer_Tag:
+			{
+				NewLayer = new Main_Map_Layer(mapid);
+				addChild(NewLayer);
+				break;
+			}
+		}
 	}
 }
 

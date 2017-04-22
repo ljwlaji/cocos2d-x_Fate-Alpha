@@ -4,10 +4,18 @@
 #include "HelloWorldScene.h"
 static Player* _player = nullptr;
 
-Player::Player(SkeletonAnimation* _SkeletonAnimation, uint32 guid) : Unit(_SkeletonAnimation)
+Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) : Unit(_SkeletonAnimation)
 {
 	_player = this;
-	SetGuid(guid);
+	SetName(_info.name.c_str());
+	SetClass(_info.Class);
+	SetMoney(_info.Money);
+	SetExp(_info.Exp);
+	SetLevel(_info.Level);
+	SetMapid(_info.Mapid);
+	SetSpeed(100);
+	SetRealPosition(_info.Pos_X, _info.Pos_Y);
+	setZOrder(999999);
 	ActionMgr* _mgr = new ActionMgr(this);
 	_ActionMgr = _mgr;
 	for (int i = MoveKey_Left; i != MoveKey_Endl; i++)
@@ -124,6 +132,7 @@ void Player::UpdateMoveStatus()
 	float X_Modify = 0;
 	float Y_Modify = 0;
 	float Modify_Speed = (float)GetSpeed() / 100.0f;
+	//log("speed %f", GetSpeed());
 	if (MoveKeyStatus[MoveKey_Left]) 
 		X_Modify -= Base_X_MovePoint * Modify_Speed;
 	if (MoveKeyStatus[MoveKey_Right])
@@ -157,23 +166,21 @@ void Player::UpdateMoveStatus()
 		if (X_Modify > 0)
 		{
 			SetFacing(Facing_Right);
-			X_MoveFront = Move_To_Left;
+			X_MoveFront = Move_To_Right;
 		}
 		else
 		{
 			SetFacing(Facing_Left);
-			X_MoveFront = Move_To_Right;
+			X_MoveFront = Move_To_Left;
 		}
-		X_MoveFront == Move_To_Left ? CheckPosX = getBoundingBox().origin.x : CheckPosX = getBoundingBox().origin.x + getBoundingBox().size.width;
-		if (sMoveMgr->CanMoveTo(X_MoveFront, CheckPosX, abs(X_Modify)))
+		if (sMoveMgr->CanMoveTo(this,X_MoveFront, abs(X_Modify)))
 			setPositionX(getPositionX() + X_Modify);
 	}
 
 	if (Y_Modify)
 	{
 		Y_Modify > 0 ? Y_MoveFront = Move_To_Up : Y_MoveFront = Move_To_Down;
-		Y_MoveFront == Move_To_Up ? CheckPosY = getBoundingBox().origin.y + getBoundingBox().size.width : CheckPosY = getBoundingBox().origin.y;
-		if (sMoveMgr->CanMoveTo(Y_MoveFront, CheckPosY, abs(Y_Modify)))
+		if (sMoveMgr->CanMoveTo(this,Y_MoveFront, abs(Y_Modify)))
 			setPositionY(getPositionY() + Y_Modify);
 	}
 }
@@ -181,7 +188,6 @@ void Player::UpdateMoveStatus()
 void Player::update(float diff)
 {
 	UpdateMoveStatus();
-
 
 	//Clear Key
 	if (KeyVectorClearTimer <= diff)
@@ -227,8 +233,27 @@ bool Player::CreatePlayer()
 
 bool Player::LoadFromDB()
 {
-
 	return true;
+	//Result _Result;
+	//char msg[255];//			0	1		2	3	  4		5		6	7
+	//snprintf(msg, 255, "SELECT name,Class,Money,Exp,Level,Mapid,Pos_X,Pos_Y FROM characters WHERE guid = %u", GetGuid());
+	//if (!sDataMgr->selectUnitDataList(msg, _Result))
+	//	return false;
+	//else
+	//{
+	//	if (_Result.empty())
+	//		return false;
+	//
+	//	std::vector<RowInfo> r_inf = _Result.begin()->second;
+	//	SetName(r_inf.at(0).GetString().c_str());
+	//	SetClass((UnitClasses)r_inf.at(1).GetInt());
+	//	SetMoney(r_inf.at(2).GetInt());
+	//	SetExp(r_inf.at(3).GetInt());
+	//	SetLevel(r_inf.at(4).GetInt());
+	//	SetMapid(r_inf.at(5).GetInt());
+	//	SetRealPosition(r_inf.at(6).GetFloat(), r_inf.at(7).GetFloat());
+	//	return true;
+	//}
 }
 
 void Player::SaveToDB()

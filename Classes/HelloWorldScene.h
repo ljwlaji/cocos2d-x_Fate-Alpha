@@ -30,7 +30,8 @@ public:
 	Sprite* ShowSoundImage();
 	void DisTorySprite(Sprite* pSprite);
 	CREATE_FUNC(MainScene);
-	void SwapLayer(Layer* instead, int removetag);
+	void SwapLayer(int instead, int removetag, int mapid = 0);
+	SkeletonAnimation* GetAnimationByClass(UnitClasses _class);
 	Sprite* GetNumberSpriteByInt(int _var);
 	void SetCanPlaySound(bool var)					{ CanPlaySound = var; }
 	void SetKeyBoardEnable(bool _var)				{ KeyBoardListener->setEnabled(_var); }
