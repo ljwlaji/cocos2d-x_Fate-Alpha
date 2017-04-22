@@ -43,6 +43,7 @@ public:
 	bool GetCanPlaySound()							{ return CanPlaySound; }
 	ClassInfo GetUnitClassInfo(UnitClasses _car)	{ ClassInfo _ClassInfo; if (m_UnitClasses_Class_Info.find(_car) != m_UnitClasses_Class_Info.end()) _ClassInfo = m_UnitClasses_Class_Info[_car]; return _ClassInfo; }
 private: 
+	void LoadMonsterTemplate();
 	bool IsMoveKey(EventKeyboard::KeyCode keyCode);
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);

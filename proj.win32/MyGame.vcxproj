@@ -113,7 +113,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(EngineRoot);$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;%(AdditionalIncludeDirectories);$(_COCOS_HEADER_WIN32_BEGIN);$(_COCOS_HEADER_WIN32_END)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot)\Scripts;$(EngineRoot);$(EngineRoot)cocos\audio\include;$(EngineRoot)external;$(EngineRoot)external\chipmunk\include\chipmunk;$(EngineRoot)extensions;..\Classes;..;%(AdditionalIncludeDirectories);$(_COCOS_HEADER_WIN32_BEGIN);$(_COCOS_HEADER_WIN32_END)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -148,6 +148,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\ChoseCharacterLayer.cpp" />
     <ClCompile Include="..\Classes\CreateCharacterLayer.cpp" />
+    <ClCompile Include="..\Classes\Creature.cpp" />
     <ClCompile Include="..\Classes\DataMgr.cpp" />
     <ClCompile Include="..\Classes\EnterGameLayer.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
@@ -160,6 +161,11 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Player.cpp" />
     <ClCompile Include="..\Classes\PlayerUILayer.cpp" />
     <ClCompile Include="..\Classes\Result.cpp" />
+    <ClCompile Include="..\Classes\ScriptAI.cpp" />
+    <ClCompile Include="..\Classes\ScriptLoader.cpp" />
+    <ClCompile Include="..\Classes\ScriptMgr.cpp" />
+    <ClCompile Include="..\Classes\Scripts\TestScript_One.cpp" />
+    <ClCompile Include="..\Classes\Scripts\TestScript_Two.cpp" />
     <ClCompile Include="..\Classes\sqlite\shell.c" />
     <ClCompile Include="..\Classes\sqlite\sqlite3.c" />
     <ClCompile Include="..\Classes\TypingLayer.cpp" />
@@ -171,6 +177,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\ChoseCharacterLayer.h" />
     <ClInclude Include="..\Classes\CreateCharacterLayer.h" />
+    <ClInclude Include="..\Classes\Creature.h" />
     <ClInclude Include="..\Classes\DataMgr.h" />
     <ClInclude Include="..\Classes\EnterGameLayer.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
@@ -183,6 +190,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Player.h" />
     <ClInclude Include="..\Classes\PlayerUILayer.h" />
     <ClInclude Include="..\Classes\Result.h" />
+    <ClInclude Include="..\Classes\ScriptAI.h" />
+    <ClInclude Include="..\Classes\ScriptLoader.h" />
+    <ClInclude Include="..\Classes\ScriptMgr.h" />
     <ClInclude Include="..\Classes\sqlite\sqlite3.h" />
     <ClInclude Include="..\Classes\sqlite\sqlite3ext.h" />
     <ClInclude Include="..\Classes\Types.h" />

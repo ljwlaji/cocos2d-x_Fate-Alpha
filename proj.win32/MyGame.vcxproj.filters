@@ -16,9 +16,6 @@
     <Filter Include="src\Unit\Player">
       <UniqueIdentifier>{cb146470-6f9b-40a9-ba8a-f46683f56a9a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Unit\Monster">
-      <UniqueIdentifier>{43834fde-0efd-4dd3-8102-ca64d1b3a351}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Layers">
       <UniqueIdentifier>{67af41d4-416a-49f8-88dd-513ea3a473c2}</UniqueIdentifier>
     </Filter>
@@ -49,9 +46,6 @@
     <Filter Include="src\MovementMgr">
       <UniqueIdentifier>{4ceebdc5-8d5b-4c28-a807-099af7d201c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Unit\NewFilter1">
-      <UniqueIdentifier>{ddf67ee1-ec1f-4ade-9ad4-c225f69e9d76}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\NotifyMgr">
       <UniqueIdentifier>{25fae8ea-adf0-4378-ae47-353e342f9994}</UniqueIdentifier>
     </Filter>
@@ -60,6 +54,21 @@
     </Filter>
     <Filter Include="src\Layers\CreateCharacterLayer">
       <UniqueIdentifier>{74412e00-d33d-49e8-b022-aa52ed1a430d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Sripts">
+      <UniqueIdentifier>{52e72415-7760-4237-af2c-d53c500794dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Unit\Creature">
+      <UniqueIdentifier>{a2f09bae-26b5-4cf7-9b8a-35c37a520159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Unit\Creature\Monster">
+      <UniqueIdentifier>{43834fde-0efd-4dd3-8102-ca64d1b3a351}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Unit\Creature\Npc">
+      <UniqueIdentifier>{ddf67ee1-ec1f-4ade-9ad4-c225f69e9d76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Sripts\SingleScript">
+      <UniqueIdentifier>{c6515967-168f-4ebd-8631-60d5381cd7af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -79,7 +88,7 @@
       <Filter>src\Unit\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Monster.cpp">
-      <Filter>src\Unit\Monster</Filter>
+      <Filter>src\Unit\Creature\Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\LoadingUILayer.cpp">
       <Filter>src\Layers\LoadingUILayer</Filter>
@@ -115,7 +124,7 @@
       <Filter>src\MovementMgr</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Npc.cpp">
-      <Filter>src\Unit\NewFilter1</Filter>
+      <Filter>src\Unit\Creature\Npc</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\NotifyMgr.cpp">
       <Filter>src\NotifyMgr</Filter>
@@ -125,6 +134,24 @@
     </ClCompile>
     <ClCompile Include="..\Classes\CreateCharacterLayer.cpp">
       <Filter>src\Layers\CreateCharacterLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Creature.cpp">
+      <Filter>src\Unit\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ScriptMgr.cpp">
+      <Filter>src\Sripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ScriptLoader.cpp">
+      <Filter>src\Sripts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scripts\TestScript_Two.cpp">
+      <Filter>src\Sripts\SingleScript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scripts\TestScript_One.cpp">
+      <Filter>src\Sripts\SingleScript</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ScriptAI.cpp">
+      <Filter>src\Sripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +171,7 @@
       <Filter>src\Unit\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Monster.h">
-      <Filter>src\Unit\Monster</Filter>
+      <Filter>src\Unit\Creature\Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\LoadingUILayer.h">
       <Filter>src\Layers\LoadingUILayer</Filter>
@@ -183,7 +210,7 @@
       <Filter>src\MovementMgr</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Npc.h">
-      <Filter>src\Unit\NewFilter1</Filter>
+      <Filter>src\Unit\Creature\Npc</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\NotifyMgr.h">
       <Filter>src\NotifyMgr</Filter>
@@ -193,6 +220,18 @@
     </ClInclude>
     <ClInclude Include="..\Classes\CreateCharacterLayer.h">
       <Filter>src\Layers\CreateCharacterLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Creature.h">
+      <Filter>src\Unit\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ScriptMgr.h">
+      <Filter>src\Sripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ScriptLoader.h">
+      <Filter>src\Sripts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ScriptAI.h">
+      <Filter>src\Sripts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

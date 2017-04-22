@@ -1,9 +1,9 @@
 #ifndef __MONSTER_H__
 #define __MONSTER_H__
 
-#include "Unit.h"
+#include "Creature.h"
 
-class Monster : public Unit
+class Monster : public Creature
 {
 public:
 	explicit Monster(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid);
@@ -12,7 +12,7 @@ public:
 	virtual void DestorySelf() { removeFromParentAndCleanup(true); }
 private:
 
-	virtual bool LoadFromDB(){ return true; };
+	virtual bool InitWithLoadedData();
 	virtual void UpdateMoveStatus(){};
 };
 

@@ -28,8 +28,14 @@ enum UnitInt32Value
 	Base_Att,
 	UnitInt32_Value_End,
 };
-
+enum UnitDeathStatus
+{
+	Alive,
+	Dead,
+};
 using namespace spine;
+
+
 class Unit : public Sprite
 {
 public:

@@ -108,8 +108,8 @@ void Main_Map_Layer::FillLoadVectors(int id)
 	for (int i = 0; i != 2; i++)
 	{
 		i ? LoadTemplateName = "map_npc_template" : LoadTemplateName = "map_monster_template";
-		char get[255];//			0	 1		2	 3		4	5	   6
-		snprintf(get, 255, "SELECT json,atlas,pos_x,pos_y,guid,entry,scale FROM %s WHERE map_id = %d", LoadTemplateName.c_str(), id);
+		char get[255];//			0	 1		2	 3		4	5	   6		7
+		snprintf(get, 255, "SELECT json,atlas,pos_x,pos_y,guid,entry,scale,script_name FROM %s WHERE map_id = %d", LoadTemplateName.c_str(), id);
 		Result _Result;
 		if (sDataMgr->selectUnitDataList(get, _Result))
 		{
@@ -124,14 +124,16 @@ void Main_Map_Layer::FillLoadVectors(int id)
 					std::vector<RowInfo> row = ito->second;
 					if (row.empty()) continue;
 					WaitFroLoadingUnitTemplate _SingleTemplate;
-					_SingleTemplate.json	= row.at(0).GetString();
-					_SingleTemplate.atlas	= row.at(1).GetString();
-					_SingleTemplate.pos_x	= row.at(2).GetFloat();
-					_SingleTemplate.pos_y	= row.at(3).GetFloat();
-					_SingleTemplate.guid	= row.at(4).GetInt();
-					_SingleTemplate.entry	= row.at(5).GetInt();
-					_SingleTemplate.Scale	= row.at(6).GetFloat();
+					_SingleTemplate.json			= row.at(0).GetString();
+					_SingleTemplate.atlas			= row.at(1).GetString();
+					_SingleTemplate.pos_x			= row.at(2).GetFloat();
+					_SingleTemplate.pos_y			= row.at(3).GetFloat();
+					_SingleTemplate.guid			= row.at(4).GetInt();
+					_SingleTemplate.entry			= row.at(5).GetInt();
+					_SingleTemplate.Scale			= row.at(6).GetFloat();
+					_SingleTemplate.ScriptName		= row.at(7).GetString();
 					i ? m_WaitForLoadingNpcs.push_back(_SingleTemplate) : m_WaitForLoadingMonsters.push_back(_SingleTemplate);
+					CreaturesTemplate[_SingleTemplate.guid] = _SingleTemplate;
 					TotalLoadingSize++;
 				}
 			}
@@ -152,6 +154,7 @@ void Main_Map_Layer::ClearVectors()
 	m_MapForeGroundVector.clear();
 	m_WaitForLoadingNpcs.clear();
 	m_WaitForLoadingMonsters.clear();
+	CreaturesTemplate.clear();
 	for (std::map<MapObjectType, std::vector<WaitForLoadingObjectTemplate>>::iterator itr = m_WaitForLoadingObjects.begin(); itr != m_WaitForLoadingObjects.end(); itr++)
 		itr->second.clear();
 }
@@ -240,4 +243,12 @@ void Main_Map_Layer::update(float diff)
 		LoadedSize++;
 		return;
 	}
+}
+
+WaitFroLoadingUnitTemplate Main_Map_Layer::GetCreatureTemplate(uint32 guid)
+{ 
+	WaitFroLoadingUnitTemplate _template; 
+	if (CreaturesTemplate.find(guid) != CreaturesTemplate.end()) 
+		_template = CreaturesTemplate.find(guid)->second; 
+	return _template; 
 }

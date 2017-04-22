@@ -8,7 +8,7 @@
 #include "TypingLayer.h"
 #include "ChoseCharacterLayer.h"
 #include "CreateCharacterLayer.h"
-
+#include "ScriptMgr.h"
 #ifdef __APPLE__
 #include "spine/spine.h"
 #include "cocos/editor-support/spine/SkeletonAnimation.h"
@@ -55,7 +55,7 @@ bool MainScene::init()
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(KeyBoardListener, this);
 #else
 #endif
-
+		sScriptMgr->InitScripts();
 		LoadUnitClassInfo();
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);
