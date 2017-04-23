@@ -1,11 +1,16 @@
 #ifndef __SCRIPT_MANAGER_H__
 #define __SCRIPT_MANAGER_H__
 
-#include <vector>
 #include "ScriptAI.h"
+#include "Types.h"
+#include <vector>
+#include <string>
+
 #define sScriptMgr ScriptMgr::GetInstance()
 
-
+#define ADD_GOSSIP_ITEM(a,b,c,d)	PlayerTalkClass->AddItem(a,b,c,d)
+#define SEND_GOSSIP_MENU(a,b)		SendGossipMenu(a,b)
+#define CLOSE_GOSSIP_MENU			CloseGossipMenu
 class Script;
 class ScriptMgr
 {

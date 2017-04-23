@@ -5,7 +5,7 @@ static ScriptMgr* _ScriptMgr = nullptr;
 
 ScriptMgr::ScriptMgr()
 {
-	
+	_ScriptMgr = this;
 }
 
 ScriptMgr::~ScriptMgr()

@@ -27,6 +27,13 @@ Main_Map_Layer::Main_Map_Layer(int MapId)
 		m_WaitForLoadingObjects[(MapObjectType)i] = TempSprite;
 	}
 	SwapMap(m_Mapid);
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = CC_CALLBACK_2(Main_Map_Layer::onTouchBegan, this);
+	listener->onTouchEnded = CC_CALLBACK_2(Main_Map_Layer::onTouchEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	m_TouchedSprite = nullptr;
+	m_TouchedType = Touch_None;
 }
 
 Main_Map_Layer::~Main_Map_Layer()
@@ -42,9 +49,65 @@ Main_Map_Layer* Main_Map_Layer::GetInstance()
 	return _Main_Map_Layer;
 }
 
+
+bool Main_Map_Layer::onTouchBegan(Touch *touch, Event *unused_event)
+{
+	m_TouchedType = Touch_None;
+	m_TouchedSprite = nullptr;
+	if (!sPlayer)
+		return false;
+	for (int i = 0; i != m_NpcVector.size(); i++)
+	{
+		if (Sprite* Temp = m_NpcVector.at(i))
+		{
+			if (Temp->getBoundingBox().containsPoint(touch->getLocation()))
+			{
+				m_TouchedType = Touch_Npc;
+				m_TouchedSprite = Temp;
+				return true;
+			}
+		}
+	}
+	for (int i = 0; i != m_MonsterVector.size(); i++)
+	{
+		if (Sprite* Temp = m_MonsterVector.at(i))
+		{
+			if (Temp->getBoundingBox().containsPoint(touch->getLocation()))
+			{
+				m_TouchedType = Touch_Monster;
+				m_TouchedSprite = Temp;
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void Main_Map_Layer::onTouchEnded(Touch *touch, Event *unused_event)
+{
+	switch (m_TouchedType)
+	{
+	case Touch_Npc:
+		if (Npc* pNpc = (Npc*)m_TouchedSprite)
+		{
+			pNpc->OnGossipHello(sPlayer);
+		}
+		break;
+	case Touch_Monster:
+		if (Monster* pMonster = (Monster*)m_TouchedSprite)
+		{
+			pMonster->OnGossipHello(sPlayer);
+		}
+		break;
+	case Touch_Player:
+		break;
+	}
+}
+
 bool Main_Map_Layer::SwapMap(int insteadid)
 {
-	Director::getInstance()->getTextureCache()->removeUnusedTextures();
+	setTouchEnabled(false);
 	unscheduleUpdate();
 	sLoadingLayer->Show();
 	if (!insteadid)
@@ -52,7 +115,9 @@ bool Main_Map_Layer::SwapMap(int insteadid)
 	removeAllChildrenWithCleanup(true);
 	ClearVectors();
 	FillLoadVectors(insteadid);
+	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	scheduleUpdate();
+	setTouchEnabled(true);
 	return true;
 }
 

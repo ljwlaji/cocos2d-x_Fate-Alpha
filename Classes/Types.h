@@ -14,14 +14,35 @@
 #define	uint32				unsigned int		
 #define	uint64				unsigned __int64	
 
-#define EnterGame_Layer_Tag			1000
-#define Loading_Layer_Tag			2000
-#define Typing_Layer_Tag			3000
-#define Chose_Character_Layer_Tag	4000
-#define Create_Character_Layer_Tag	5000
-#define Main_Map_Layer_Tag			6000
+#define EnterGame_Layer_Tag				1000
+#define Loading_Layer_Tag				2000
+#define Typing_Layer_Tag				3000
+#define Chose_Character_Layer_Tag		4000
+#define Create_Character_Layer_Tag		5000
+#define Main_Map_Layer_Tag				6000
+#define Player_Talk_Layer_Tag			7000
+#define Player_Talk_Showing_Zorder		100000
+#define Player_Talk_Disappear_Zorder	-1
 #define Base_X_MovePoint	2.0f
 #define Base_Y_MovePoint	1.0f
+
+
+struct GossipMenu
+{
+	GossipMenu(uint8 ImageID, uint32 _sender, uint32 _action, std::string _TalkString)
+	{
+		ImageId = ImageID;
+		sender = _sender;
+		action = _action;
+		TalkString = _TalkString;
+	}
+	uint32 ImageId = 0;
+	uint32 sender = 0;
+	uint32 action = 0;
+	std::string TalkString = "";
+};
+
+
 enum ActionType
 {
 	Action_None					= 0,

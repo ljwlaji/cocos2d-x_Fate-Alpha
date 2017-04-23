@@ -2,6 +2,7 @@
 #include "ActionManager.h"
 #include "MovementMgr.h"
 #include "HelloWorldScene.h"
+#include "PlayerTalkLayer.h"
 static Player* _player = nullptr;
 
 Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) : Unit(_SkeletonAnimation)
@@ -21,6 +22,8 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) 
 	for (int i = MoveKey_Left; i != MoveKey_Endl; i++)
 		MoveKeyStatus[(MoveKeyValue)i] = false;
 	KeyVectorClearTimer = Base_Clear_Key_Time;
+	PlayerTalkClass = new TalkClass();
+	PlayerTalkClass->ClearMenu();
 	scheduleUpdate();
 }
 
@@ -36,6 +39,24 @@ Player* Player::GetInstance()
 		return nullptr;
 
 	return _player;
+}
+
+void Player::CloseGossipMenu()
+{
+	PlayerTalkClass->ClearMenu();
+	if (sPlayerTalkLayer)
+	{
+		sPlayerTalkLayer->CloseMenuWithCleanUp(true);
+	}
+}
+
+void Player::SendGossipMenu(std::string Main_String, Creature* pCreature)
+{
+	if (sPlayerTalkLayer)
+	{
+		sPlayerTalkLayer->SendMenuToPlayer(Main_String);
+		PlayerTalkClass->TalkingCreature = pCreature;
+	}
 }
 
 void Player::ResetMoveKeyForRoker()

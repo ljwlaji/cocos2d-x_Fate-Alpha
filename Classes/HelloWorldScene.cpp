@@ -9,6 +9,8 @@
 #include "ChoseCharacterLayer.h"
 #include "CreateCharacterLayer.h"
 #include "ScriptMgr.h"
+#include "PlayerTalkLayer.h"
+
 #ifdef __APPLE__
 #include "spine/spine.h"
 #include "cocos/editor-support/spine/SkeletonAnimation.h"
@@ -59,6 +61,10 @@ bool MainScene::init()
 		LoadUnitClassInfo();
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);
+
+		Player_Talk_Layer* TalkLayer = Player_Talk_Layer::create();
+		addChild(TalkLayer);
+
 
 		LoadingLayer = LoadingUILayer::create();
 		LoadingLayer->DisAppear();

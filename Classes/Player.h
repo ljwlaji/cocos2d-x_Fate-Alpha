@@ -23,9 +23,24 @@ enum VirtualRockerOrginType
 	Roker_Down_Right,
 	Roker_Right,
 };
-class ActionMgr;
 
 #define sPlayer Player::GetInstance()
+
+class ActionMgr;
+class Creature;
+class TalkClass
+{
+public:
+	void AddItem(uint8 ImageID, uint32 sender, uint32 action, std::string TalkString)
+	{
+		if (Menus.size() >= 4)
+			return;
+		Menus.push_back(GossipMenu(ImageID, sender, action, TalkString));
+	}
+	void ClearMenu()				{ Menus.clear(); }
+	std::vector<GossipMenu> Menus;
+	Creature* TalkingCreature = nullptr;
+};
 
 class Player : public Unit
 {
@@ -34,6 +49,7 @@ public:
 	~Player();
 
 	static Player* GetInstance();
+	bool IsHostilityTo(Unit* pUnit);
 	bool CreatePlayer();
 	void DoAction(ActionType _action);
 	void DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType);
@@ -42,6 +58,8 @@ public:
 	void SaveToDB();
 	virtual bool LoadFromDB();
 	bool UpdatePlayerValues();
+	void SendGossipMenu(std::string MainString, Creature* pCreature);
+	void CloseGossipMenu();
 	ActionType GetDoingAction()									{ return m_Action; }
 	ActionMgr* PlayerActionMgr()								{ return _ActionMgr; }
 	uint32 GetMoney()											{ return m_Money; }
@@ -53,6 +71,7 @@ public:
 	void ResetKeyTimer()										{ KeyVectorClearTimer = Base_Clear_Key_Time; }
 	virtual void DestorySelf()									{ removeFromParentAndCleanup(true); }
 	void SetMoney(uint32 _var)									{ m_Money = _var; }
+	TalkClass* PlayerTalkClass;
 private:
 	ActionType m_Action;
 	virtual void update(float diff);

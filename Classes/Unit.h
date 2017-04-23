@@ -33,6 +33,7 @@ enum UnitDeathStatus
 	Dead,
 	Alive,
 };
+
 using namespace spine;
 
 
@@ -59,6 +60,8 @@ public:
 	int32 GetUnitInt32Value(UnitInt32Value _UnitInt32Value)	{ return m_UnitInt32Value[_UnitInt32Value]; }
 	uint32 GetGuid()										{ return m_Guid; }
 	std::string GetName()									{ return m_Name; }
+	bool IsInCombat()										{ return m_IsInCombat; }
+	void SetInCombat(bool _var)								{ m_IsInCombat = _var; }
 	void SetLevel(uint8 _var)								{ m_Level = _var; }
 	void SetName(std::string _var)							{ m_Name = _var; }
 	void SetClass(UnitClasses _var)							{ m_Class = _var; }
@@ -83,6 +86,7 @@ private:
 	uint32 m_Entry;
 	uint32 m_Guid;
 	std::string m_Name;
+	bool m_IsInCombat;
 };
 
 #endif

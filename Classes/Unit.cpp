@@ -4,14 +4,16 @@ Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 {
 	initWithFile("1.png");
 	autorelease();
+	setAnchorPoint(Vec2(0.5f, 0));
 	if (entry) m_Entry = entry;
 	if (guid) m_Guid = guid;
 
 	m_UnitVision = _vision;
-	_vision->setPosition(getContentSize().width / 2, getContentSize().height / 2);
+	_vision->setPosition(getContentSize().width / 2, 0);
 	m_Facing = Facing_Left;
 	m_MoveOrgin = MoveOrgin_None;
 	m_MoveType = MoveType_None;
+	SetInCombat(false);
 	addChild(_vision);
 }
 

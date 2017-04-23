@@ -1,5 +1,6 @@
 #include "ScriptMgr.h"
 #include "Creature.h"
+#include "Player.h"
 struct TestAI_One : public ScriptAI
 {
 	TestAI_One(Creature* pCreature) : ScriptAI(pCreature) {}
@@ -11,6 +12,21 @@ struct TestAI_One : public ScriptAI
 		testtimer = 6000;
 	}
 
+	void OnGossipHello(Player* pPlayer, Creature* pCreature)
+	{
+		pPlayer->PlayerTalkClass->ClearMenu();
+		pPlayer->ADD_GOSSIP_ITEM(1, 2, 3, "321");
+		pPlayer->ADD_GOSSIP_ITEM(1, 2, 3, "333");
+		pPlayer->ADD_GOSSIP_ITEM(1, 2, 3, "444");
+		pPlayer->ADD_GOSSIP_ITEM(1, 2, 3, "555");
+
+		pPlayer->SEND_GOSSIP_MENU("123", pCreature);
+	}
+
+	void OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 sender, uint32 action) 
+	{
+		pPlayer->CLOSE_GOSSIP_MENU();
+	}
 
 	void UpdateAI(const uint32 diff)
 	{

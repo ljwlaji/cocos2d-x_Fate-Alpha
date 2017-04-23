@@ -14,6 +14,14 @@ enum MapObjectType
 	Object_Endl,
 };
 
+enum TouchedType
+{
+	Touch_None,
+	Touch_Npc,
+	Touch_Monster,
+	Touch_Player,
+};
+
 struct WaitForLoadingObjectTemplate
 {
 	std::string url = "";
@@ -46,10 +54,13 @@ public:
 	~Main_Map_Layer();
 	static Main_Map_Layer* GetInstance();
 	bool SwapMap(int insteadid);
+	WaitFroLoadingUnitTemplate GetCreatureTemplate(uint32 guid);
 	Sprite* GetCurrentGroundSprite(int id)		{ int size = m_MapGroundSpriteVector.size(); if (size + 1 <= id) return m_MapGroundSpriteVector.at(id); return nullptr; }
 	std::vector<Sprite*> GetGroundSprites()		{ return m_MapGroundSpriteVector; }
+private:
+	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
+	virtual void onTouchEnded(Touch *touch, Event *unused_event);
 	void ClearVectors();
-	WaitFroLoadingUnitTemplate GetCreatureTemplate(uint32 guid);
 	void FillLoadVectors(int mapid);
 	void CreateObjects();
 	virtual void update(float diff);
@@ -66,7 +77,7 @@ public:
 	bool LoadBackGround();
 	bool LoadForeGround();
 
-
+	
 	int m_Mapid;
 	std::map<MapObjectType, std::vector<WaitForLoadingObjectTemplate>> m_WaitForLoadingObjects;
 	std::vector<WaitFroLoadingUnitTemplate> m_WaitForLoadingNpcs;
@@ -79,6 +90,9 @@ public:
 
 	std::map<uint32, WaitFroLoadingUnitTemplate> CreaturesTemplate;
 	Vec2 Visablesize;
+
+	Sprite* m_TouchedSprite;
+	TouchedType m_TouchedType;
 };
 
 #endif
