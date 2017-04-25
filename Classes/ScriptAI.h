@@ -11,13 +11,16 @@ public:
 	ScriptAI(Creature* pCreature);
 	~ScriptAI();
 
-	virtual void UpdateAI(const uint32 diff) {};
+	virtual void UpdateAI(const uint32 diff) 
+	{ 
+		int i = 0; 
+	}
 	virtual void ReSet(){};
 	virtual void OnGossipHello(Player* pPlayer, Creature* pCreature) {};
 	virtual void OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 sender, uint32 action) {};
-	void MoveInLineOfSight(Unit* pUnit);
-	Creature* me;
+	Creature* me() { return _me; }
 private:
+	Creature* _me;
 };
 
 

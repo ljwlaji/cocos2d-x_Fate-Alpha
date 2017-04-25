@@ -26,7 +26,21 @@
 #define Base_X_MovePoint	2.0f
 #define Base_Y_MovePoint	1.0f
 
+class Unit;
+typedef std::map<Unit*, float> CreatureThreadList;
 
+enum TypeID
+{
+	TYPEID_PLAYER,
+	TYPEID_MONSTER,
+	TYPEID_NPC,
+};
+
+enum UnitSide
+{
+	UnitSide_Left,
+	UnitSide_Right,
+};
 struct GossipMenu
 {
 	GossipMenu(uint8 ImageID, uint32 _sender, uint32 _action, std::string _TalkString)
@@ -81,6 +95,7 @@ struct CharacterEnumInfo
 	uint16 Mapid = 0;
 	float Pos_X = 0;
 	float Pos_Y = 0;
+	uint32 Faction;
 };
 
 struct ClassInfo
@@ -129,6 +144,12 @@ enum MoveType
 	MoveType_Run,
 	MoveType_Jump,
 	MoveType_Actioning,
+};
+
+struct FactionFrendlyInfo
+{
+	uint32 MatchFactionId;
+	bool IsFrendly;
 };
 
 #define Base_Clear_Key_Time	0.5f

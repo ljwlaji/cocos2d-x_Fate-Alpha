@@ -8,12 +8,14 @@ static Player* _player = nullptr;
 Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) : Unit(_SkeletonAnimation)
 {
 	_player = this;
+	SetTypeId(TYPEID_PLAYER);
 	SetName(_info.name.c_str());
 	SetClass(_info.Class);
 	SetMoney(_info.Money);
 	SetExp(_info.Exp);
 	SetLevel(_info.Level);
 	SetMapid(_info.Mapid);
+	SetFaction(_info.Faction);
 	SetSpeed(100);
 	SetRealPosition(_info.Pos_X, _info.Pos_Y);
 	setZOrder(999999);

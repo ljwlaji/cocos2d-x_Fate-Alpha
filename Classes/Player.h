@@ -49,7 +49,6 @@ public:
 	~Player();
 
 	static Player* GetInstance();
-	bool IsHostilityTo(Unit* pUnit);
 	bool CreatePlayer();
 	void DoAction(ActionType _action);
 	void DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType);

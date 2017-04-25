@@ -30,10 +30,12 @@ struct TestAI_One : public ScriptAI
 
 	void UpdateAI(const uint32 diff)
 	{
+		if (!me()->UpdateVictim())
+			return;
+
 		if (testtimer <= diff)
 		{
 			testtimer = 6000;
-			log("One");
 		}
 		else
 			testtimer -= diff;

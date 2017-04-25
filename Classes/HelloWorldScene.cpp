@@ -59,6 +59,7 @@ bool MainScene::init()
 #endif
 		sScriptMgr->InitScripts();
 		LoadUnitClassInfo();
+		LoadFactionInfo();
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);
 
@@ -79,6 +80,64 @@ bool MainScene::init()
     
     
     return bRef;
+}
+
+bool MainScene::GetFactionFriendly(uint32 factionA, uint32 FactionB)
+{
+	if (factionA == FactionB || (factionA == 35 || FactionB == 35))
+		return true;
+	if (factionA == 14 || FactionB == 14)
+		return false;
+	if (m_Faction_Friendly_Info.find(factionA) != m_Faction_Friendly_Info.end() && m_Faction_Friendly_Info[factionA].find(FactionB) != m_Faction_Friendly_Info[factionA].end())
+	{
+		return m_Faction_Friendly_Info[factionA][FactionB];
+	}
+	else if (m_Faction_Friendly_Info.find(FactionB) != m_Faction_Friendly_Info.end() && m_Faction_Friendly_Info[FactionB].find(factionA) != m_Faction_Friendly_Info[FactionB].end())
+	{
+		return m_Faction_Friendly_Info[FactionB][factionA];
+	}
+	return false;
+}
+
+void MainScene::LoadFactionInfo()
+{
+	m_Faction_Friendly_Info.clear();
+	char msg[255];
+	snprintf(msg, 255, "SELECT main_faction_id,match_faction_id,isfrendly FROM faction_template");
+	Result _Result;
+	if (sDataMgr->selectUnitDataList(msg, _Result))
+	{
+		if (_Result.empty())
+		{
+			char msg[255];
+			snprintf(msg, 255, "ErrDB: LoadMapInfo: Empty Template %s For Loading Map 'faction_template'");
+			sNotifyMgr->ShowNotify(msg);
+			return;
+		}
+		else
+		{
+			for (Result::iterator ito = _Result.begin(); ito != _Result.end(); ito++)
+			{
+				if (m_Faction_Friendly_Info.find(ito->second.at(0).GetInt()) == m_Faction_Friendly_Info.end())
+				{
+					std::map<uint32, bool> m_map;
+					m_Faction_Friendly_Info[ito->second.at(0).GetInt()] = m_map;
+				}
+				if (m_Faction_Friendly_Info[ito->second.at(0).GetInt()].find(ito->second.at(1).GetInt()) == m_Faction_Friendly_Info[ito->second.at(0).GetInt()].end())
+				{
+					bool IsFriend = false;
+					IsFriend = ito->second.at(2).GetInt();
+					m_Faction_Friendly_Info[ito->second.at(0).GetInt()][ito->second.at(1).GetInt()] = IsFriend;
+				}
+				else
+				{
+					bool IsFriend = false;
+					IsFriend = ito->second.at(2).GetInt();
+					m_Faction_Friendly_Info[ito->second.at(0).GetInt()][ito->second.at(1).GetInt()] = IsFriend;
+				}
+			}
+		}
+	}
 }
 
 void MainScene::LoadUnitClassInfo()

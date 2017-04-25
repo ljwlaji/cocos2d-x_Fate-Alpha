@@ -33,6 +33,7 @@ public:
 	void SwapLayer(int instead, int removetag, int mapid = 0);
 	SkeletonAnimation* GetAnimationByClass(UnitClasses _class);
 	Sprite* GetNumberSpriteByInt(int _var);
+	bool GetFactionFriendly(uint32 factionA, uint32 FactionB);
 	void SetCanPlaySound(bool var)					{ CanPlaySound = var; }
 	void SetKeyBoardEnable(bool _var)				{ KeyBoardListener->setEnabled(_var); }
 	void SetDiffCute(uint8 _diff)					{ m_Diffcute = (GameDiffcute)_diff; }
@@ -43,7 +44,7 @@ public:
 	bool GetCanPlaySound()							{ return CanPlaySound; }
 	ClassInfo GetUnitClassInfo(UnitClasses _car)	{ ClassInfo _ClassInfo; if (m_UnitClasses_Class_Info.find(_car) != m_UnitClasses_Class_Info.end()) _ClassInfo = m_UnitClasses_Class_Info[_car]; return _ClassInfo; }
 private: 
-	void LoadMonsterTemplate();
+	void LoadFactionInfo();
 	bool IsMoveKey(EventKeyboard::KeyCode keyCode);
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
@@ -57,6 +58,7 @@ private:
 	EventListenerKeyboard* KeyBoardListener;
 	LabelTTF* Temp;
 	std::map<UnitClasses, ClassInfo> m_UnitClasses_Class_Info;
+	std::map<uint32, std::map<uint32, bool>> m_Faction_Friendly_Info;
 protected:
 	GameDiffcute m_Diffcute;
 };

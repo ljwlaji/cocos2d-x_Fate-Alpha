@@ -11,7 +11,7 @@ public:
 
 	virtual void DestorySelf() { removeFromParentAndCleanup(true); }
 private:
-
+	virtual void update(float diff);
 	virtual bool InitWithLoadedData();
 	virtual void UpdateMoveStatus(){};
 };

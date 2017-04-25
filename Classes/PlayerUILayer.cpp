@@ -54,9 +54,9 @@ void PlayerUILayer::InitUI()
 	m_Player_Info_UI->addChild(m_Player_Info_UI_Hp_Back);
 	m_Player_Info_UI->addChild(m_Player_Info_UI_Hp);
 
-	int Level;
-	sPlayer ? Level = sPlayer->GetLevel() : Level = 0;
-	m_Player_Info_UI_Level = sGame->GetNumberSpriteByInt(Level);
+	if (!sPlayer)
+		return;
+	m_Player_Info_UI_Level = sGame->GetNumberSpriteByInt(sPlayer->GetLevel());
 	m_Player_Info_UI_Level->setPosition(m_Player_Info_UI->getBoundingBox().size.width * 0.285f, m_Player_Info_UI->getBoundingBox().size.height * 0.4f);
 	m_Player_Info_UI_Level->setScale(0.5f);
 	m_Player_Info_UI->addChild(m_Player_Info_UI_Level);
@@ -81,7 +81,7 @@ void PlayerUILayer::CreateVirtualRoker()
 	RokerListener->onTouchBegan = CC_CALLBACK_2(PlayerUILayer::onTouchRockerBegan, this);
 	RokerListener->onTouchMoved = CC_CALLBACK_2(PlayerUILayer::onTouchRockerMoved, this);
 	RokerListener->onTouchEnded = CC_CALLBACK_2(PlayerUILayer::onTouchRockerEnded, this);
-	//RokerListener->setSwallowTouches(true);
+	RokerListener->setSwallowTouches(true);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(RokerListener, m_VirtualRokerLayer);
 }
 

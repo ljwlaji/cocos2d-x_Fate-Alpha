@@ -1,6 +1,7 @@
 ﻿#include "MainMapLayer.h"
 #include "Player.h"
 #include "Npc.h"
+#include "Unit.h"
 #include "Monster.h"
 #include "DataMgr.h"
 #include "LoadingUILayer.h"
@@ -173,8 +174,8 @@ void Main_Map_Layer::FillLoadVectors(int id)
 	for (int i = 0; i != 2; i++)
 	{
 		i ? LoadTemplateName = "map_npc_template" : LoadTemplateName = "map_monster_template";
-		char get[255];//			0	 1		2	 3		4	5	   6		7
-		snprintf(get, 255, "SELECT json,atlas,pos_x,pos_y,guid,entry,scale,script_name FROM %s WHERE map_id = %d", LoadTemplateName.c_str(), id);
+		char get[255];//			0	 1		2	 3		4	5	   6		7		8		9		10
+		snprintf(get, 255, "SELECT json,atlas,pos_x,pos_y,guid,entry,scale,script_name,faction,level,class FROM %s WHERE map_id = %d", LoadTemplateName.c_str(), id);
 		Result _Result;
 		if (sDataMgr->selectUnitDataList(get, _Result))
 		{
@@ -197,6 +198,9 @@ void Main_Map_Layer::FillLoadVectors(int id)
 					_SingleTemplate.entry			= row.at(5).GetInt();
 					_SingleTemplate.Scale			= row.at(6).GetFloat();
 					_SingleTemplate.ScriptName		= row.at(7).GetString();
+					_SingleTemplate.faction			= row.at(8).GetInt();
+					_SingleTemplate.Level			= row.at(9).GetInt();
+					_SingleTemplate.Class			= row.at(10).GetInt();
 					i ? m_WaitForLoadingNpcs.push_back(_SingleTemplate) : m_WaitForLoadingMonsters.push_back(_SingleTemplate);
 					CreaturesTemplate[_SingleTemplate.guid] = _SingleTemplate;
 					TotalLoadingSize++;
@@ -273,22 +277,6 @@ void Main_Map_Layer::CreateObjects()
 		return;
 	}
 
-	//if (!sPlayer)
-	//{
-	//	SkeletonAnimation* sk = SkeletonAnimation::createWithJsonFile("black_saber_edit.json", "black_saber_edit.atlas", 0.5f);
-	//	Player* _player = new Player(sk, 1);
-	//	do
-	//	{
-	//		if (!_player->CreatePlayer())
-	//			break;
-	//		_player->SetRealPosition(Visablesize.x / 2, 0);
-	//		_player->setLocalZOrder(PLAYER_ZORDER);
-	//		addChild(_player);
-	//		CCSize s = CCDirector::sharedDirector()->getWinSize();
-	//		runAction(CCFollow::create(sPlayer, CCRectMake(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), m_MapGroundSpriteVector.at(0)->getBoundingBox().size.height)));
-	//	} while (0);
-	//}
-
 	CCSize s = CCDirector::sharedDirector()->getWinSize();
 	runAction(CCFollow::create(sPlayer, CCRectMake(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), s.height)));
 
@@ -316,4 +304,45 @@ WaitFroLoadingUnitTemplate Main_Map_Layer::GetCreatureTemplate(uint32 guid)
 	if (CreaturesTemplate.find(guid) != CreaturesTemplate.end()) 
 		_template = CreaturesTemplate.find(guid)->second; 
 	return _template; 
+}
+
+Unit* Main_Map_Layer::GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget, bool CheckAlive)
+{
+	Unit* NearestUnit = nullptr;
+	float NearestDistance = 9999.0f;
+	for (int i = 0; i < m_MonsterVector.size(); i++)
+	{
+		if (CheckAlive && !m_MonsterVector.at(i)->IsAlive()) continue;
+		if (SelectForTarget && pUnit->IsFrendlyTo(m_MonsterVector.at(i))) continue;
+		if (m_MonsterVector.at(i) == pUnit) continue;
+
+		float TempDis = pUnit->getPosition().distance(m_MonsterVector.at(i)->getPosition());
+		if (TempDis < NearestDistance)
+		{
+			NearestDistance = TempDis;
+			NearestUnit = m_MonsterVector.at(i);
+		}
+	}
+
+	for (int i = 0; i < m_NpcVector.size(); i++)
+	{
+		if (CheckAlive && !m_NpcVector.at(i)->IsAlive()) continue;
+		if (SelectForTarget && pUnit->IsFrendlyTo(m_NpcVector.at(i))) continue;
+		if (m_NpcVector.at(i) == pUnit) continue;
+
+		float TempDis = pUnit->getPosition().distance(m_NpcVector.at(i)->getPosition());
+		if (TempDis < NearestDistance)
+		{
+			NearestDistance = TempDis;
+			NearestUnit = m_NpcVector.at(i);
+		}
+	}
+
+	if (pUnit != sPlayer && pUnit->getPosition().distance(sPlayer->getPosition()) < NearestDistance)
+	{
+		if (SelectForTarget && pUnit->IsFrendlyTo(sPlayer)) return NearestUnit;
+		if (CheckAlive && sPlayer->IsAlive()) return sPlayer;
+	}
+
+	return NearestUnit;
 }

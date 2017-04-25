@@ -3,15 +3,10 @@
 
 ScriptAI::ScriptAI(Creature* pCreature)
 {
-	me = pCreature;
+	_me = pCreature;
 }
 
 ScriptAI::~ScriptAI()
-{
-
-}
-
-void ScriptAI::MoveInLineOfSight(Unit* pUnit)
 {
 
 }

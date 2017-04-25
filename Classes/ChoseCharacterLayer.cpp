@@ -313,8 +313,8 @@ void Chose_Character_Layer::SpritesFadeIn()
 
 bool Chose_Character_Layer::LoadCharacters()
 {
-	char msg[255];//			0	 1		2	 3	  4		5	 6		7	8
-	snprintf(msg, 255, "SELECT guid,name,Class,Money,Exp,Level,Mapid,Pos_X,Pos_Y FROM characters");
+	char msg[255];//			0	 1		2	 3	  4		5	 6		7	8		9
+	snprintf(msg, 255, "SELECT guid,name,Class,Money,Exp,Level,Mapid,Pos_X,Pos_Y,Faction FROM characters");
 	Result _Result;
 	if (sDataMgr->selectUnitDataList(msg, _Result))
 	{
@@ -336,6 +336,7 @@ bool Chose_Character_Layer::LoadCharacters()
 				_info.Mapid												= row.at(6).GetInt();
 				_info.Pos_X												= row.at(7).GetFloat();
 				_info.Pos_Y												= row.at(8).GetFloat();
+				_info.Faction											= row.at(9).GetInt();
 				CharacterEnumMap[(UnitClasses)row.at(0).GetInt()]		= _info;
 				TotalCharacterCount++;
 			}

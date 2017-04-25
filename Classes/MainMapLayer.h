@@ -34,12 +34,15 @@ struct WaitFroLoadingUnitTemplate
 {
 	std::string json = "";
 	std::string atlas = "";
-	float pos_x;
-	float pos_y;
-	uint32 entry;
-	uint32 guid;
+	float pos_x = 0;
+	float pos_y = 0;
+	uint32 entry = 0;
+	uint32 guid = 0;
 	float Scale = 1.0f;
 	std::string ScriptName = "";
+	uint32 faction = 0;
+	uint32 Level = 0;
+	uint32 Class = 0;
 };
 
 
@@ -47,6 +50,7 @@ struct WaitFroLoadingUnitTemplate
 class Monster;
 class Player;
 class Npc;
+class Unit;
 class Main_Map_Layer : public Layer
 {
 public:
@@ -57,6 +61,8 @@ public:
 	WaitFroLoadingUnitTemplate GetCreatureTemplate(uint32 guid);
 	Sprite* GetCurrentGroundSprite(int id)		{ int size = m_MapGroundSpriteVector.size(); if (size + 1 <= id) return m_MapGroundSpriteVector.at(id); return nullptr; }
 	std::vector<Sprite*> GetGroundSprites()		{ return m_MapGroundSpriteVector; }
+
+	Unit* GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget = true, bool CheckAlive = true);
 private:
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
 	virtual void onTouchEnded(Touch *touch, Event *unused_event);
