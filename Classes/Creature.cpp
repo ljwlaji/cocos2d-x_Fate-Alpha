@@ -3,7 +3,7 @@
 #include "ScriptMgr.h"
 #include "Player.h"
 #include "MovementMgr.h"
-
+#include "HelloWorldScene.h"
 Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid) : Unit(_SkeletonAnimation, entry, guid)
 {
 	m_script_ai = nullptr;
@@ -75,51 +75,64 @@ void Creature::OnGossipSelect(Player* pPlayer, uint32 sender, uint32 action)
 	CreatureAI()->OnGossipSelect(pPlayer, this, sender, action);
 }
 
+bool Creature::CheckDisTanceForMILS(Unit* pUnit)
+{
+	if (abs(getPositionX() - pUnit->getPositionX()) < 350.0f)
+		return true;
+	return false;
+}
+
 void Creature::update(float diff)
 {
 	if (IsAlive())
 	{
-		if (Unit* pUnit = SelectNearestUnit(true, true))
-		if (getPosition().getDistance(pUnit->getPosition()) < 150.0f)
-			MoveInLineOfSight(pUnit);
-
-		ThreatUpdate();
-		if (UpdateVictim() && !IsInAttackRange(UpdateVictim()))
+		CheckMoveFall();
+		if (!IsInCombat())
 		{
-			if (m_Creature_Move_CheckTimer <= diff)
-			{
-				UpdateMove();
-				m_Creature_Move_CheckTimer = 1.0f;
-			}
-			else if (m_UnitMover)
-			{
-				if (m_UnitMover->MoveDelay > diff)
-				{
-					float X_Modify = 0;
-					m_UnitMover->Side ? X_Modify = Base_X_MovePoint : X_Modify = 0 - Base_X_MovePoint;
-					m_UnitMover->Side ? SetFacing(Facing_Right) : SetFacing(Facing_Left);
-					if (sMoveMgr->CanMoveTo(this, X_Modify < 0 ? Move_To_Left : Move_To_Right, X_Modify))
-						setPositionX(getPositionX() + X_Modify);
-					m_UnitMover->MoveDelay -= diff;
-				}
-				else
-				{
-					m_UnitMover = nullptr;
-					delete m_UnitMover;
-					m_Creature_Move_CheckTimer = 0.2f;
-				}
-			}
-			else m_Creature_Move_CheckTimer -= diff;
+			if (Unit* pUnit = SelectNearestUnit(true, true))
+			if (CheckDisTanceForMILS(pUnit))
+				MoveInLineOfSight(pUnit);
 		}
 		else
 		{
-			if (HasScript())
+			ThreatUpdate();
+			if (UpdateVictim() && !IsInAttackRange(UpdateVictim()))
 			{
-				CreatureAI()->UpdateAI((uint32)(diff * 1000));
+				if (m_Creature_Move_CheckTimer <= diff)
+				{
+					UpdateMove();
+					m_Creature_Move_CheckTimer = 1.0f;
+				}
+				else if (m_UnitMover)
+				{
+					if (m_UnitMover->MoveDelay > diff)
+					{
+						float X_Modify = 0;
+						m_UnitMover->Side ? X_Modify = Base_X_MovePoint : X_Modify = 0 - Base_X_MovePoint;
+						m_UnitMover->Side ? SetFacing(Facing_Right) : SetFacing(Facing_Left);
+						if (sMoveMgr->CanMoveTo(this, X_Modify < 0 ? Move_To_Left : Move_To_Right, X_Modify))
+							setPositionX(getPositionX() + X_Modify);
+						m_UnitMover->MoveDelay -= diff;
+					}
+					else
+					{
+						m_UnitMover = nullptr;
+						delete m_UnitMover;
+						m_Creature_Move_CheckTimer = 0.2f;
+					}
+				}
+				else m_Creature_Move_CheckTimer -= diff;
 			}
 			else
 			{
-
+				if (HasScript())
+				{
+					CreatureAI()->UpdateAI((uint32)(diff * 1000));
+				}
+				else
+				{
+					//Normal AI
+				}
 			}
 		}
 	}
@@ -155,8 +168,8 @@ void Creature::ThreatUpdate()
 			Target = itr->first;
 		}
 	}
-
-	SetTarget(Target);
+	if (Target != UpdateVictim())
+		SetTarget(Target);
 
 	for (int i = 0; i != WaitForDeleteList.size(); i++)
 		m_Creature_Threat_List.erase(m_Creature_Threat_List.find(WaitForDeleteList.at(i)));

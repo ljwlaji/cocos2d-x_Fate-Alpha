@@ -106,36 +106,6 @@ void Player::DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType)
 
 }
 
-void Player::DoAction(ActionType _action)
-{
-	GetVision()->clearTracks();
-	switch (_action)
-	{
-	case Action_None:
-		break;
-	case Normal_Attack_0:
-		break;
-	case Normal_Attack_1:
-		break;
-	case Normal_Attack_2:
-		break;
-	case Normal_Attack_3:
-		break;
-	case Sprint_Attack:
-		break;
-	case Air_Sprint:
-		break;
-	case Move_Run_Right:
-	case Move_Run_Left:
-		SetMoveType(MoveType_Run);
-		_action == Move_Run_Right ? SetFacing(Facing_Right) : SetFacing(Facing_Left);
-		GetVision()->setAnimation(0, "run", true);
-		break;
-	default:
-		break;
-	}
-}
-
 void Player::UpdateMoveStatus()
 {
 	bool NeedResetMoveStatus = true;

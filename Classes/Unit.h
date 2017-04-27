@@ -54,10 +54,15 @@ public:
 	float GetPositionZ()									{ return getBoundingBox().origin.y; }
 	//由Jump原点获取
 	//Combat
+public:
 	Unit* SelectNearestUnit(bool SelectForTarget = true, bool CheckAlive = true);
-
-
+	void CheckMoveFall();
+private:
+	std::string GetUnitActionStringForAction(ActionType _Typeid);
+	void DoAction(ActionType _action);
 	//End Of Combat
+
+public:
 	bool UpdateUnitValues();
 	float GetPositionY();
 	void SetFacing(Facing _var);

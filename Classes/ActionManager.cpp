@@ -23,7 +23,7 @@ void ActionMgr::OnPlayerPressKey(cocos2d::EventKeyboard::KeyCode keyCode)
 	bool Keep;
 	if (ActionType MatchId = (ActionType)CheckActionEcho(Keep))
 	{
-		_holder->DoAction(MatchId);
+		//_holder->DoAction(MatchId);
 		log("play Action: %d", MatchId);
 		TempPlayerKeys.clear();
 	}

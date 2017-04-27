@@ -33,6 +33,7 @@ public:
 	void AddThreat(Unit* pTarget, float Threat);
 	virtual void update(float diff);
 	void MoveInLineOfSight(Unit* pUnit);
+	bool CheckDisTanceForMILS(Unit* pUnit);
 private:
 	void FindScript();
 	virtual void UpdateMove();

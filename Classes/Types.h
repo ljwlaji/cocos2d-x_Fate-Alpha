@@ -25,7 +25,7 @@
 #define Player_Talk_Disappear_Zorder	-1
 #define Base_X_MovePoint	2.0f
 #define Base_Y_MovePoint	1.0f
-
+#define Base_Falling_Speed	5.0f
 class Unit;
 typedef std::map<Unit*, float> CreatureThreadList;
 
