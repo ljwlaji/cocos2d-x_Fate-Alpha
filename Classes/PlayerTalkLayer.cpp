@@ -70,14 +70,14 @@ bool Player_Talk_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 void Player_Talk_Layer::CloseMenuWithCleanUp(bool cleanup)
 {
 	if (cleanup)
-	for (int i = 0; i < m_Showing_Message.size(); i++)
+	for (int i = 0; i != m_Showing_Message.size(); i++)
 	{
 		m_Showing_Message.at(i).action = 0;
 		m_Showing_Message.at(i).ImageID = 0;
 		m_Showing_Message.at(i).sender = 0;
 		m_Showing_Message.at(i).talkstring = "";
 	}
-	sPlayerTalkLayer->setZOrder(Player_Talk_Disappear_Zorder);
+	sPlayerTalkLayer->setLocalZOrder(Player_Talk_Disappear_Zorder);
 	setVisible(false);
 }
 
@@ -114,7 +114,7 @@ void Player_Talk_Layer::InitTalkClass()
 
 		LabelTTF* SpriteText = LabelTTF::create("", "Arial", 30);
 		SpriteText->setString("123");
-		SpriteText->setFontFillColor(ccc3(0, 0, 0));
+		SpriteText->setFontFillColor(Color3B(0, 0, 0));
 		SpriteText->setPosition(SpriteFrame->getContentSize().width / 2, SpriteFrame->getContentSize().height / 2);
 		SpriteText->setTag(1);
 		SpriteFrame->addChild(SpriteText);
@@ -148,5 +148,5 @@ void Player_Talk_Layer::SendMenuToPlayer(std::string MainString)
 		ttf->setString(_template.talkstring.c_str());
 	}
 	setVisible(true);
-	setZOrder(Player_Talk_Showing_Zorder);
+	setLocalZOrder(Player_Talk_Showing_Zorder);
 }

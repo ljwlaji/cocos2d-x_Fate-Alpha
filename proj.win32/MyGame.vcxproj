@@ -152,6 +152,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\DataMgr.cpp" />
     <ClCompile Include="..\Classes\EnterGameLayer.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
+    <ClCompile Include="..\Classes\Item.cpp" />
     <ClCompile Include="..\Classes\LoadingUILayer.cpp" />
     <ClCompile Include="..\Classes\MainMapLayer.cpp" />
     <ClCompile Include="..\Classes\Monster.cpp" />
@@ -182,6 +183,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\DataMgr.h" />
     <ClInclude Include="..\Classes\EnterGameLayer.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
+    <ClInclude Include="..\Classes\Item.h" />
     <ClInclude Include="..\Classes\LoadingUILayer.h" />
     <ClInclude Include="..\Classes\MainMapLayer.h" />
     <ClInclude Include="..\Classes\Monster.h" />

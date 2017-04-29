@@ -67,7 +67,7 @@ public:
 	float GetPositionY();
 	void SetFacing(Facing _var);
 	bool IsFrendlyTo(Unit* pUnit);
-	bool IsAlive()											{ return m_DeathStatus; }
+	UnitDeathStatus IsAlive()								{ return m_DeathStatus; }
 	int32 GetLevel()										{ return GetUnitInt32Value(UnitValue_Level); }
 	UnitClasses GetClass()									{ return m_Class; }
 	MoveType GetMoveType()									{ return m_MoveType; }

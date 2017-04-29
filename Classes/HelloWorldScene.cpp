@@ -71,7 +71,7 @@ bool MainScene::init()
 		LoadingLayer->DisAppear();
 		addChild(LoadingLayer);
 
-		sNotifyMgr->setZOrder(Notify_Layer_Zorder);
+		sNotifyMgr->setLocalZOrder(Notify_Layer_Zorder);
 		addChild(sNotifyMgr);
 		scheduleUpdate();
 
@@ -126,13 +126,13 @@ void MainScene::LoadFactionInfo()
 				if (m_Faction_Friendly_Info[ito->second.at(0).GetInt()].find(ito->second.at(1).GetInt()) == m_Faction_Friendly_Info[ito->second.at(0).GetInt()].end())
 				{
 					bool IsFriend = false;
-					IsFriend = ito->second.at(2).GetInt();
+					IsFriend = ito->second.at(2).GetBool();
 					m_Faction_Friendly_Info[ito->second.at(0).GetInt()][ito->second.at(1).GetInt()] = IsFriend;
 				}
 				else
 				{
 					bool IsFriend = false;
-					IsFriend = ito->second.at(2).GetInt();
+					IsFriend = ito->second.at(2).GetBool();
 					m_Faction_Friendly_Info[ito->second.at(0).GetInt()][ito->second.at(1).GetInt()] = IsFriend;
 				}
 			}

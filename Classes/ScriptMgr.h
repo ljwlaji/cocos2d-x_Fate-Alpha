@@ -11,7 +11,7 @@
 #define ADD_GOSSIP_ITEM(a,b,c,d)	PlayerTalkClass->AddItem(a,b,c,d)
 #define SEND_GOSSIP_MENU(a,b)		SendGossipMenu(a,b)
 #define CLOSE_GOSSIP_MENU			CloseGossipMenu
-class Script;
+struct Script;
 class ScriptMgr
 {
 public:

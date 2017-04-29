@@ -40,7 +40,7 @@ void Create_Character_Layer::InitFrame()
 {
 	Sprite* BackGround = Sprite::create("White_Back_Ground.png");
 	BackGround->SetRealPosition(VisableSize.x / 2, VisableSize.y / 2);
-	BackGround->setZOrder(-2);
+	BackGround->setLocalZOrder(-2);
 	addChild(BackGround);
 
 	Title = Sprite::create("Create_Character_Title.png");
@@ -50,7 +50,7 @@ void Create_Character_Layer::InitFrame()
 
 	Taiji = Sprite::create("Create_Taiji.png");
 	Taiji->SetRealPosition(VisableSize.x * 0.45f, VisableSize.y * 0.28f);
-	Taiji->setZOrder(4);
+	Taiji->setLocalZOrder(4);
 	Taiji->setScaleY(0.2f);
 	Taiji->setOpacity(0.01f);
 	Taiji->runAction(FadeIn::create(1.0f));
@@ -77,7 +77,7 @@ void Create_Character_Layer::InitFrame()
 		addChild(Temp);
 		ClassFrame.push_back(Temp);
 		Temp->setTag(i);
-		Temp->setZOrder(i - 1);
+		Temp->setLocalZOrder(i - 1);
 	}
 
 	Sprite* ClickCreate = Sprite::create("Create_Chose_Class.png");
@@ -93,8 +93,8 @@ void Create_Character_Layer::InitFrame()
 	addChild(CreateNameFrame);
 
 	NameTyping = TextFieldTTF::textFieldWithPlaceHolder("Text Here", "Arial", 34);
-	NameTyping->setColor(ccc3(0,0,0));
-	NameTyping->setColorSpaceHolder(ccc3(0,0,0));
+	NameTyping->setColor(Color3B(0, 0, 0));
+	NameTyping->setColorSpaceHolder(Color3B(0, 0, 0));
 	NameTyping->setTag(12);
 	NameTyping->setPosition(CreateNameFrame->getPositionX(), CreateNameFrame->getPositionY() + NameTyping->getBoundingBox().size.height * 0.5f);//().width / 2, CreateNameFrame->getContentSize().height / 2);
 	addChild(NameTyping);
@@ -131,7 +131,7 @@ bool Create_Character_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 		{
 			if (TempSprite->getBoundingBox().containsPoint(touch->getLocation()))
 			{
-				TempSprite->setZOrder(10);
+				TempSprite->setLocalZOrder(10);
 				TempTouchedSprite = TempSprite;
 				return true;
 			}
@@ -189,13 +189,13 @@ void Create_Character_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 		}
 		else
 		{
-			for (int i = 0; i < ClassFrame.size(); i++)
+			for (int i = 0; i != ClassFrame.size(); i++)
 			{
 				if (TempTouchedSprite->getTag() == ChoseedClass || ActionSprite)
 					break;
 				if (TempTouchedSprite == ClassFrame.at(i))
 				{
-					TempTouchedSprite->setZOrder(TempTouchedSprite->getTag() - 1);
+					TempTouchedSprite->setLocalZOrder(TempTouchedSprite->getTag() - 1);
 					if (ChoseedClass)
 					{
 						Sprite* Return = ClassFrame.at(ChoseedClass - 1);
@@ -203,7 +203,7 @@ void Create_Character_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 						{
 							Return->setScaleX(1.0f);
 							Return->setPosition(ReturnPos);
-							Return->setZOrder(Return->getTag() - 1);
+							Return->setLocalZOrder(Return->getTag() - 1);
 						}
 					}
 					if (TempTouchedSprite->getBoundingBox().containsPoint(touch->getLocation()))

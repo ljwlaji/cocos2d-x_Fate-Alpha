@@ -277,12 +277,12 @@ void Main_Map_Layer::CreateObjects()
 		return;
 	}
 
-	CCSize s = CCDirector::sharedDirector()->getWinSize();
-	runAction(CCFollow::create(sPlayer, CCRectMake(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), s.height)));
+	Size s = Director::getInstance()->getWinSize();
+	runAction(Follow::create(sPlayer, Rect(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), s.height)));
 
-	PlayerUILayer* _PlayerUILayer = PlayerUILayer::create();
-	_PlayerUILayer->setLocalZOrder(UI_LAYER_ZORDER);
-	sGame->addChild(_PlayerUILayer);
+
+	sPlayerUi->setLocalZOrder(UI_LAYER_ZORDER);
+	sGame->addChild(sPlayerUi);
 	NeedCreateObjects = false;
 }
 
@@ -310,7 +310,7 @@ Unit* Main_Map_Layer::GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget, b
 {
 	Unit* NearestUnit = nullptr;
 	float NearestDistance = 9999.0f;
-	for (int i = 0; i < m_MonsterVector.size(); i++)
+	for (int i = 0; i != m_MonsterVector.size(); i++)
 	{
 		if (CheckAlive && !m_MonsterVector.at(i)->IsAlive()) continue;
 		if (SelectForTarget && pUnit->IsFrendlyTo(m_MonsterVector.at(i))) continue;
@@ -324,7 +324,7 @@ Unit* Main_Map_Layer::GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget, b
 		}
 	}
 
-	for (int i = 0; i < m_NpcVector.size(); i++)
+	for (int i = 0; i != m_NpcVector.size(); i++)
 	{
 		if (CheckAlive && !m_NpcVector.at(i)->IsAlive()) continue;
 		if (SelectForTarget && pUnit->IsFrendlyTo(m_NpcVector.at(i))) continue;

@@ -61,7 +61,7 @@ private:
 	uint8 TotalCharacterCount;
 	Sprite* m_TouchedSprite;
 	std::map<uint32, CharacterEnumInfo> CharacterEnumMap;
-	CCParticleSystem* p;
+	ParticleSystem* p;
 	CharacterEnumInfo m_ChosedInfo;
 	TouchType m_TouchType;
 };

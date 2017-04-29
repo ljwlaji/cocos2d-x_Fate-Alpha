@@ -60,7 +60,7 @@ bool Chose_Character_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 			return true;
 		}
 	}
-	for (int i = 0; i < CharacterEnumFrame.size(); i++)
+	for (int i = 0; i != CharacterEnumFrame.size(); i++)
 	{
 		if (Sprite* Temp = CharacterEnumFrame.at(i))
 		if (Temp->getBoundingBox().containsPoint(touch->getLocation()))
@@ -149,7 +149,7 @@ void Chose_Character_Layer::SwapChosedCharacter(uint32 CharacterGuid)
 	CharacterEnumSprite = sGame->GetAnimationByClass(m_ChosedInfo.Class);
 	if (!CharacterEnumSprite)
 		return;
-	CharacterEnumSprite->setZOrder(5);
+	CharacterEnumSprite->setLocalZOrder(5);
 	CharacterEnumSprite->setAnchorPoint(Vec2(0.5, 0));
 	CharacterEnumSprite->setPosition(Taiji->getPositionX(), Taiji->getPositionY() * 1.1f);
 	CharacterEnumSprite->setAnimation(0, "idle_chose_character", true);
@@ -162,7 +162,7 @@ void Chose_Character_Layer::InitFrames()
 {
 	Sprite* BackGround = Sprite::create("White_Back_Ground.png");
 	BackGround->SetRealPosition(VisableSize.x / 2, VisableSize.y / 2);
-	BackGround->setZOrder(-2);
+	BackGround->setLocalZOrder(-2);
 	addChild(BackGround);
 
 	Title = Sprite::create("Chose_Character_Title.png");
@@ -232,7 +232,7 @@ void Chose_Character_Layer::InitFrames()
 	}
 	Taiji = Sprite::create("taiji.png");
 	Taiji->SetRealPosition(VisableSize.x * 0.45f, VisableSize.y * 0.28f);
-	Taiji->setZOrder(4);
+	Taiji->setLocalZOrder(4);
 	Taiji->setScaleY(0.2f);
 	addChild(Taiji);
 
