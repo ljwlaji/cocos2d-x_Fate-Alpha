@@ -1,8 +1,105 @@
 #include "PlayerUILayer.h"
 #include "Player.h"
+#include "Item.h"
 #include "HelloWorldScene.h"
+
+static PlayerBag* _PlayerBag = nullptr;
+static PlayerUILayer* _PlayerUILayer = nullptr;
+
+Slot::Slot(const std::string& url)
+{
+	if (url.empty())
+	{
+		initWithFile(url.c_str());
+		autorelease();
+	}
+	m_Item = nullptr;
+}
+
+Slot::~Slot()
+{
+
+}
+
+PlayerBag::PlayerBag()
+{
+	//_PlayerBag = this;
+	url = "";
+	initWithFile(url.c_str());
+	autorelease();
+	InitPage();
+}
+
+PlayerBag::~PlayerBag()
+{
+	removeAllChildrenWithCleanup(true);
+	removeFromParentAndCleanup(true);
+}
+
+bool PlayerBag::SwapItem(Slot* slot_one, Slot* slot_two)
+{
+	return true;
+}
+
+void PlayerBag::InitPage()
+{
+	m_PlayerBagPageSprites.clear();
+	for (int i = Page_One; i != End_Of_Player_Bag_Page; i++)
+	{
+		//首先创建页面
+		Sprite* _TempPageSprite = Sprite::create("");
+		_TempPageSprite->setPosition(getContentSize().width / 2, _TempPageSprite->getBoundingBox().size.height / 2);
+		addChild(_TempPageSprite);
+		_TempPageSprite->setTag(i);
+		InitEmptySlots(_TempPageSprite);
+		m_PlayerBagPageSprites.push_back(_TempPageSprite);
+	}
+}
+
+Slot* PlayerBag::GetSlot(uint8 _Page, uint8 _Slot)
+{
+	if (_Page > Page_Nine)
+		return nullptr;
+
+	Sprite* Page = nullptr;
+
+	Page = m_PlayerBagPageSprites.at(_Page);
+
+	if (Slot* pSlot = (Slot*)Page->getChildByTag(_Slot))
+		return pSlot;
+
+	return nullptr;
+}
+
+void PlayerBag::InitEmptySlots(Sprite* SinglePageSprite)
+{
+	int tag = 1;
+	for (int i = 0; i != SlotRowCount; i++)
+	for (int k = 0; k != SlotFieldCount; k++)
+	{
+		Slot* SingleSlot = new Slot("");
+		SingleSlot->setPositionX(SinglePageSprite->getContentSize().width / 2 + ((SlotRowCount / 2) * SingleSlot->getBoundingBox().size.width) - (i * SingleSlot->getBoundingBox().size.width));
+		SingleSlot->setPositionY(SinglePageSprite->getContentSize().height / 2 + ((SlotFieldCount / 2) * SingleSlot->getBoundingBox().size.height) - (k * SingleSlot->getBoundingBox().size.height));
+		SingleSlot->setTag(tag);
+		SinglePageSprite->addChild(SingleSlot);
+		tag++;
+	}
+}
+
+PlayerBag* PlayerBag::GetInstance()
+{
+	if (!_PlayerBag)
+		_PlayerBag = new PlayerBag();
+
+	return _PlayerBag;
+}
+
+								/////////////////
+								//PlayerUILayer//
+								/////////////////
 PlayerUILayer::PlayerUILayer()
 {
+	_PlayerUILayer = this;
 	visiablesize = Director::getInstance()->getVisibleSize();
 	m_VirtualRokerLayer = nullptr;
 	m_VirtualRoker_BackGround = nullptr;
@@ -12,6 +109,14 @@ PlayerUILayer::PlayerUILayer()
 
 PlayerUILayer::~PlayerUILayer()
 {
+}
+
+PlayerUILayer* PlayerUILayer::GetInstance()
+{
+	if (!_PlayerUILayer)
+		_PlayerUILayer = PlayerUILayer::create();
+
+	return _PlayerUILayer;
 }
 
 bool PlayerUILayer::init()
@@ -28,7 +133,7 @@ bool PlayerUILayer::init()
 
 		InitUI();
 
-
+		addChild(sPlayerBag);
 		scheduleUpdate();
 		bRef = true;
 	} while (0);

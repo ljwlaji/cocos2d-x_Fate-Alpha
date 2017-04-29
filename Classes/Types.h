@@ -29,6 +29,24 @@
 class Unit;
 typedef std::map<Unit*, float> CreatureThreadList;
 
+enum PlayerBagPage
+{
+	Page_One,
+	Page_Two,
+	Page_Three,
+	Page_Four,
+	Page_Five,
+	Page_Six,
+	Page_Seven,
+	Page_Eight,
+	Page_Nine,
+	End_Of_Player_Bag_Page,
+};
+
+typedef std::map<uint32, cocos2d::Sprite*> SlotMap;
+
+
+
 enum TypeID
 {
 	TYPEID_PLAYER,
@@ -158,5 +176,7 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define Notify_Layer_Zorder		10001
 #define UI_LAYER_ZORDER			9998
 #define PLAYER_ZORDER 			10000
+#define SlotRowCount			8
+#define SlotFieldCount			8
 typedef std::vector<std::string> LoadAddress;
 #endif
