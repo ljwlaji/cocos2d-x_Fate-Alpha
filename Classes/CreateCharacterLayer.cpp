@@ -125,7 +125,7 @@ bool Create_Character_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 		TempTouchedSprite = CreateOrEnterGameButton;
 		return true;
 	}
-	for (int i = 0; i != ClassFrame.size(); i++)
+	for (int i = ClassFrame.size() - 1; i != -1; i--)
 	{
 		if (Sprite* TempSprite = ClassFrame.at(i))
 		{
