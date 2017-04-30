@@ -18,7 +18,7 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) 
 	SetFaction(_info.Faction);
 	SetSpeed(100);
 	SetRealPosition(_info.Pos_X, _info.Pos_Y);
-	setZOrder(999999);
+	setLocalZOrder(999999);
 	ActionMgr* _mgr = new ActionMgr(this);
 	_ActionMgr = _mgr;
 	for (int i = MoveKey_Left; i != MoveKey_Endl; i++)
@@ -214,6 +214,31 @@ bool Player::CanCancelActionForMove()
 	}
 }
 
+bool Player::LoadPlayerSpells()
+{
+	Result _Result;
+	char msg[255];//			0	1		2	3	  4		5		6	7
+	snprintf(msg, 255, "SELECT name,Class,Money,Exp,Level,Mapid,Pos_X,Pos_Y FROM characters WHERE guid = %u", GetGuid());
+	if (!sDataMgr->selectUnitDataList(msg, _Result))
+		return false;
+	else
+	{
+		if (_Result.empty())
+			return false;
+
+		std::vector<RowInfo> r_inf = _Result.begin()->second;
+		SetName(r_inf.at(0).GetString().c_str());
+		SetClass((UnitClasses)r_inf.at(1).GetInt());
+		SetMoney(r_inf.at(2).GetInt());
+		SetExp(r_inf.at(3).GetInt());
+		SetLevel(r_inf.at(4).GetInt());
+		SetMapid(r_inf.at(5).GetInt());
+		SetRealPosition(r_inf.at(6).GetFloat(), r_inf.at(7).GetFloat());
+		return true;
+	}
+	return true;
+}
+
 bool Player::CreatePlayer()
 {
 	if (LoadFromDB() && UpdateUnitValues())
@@ -226,6 +251,8 @@ bool Player::CreatePlayer()
 
 bool Player::LoadFromDB()
 {
+	if (!LoadPlayerSpells())
+		return false;
 	return true;
 	//Result _Result;
 	//char msg[255];//			0	1		2	3	  4		5		6	7

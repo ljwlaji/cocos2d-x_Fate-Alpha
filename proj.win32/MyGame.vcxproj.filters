@@ -76,6 +76,12 @@
     <Filter Include="src\Item">
       <UniqueIdentifier>{c232edc6-b9d8-47b3-885c-ee01808208f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\SpellBook">
+      <UniqueIdentifier>{ae40ec5d-2fa9-4338-a883-cdb64f3b177b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Spell">
+      <UniqueIdentifier>{74b2f7a3-9fe5-4faa-b70d-a19bda158110}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -165,6 +171,15 @@
     <ClCompile Include="..\Classes\Item.cpp">
       <Filter>src\Item</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\SpellBook.cpp">
+      <Filter>src\Layers\PlayerUILayer\SpellBook</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SpellMgr.cpp">
+      <Filter>src\Spell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Spell.cpp">
+      <Filter>src\Spell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -250,6 +265,15 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Item.h">
       <Filter>src\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SpellBook.h">
+      <Filter>src\Layers\PlayerUILayer\SpellBook</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SpellMgr.h">
+      <Filter>src\Spell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Spell.h">
+      <Filter>src\Spell</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

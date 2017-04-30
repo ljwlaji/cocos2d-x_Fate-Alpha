@@ -2,17 +2,50 @@
 #include "Player.h"
 #include "Item.h"
 #include "HelloWorldScene.h"
+#include "SpellBook.h"
 
 static PlayerBag* _PlayerBag = nullptr;
 static PlayerUILayer* _PlayerUILayer = nullptr;
+static PlayerEquipWindow* _PlayerEquipWindow = nullptr;
 
-Slot::Slot(const std::string& url)
+PlayerEquipWindow::PlayerEquipWindow()
 {
-	if (url.empty())
+	initWithFile(PlayerUIEquipFrame);
+	autorelease();
+	InitWindow();
+	setVisible(false);
+}
+
+void PlayerEquipWindow::InitWindow()
+{
+	float TempXPoint = 0;
+	float TempYPoint = 0;
+	for (int i = SLOT_WEAPON; i != SLOT_END; i++)
 	{
-		initWithFile(url.c_str());
-		autorelease();
+		Slot* TempSlot = new Slot();
+		i % 2 ? TempXPoint = getContentSize().width / 5 : TempXPoint = getContentSize().width - getContentSize().width / 5;
+		uint8 fieldcount = i / 2;
+		TempYPoint = getBoundingBox().size.height / 4 + (fieldcount * (getBoundingBox().size.height / 4));
+		TempSlot->setPosition(TempXPoint, TempYPoint);
+		addChild(TempSlot);
 	}
+}
+
+PlayerEquipWindow::~PlayerEquipWindow()
+{
+}
+
+PlayerEquipWindow* PlayerEquipWindow::GetInstance()
+{
+	if (!_PlayerEquipWindow)
+		_PlayerEquipWindow = new PlayerEquipWindow();
+	return _PlayerEquipWindow;
+}
+
+Slot::Slot()
+{
+	initWithFile(PlayerSlotImage);
+	autorelease();
 	m_Item = nullptr;
 }
 
@@ -24,16 +57,93 @@ Slot::~Slot()
 PlayerBag::PlayerBag()
 {
 	//_PlayerBag = this;
-	url = "";
-	initWithFile(url.c_str());
+	initWithFile(PlayerBagImage);
 	autorelease();
 	InitPage();
+	SwapPage(Page_One);
+	TouchedSprite = nullptr;
+	setVisible(false);
 }
 
 PlayerBag::~PlayerBag()
 {
 	removeAllChildrenWithCleanup(true);
 	removeFromParentAndCleanup(true);
+}
+
+bool PlayerBag::onTouchBagBegan(Touch* touches)
+{
+	TouchedSprite = nullptr;
+	m_BagTouchType = Bag_Type_None;
+	for (int i = Page_One; i != End_Of_Player_Bag_Page; i++)
+	{
+		if (Sprite* TempPagTag = (Sprite*)getChildByTag(i))
+		{
+			if (TempPagTag->IsContectPoint(touches->getLocation()))
+			{
+				m_BagTouchType = Bag_Type_SwapPage;
+				TouchedSprite = TempPagTag;
+				return true;
+			}
+		}
+	}
+
+	for (int i = 0; i < m_PlayerBagPageSprites.size(); i++)
+	{
+		if (!m_PlayerBagPageSprites.at(i)->isVisible())
+			continue;
+		Sprite* TempPage = m_PlayerBagPageSprites.at(i);
+		for (int j = SingleSlotTagStart; j != SingleSlotTagEnded; j++)
+		{
+			if (Slot* TempSlot = (Slot*)TempPage->getChildByTag(j))
+			{
+				if (TempSlot->IsContectPoint(touches->getLocation()))
+				{
+					m_BagTouchType = Bag_Type_SeleItem;
+					TouchedSprite = TempSlot;
+					return true;
+				}
+			}
+		}
+	}
+	m_Start_Move_Position = touches->getLocation();
+	TouchedSprite = this;
+	return true;
+}
+
+void PlayerBag::onTouchBagMoved(Touch* touches)
+{
+	if (TouchedSprite == this)
+	{
+		float X_Modify = touches->getLocation().x - m_Start_Move_Position.x;
+		float Y_Modify = touches->getLocation().y -  m_Start_Move_Position.y;
+		setPosition(getPositionX() + X_Modify, getPositionY() + Y_Modify);
+		m_Start_Move_Position = touches->getLocation();
+	}
+}
+
+void PlayerBag::onTouchBagEnded(Touch* touches)
+{
+	if (!TouchedSprite)
+		return;
+	if (!TouchedSprite->IsContectPoint(touches->getLocation()))
+		return;
+
+	switch (m_BagTouchType)
+	{
+	case Bag_Type_SwapPage:
+		SwapPage((PlayerBagPage)TouchedSprite->getTag(), m_CurrentPage);
+		break;
+	case Bag_Type_SeleItem:
+		if (Slot* TempSlot = (Slot*)TouchedSprite)
+		{
+			if (Item* pItem = TempSlot->GetItem())
+			{
+				//Do Sth;
+			}
+		}
+		break;
+	}
 }
 
 bool PlayerBag::SwapItem(Slot* slot_one, Slot* slot_two)
@@ -47,13 +157,39 @@ void PlayerBag::InitPage()
 	for (int i = Page_One; i != End_Of_Player_Bag_Page; i++)
 	{
 		//首先创建页面
-		Sprite* _TempPageSprite = Sprite::create("");
-		_TempPageSprite->setPosition(getContentSize().width / 2, _TempPageSprite->getBoundingBox().size.height / 2);
+		Sprite* _TempPageSprite = Sprite::create(PlayerBagPageImage);
+		_TempPageSprite->setPosition(getContentSize().width * 0.53f, getContentSize().height * 0.1f + _TempPageSprite->getBoundingBox().size.height / 2);
 		addChild(_TempPageSprite);
-		_TempPageSprite->setTag(i);
 		InitEmptySlots(_TempPageSprite);
 		m_PlayerBagPageSprites.push_back(_TempPageSprite);
+		_TempPageSprite->setVisible(false);
+
+		Sprite* BagPageSelector = Sprite::create(PlayerBagPageSelectorImage);
+		BagPageSelector->setPositionX(getContentSize().width * 0.15f + BagPageSelector->getBoundingBox().size.width + (i * BagPageSelector->getBoundingBox().size.width * 1.6f));
+		BagPageSelector->setPositionY(getContentSize().height * 0.915f);
+		BagPageSelector->setTag(i);
+		addChild(BagPageSelector);
+		BagPageSelector->setOpacity(120.0f);
 	}
+}
+
+void PlayerBag::SwapPage(PlayerBagPage enable, PlayerBagPage disable)
+{
+	if (disable != Page_None)
+	{
+		if (Sprite* Temp = (Sprite*)getChildByTag(disable))
+		{
+			Temp->setOpacity(120.0f);
+			m_PlayerBagPageSprites.at(disable)->setVisible(false);
+		}
+	}
+	if (Sprite* Show = (Sprite*)getChildByTag(enable))
+	{
+		Show->setOpacity(255.0f);
+		m_PlayerBagPageSprites.at(enable)->setVisible(true);
+	}
+
+	m_CurrentPage = enable;
 }
 
 Slot* PlayerBag::GetSlot(uint8 _Page, uint8 _Slot)
@@ -77,9 +213,9 @@ void PlayerBag::InitEmptySlots(Sprite* SinglePageSprite)
 	for (int i = 0; i != SlotRowCount; i++)
 	for (int k = 0; k != SlotFieldCount; k++)
 	{
-		Slot* SingleSlot = new Slot("");
-		SingleSlot->setPositionX(SinglePageSprite->getContentSize().width / 2 + ((SlotRowCount / 2) * SingleSlot->getBoundingBox().size.width) - (i * SingleSlot->getBoundingBox().size.width));
-		SingleSlot->setPositionY(SinglePageSprite->getContentSize().height / 2 + ((SlotFieldCount / 2) * SingleSlot->getBoundingBox().size.height) - (k * SingleSlot->getBoundingBox().size.height));
+		Slot* SingleSlot = new Slot();
+		SingleSlot->setPositionX(getBoundingBox().size.width * 0.005f + SingleSlot->getBoundingBox().size.width / 2 + (i * SingleSlot->getBoundingBox().size.width * 1.05f));
+		SingleSlot->setPositionY(getBoundingBox().size.height * 0.01f + SingleSlot->getBoundingBox().size.height / 2 + (k * SingleSlot->getBoundingBox().size.height * 1.05f));
 		SingleSlot->setTag(tag);
 		SinglePageSprite->addChild(SingleSlot);
 		tag++;
@@ -105,6 +241,8 @@ PlayerUILayer::PlayerUILayer()
 	m_VirtualRoker_BackGround = nullptr;
 	m_VirtualRoker_Roker = nullptr;
 	RockerLastPostion = Vec2(0, 0);
+	m_touchtype = PlayerUITouch_None;
+	CanTouchButton = true;
 }
 
 PlayerUILayer::~PlayerUILayer()
@@ -132,13 +270,76 @@ bool PlayerUILayer::init()
 //#endif
 
 		InitUI();
-
+		InitButtomMenu();
+		sPlayerBag->setPosition(visiablesize.x * 0.75, visiablesize.y / 2);
 		addChild(sPlayerBag);
+
+		sPlayerEquip->setPosition(visiablesize.x * 0.25, visiablesize.y / 2);
+		addChild(sPlayerEquip);
+
+		sPlayerSpellBook->setPosition(visiablesize.x / 2, visiablesize.y / 2);
+		addChild(sPlayerSpellBook);
+
 		scheduleUpdate();
 		bRef = true;
 	} while (0);
 
 	return bRef;
+}
+
+void PlayerUILayer::SwapButtomMenuType()
+{
+	if (!CanTouchButton)
+		return;
+	CanTouchButton = false;
+	if (m_Buttom_Menus.at(0)._sprite->getPositionX() == m_ButtomMenu->getPositionX())
+	{
+		for (int i = 0; i < m_Buttom_Menus.size(); i++)
+		{
+			Sprite* TempSprite = m_Buttom_Menus.at(i)._sprite;
+			TempSprite->runAction(MoveTo::create(0.3f, m_Buttom_Menus.at(i).Loc));
+			TempSprite->runAction(FadeIn::create(0.3f));
+		}
+	}
+	else
+	{
+		for (int i = 0; i < m_Buttom_Menus.size(); i++)
+		{
+			Sprite* TempSprite = m_Buttom_Menus.at(i)._sprite;
+			TempSprite->runAction(MoveTo::create(0.3f, m_ButtomMenu->getPosition()));
+			TempSprite->runAction(FadeOut::create(0.3f));
+		}
+	}
+	Sequence* sq = Sequence::create(DelayTime::create(0.5f), CallFunc::create(CC_CALLBACK_0(PlayerUILayer::ButtonMenuCallBack, this)), NULL);
+	runAction(sq);
+}
+
+void PlayerUILayer::ButtonMenuCallBack()
+{
+	CanTouchButton = true;
+}
+
+void PlayerUILayer::InitButtomMenu()
+{
+	m_ButtomMenu = Sprite::create(PlayerUIButtomMenuImage);
+	m_ButtomMenu->SetRealPosition(visiablesize.x - m_ButtomMenu->getBoundingBox().size.width / 2, visiablesize.y - m_ButtomMenu->getBoundingBox().size.height / 2);
+	addChild(m_ButtomMenu);
+
+	//character equip bag quest spell setting
+	char msg[255];
+	for (int i = Button_Menu_Setting; i != Button_Menu_End; i++)
+	{
+		snprintf(msg, 255, "%s%d.png", PlayerUIButtonMenuListImage, i);
+		Sprite* TempSprite = Sprite::create(msg);
+		Vec2 TempPos = Vec2(m_ButtomMenu->getBoundingBox().origin.x - TempSprite->getBoundingBox().size.width * 0.55f - (i * TempSprite->getBoundingBox().size.width * 1.05f), m_ButtomMenu->getPositionY());
+		ButtonMenuInfo _info;
+		_info._sprite = TempSprite;
+		_info.Loc = TempPos;
+		TempSprite->SetRealPosition(m_ButtomMenu->getPosition());
+		addChild(TempSprite);
+		TempSprite->setOpacity(0.0f);
+		m_Buttom_Menus.push_back(_info);
+	}
 }
 
 void PlayerUILayer::InitUI()
@@ -183,19 +384,72 @@ void PlayerUILayer::CreateVirtualRoker()
 
 	//意见:给确认是摇杆的touch创建唯一标识符
 	auto RokerListener = EventListenerTouchOneByOne::create();
-	RokerListener->onTouchBegan = CC_CALLBACK_2(PlayerUILayer::onTouchRockerBegan, this);
-	RokerListener->onTouchMoved = CC_CALLBACK_2(PlayerUILayer::onTouchRockerMoved, this);
-	RokerListener->onTouchEnded = CC_CALLBACK_2(PlayerUILayer::onTouchRockerEnded, this);
+	RokerListener->onTouchBegan = CC_CALLBACK_2(PlayerUILayer::onTouchBegan, this);
+	RokerListener->onTouchMoved = CC_CALLBACK_2(PlayerUILayer::onTouchMoved, this);
+	RokerListener->onTouchEnded = CC_CALLBACK_2(PlayerUILayer::onTouchEnded, this);
 	RokerListener->setSwallowTouches(true);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(RokerListener, m_VirtualRokerLayer);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(RokerListener, this);
 }
 
-bool PlayerUILayer::onTouchRockerBegan(Touch* touches, Event *event)
+bool PlayerUILayer::onTouchBegan(Touch* touches, Event *event)
 {
+	m_touchtype = PlayerUITouch_None;
 	if (!sPlayer)
 		return false;
+
+	for (int i = 0; i < m_Buttom_Menus.size(); i++)
+	{
+		if (Sprite* TempButton = m_Buttom_Menus.at(i)._sprite)
+		{
+			if (TempButton->getOpacity() < 245.0f)
+				break;
+			if (TempButton->IsContectPoint(touches->getLocation()))
+			{
+				switch (i)
+				{
+				case Button_Menu_Setting:
+					break;
+				case Button_Menu_Spell:
+					sPlayerSpellBook->SwapVisiable();
+					break;
+				case Button_Menu_Quest:
+					break;
+				case Button_Menu_Bag:
+					sPlayerBag->SwapVisiable();
+					break;
+				case Button_Menu_Equip:
+					sPlayerEquip->SwapVisiable();
+					break;
+				case Button_Menu_Character:
+					break;
+				}
+				m_touchtype = PlayerUITouch_None;
+				return true;
+			}
+		}
+
+	}
+	if (sPlayerBag->isVisible() && sPlayerBag->IsContectPoint(touches->getLocation()))
+	{
+		sPlayerBag->onTouchBagBegan(touches);
+		m_touchtype = PlayerUITouch_Bag;
+		return true;
+	}
+
+	if (sPlayerSpellBook->isVisible() && sPlayerSpellBook->IsContectPoint(touches->getLocation()))
+	{
+		sPlayerSpellBook->onTouchBagBegan(touches);
+		m_touchtype = PlayerUITouch_SpellBook;
+		return true;
+	}
+	if (m_ButtomMenu->IsContectPoint(touches->getLocation()))
+	{
+		m_touchtype = PlayerUITouch_Buttom_Menu;
+		return true;
+	}
 	if (m_VirtualRoker_Roker && m_VirtualRoker_Roker->getBoundingBox().containsPoint(touches->getLocation()))
 	{
+		m_touchtype = PlayerUITouch_Roker;
 		RockerLastPostion = touches->getLocation();
 		m_VirtualRoker_Roker->setPosition(touches->getLocation());
 		return true;
@@ -203,20 +457,60 @@ bool PlayerUILayer::onTouchRockerBegan(Touch* touches, Event *event)
 	return false;
 }
 
-void PlayerUILayer::onTouchRockerMoved(Touch* touches, Event *event)
+void PlayerUILayer::onTouchMoved(Touch* touches, Event *event)
 {
 	if (!sPlayer)
 		return;
-	Vec2 NowLoc = touches->getLocation();
-	float X_move = NowLoc.x - RockerLastPostion.x;
-	float Y_move = NowLoc.y - RockerLastPostion.y;
-	if (ccpDistance(Vec2(m_VirtualRoker_BackGround->getPositionY() - X_move, m_VirtualRoker_BackGround->getPositionY() - Y_move), m_VirtualRoker_Roker->getPosition()) < 140.0f)
-		m_VirtualRoker_Roker->setPosition(m_VirtualRoker_Roker->getPositionX() + X_move, m_VirtualRoker_Roker->getPositionY() + Y_move);
+	switch (m_touchtype)
+	{
+	case PlayerUITouch_Bag:
+		sPlayerBag->onTouchBagMoved(touches);
+		return;
+	case PlayerUITouch_Roker:
+		{
+			Vec2 NowLoc = touches->getLocation();
+			float X_move = NowLoc.x - RockerLastPostion.x;
+			float Y_move = NowLoc.y - RockerLastPostion.y;
+			if (ccpDistance(Vec2(m_VirtualRoker_BackGround->getPositionY() - X_move, m_VirtualRoker_BackGround->getPositionY() - Y_move), m_VirtualRoker_Roker->getPosition()) < 140.0f)
+				m_VirtualRoker_Roker->setPosition(m_VirtualRoker_Roker->getPositionX() + X_move, m_VirtualRoker_Roker->getPositionY() + Y_move);
 
-	float Orgin = GetVirtualRokerOrgin(m_VirtualRoker_BackGround->getPosition(), m_VirtualRoker_Roker->getPosition());
-	RockerLastPostion = touches->getLocation();
-	ResetVirtualRokerOrgin(Orgin);
-	log("%f", Orgin);
+			float Orgin = GetVirtualRokerOrgin(m_VirtualRoker_BackGround->getPosition(), m_VirtualRoker_Roker->getPosition());
+			RockerLastPostion = touches->getLocation();
+			ResetVirtualRokerOrgin(Orgin);
+			break;
+		}
+	case PlayerUITouch_SpellBook:
+		sPlayerSpellBook->onTouchBagMoved(touches);
+		return;
+	}
+}
+
+void PlayerUILayer::onTouchEnded(Touch* touches, Event *event)
+{
+	if (!sPlayer)
+		return;
+
+	switch (m_touchtype)
+	{
+	case PlayerUITouch_Bag:
+		sPlayerBag->onTouchBagEnded(touches);
+		return;
+	case PlayerUITouch_SpellBook:
+		sPlayerSpellBook->onTouchBagEnded(touches);
+		return;
+	case PlayerUITouch_Buttom_Menu:
+		SwapButtomMenuType();
+		return;
+	case PlayerUITouch_Roker:
+		{
+			sPlayer->ResetMoveKeyForRoker();
+			if (m_VirtualRoker_Roker)
+				m_VirtualRoker_Roker->setPosition(m_VirtualRoker_BackGround->getContentSize().width / 2, m_VirtualRoker_BackGround->getContentSize().height / 2);
+
+			RockerLastPostion = Vec2(0, 0);
+			break;
+		}
+	}
 }
 
 void PlayerUILayer::ResetVirtualRokerOrgin(float _orgin)
@@ -249,17 +543,6 @@ void PlayerUILayer::ResetVirtualRokerOrgin(float _orgin)
 		else
 			sPlayer->DealVirtualRoker(Roker_Up_Right);
 	}
-}
-
-void PlayerUILayer::onTouchRockerEnded(Touch* touches, Event *event)
-{
-	if (!sPlayer)
-		return;
-	sPlayer->ResetMoveKeyForRoker();
-	if (m_VirtualRoker_Roker)
-		m_VirtualRoker_Roker->setPosition(m_VirtualRoker_BackGround->getContentSize().width / 2, m_VirtualRoker_BackGround->getContentSize().height / 2);
-
-	RockerLastPostion = Vec2(0, 0);
 }
 
 float PlayerUILayer::GetVirtualRokerOrgin(Vec2 CenterPoint, Vec2 RokerPoint)

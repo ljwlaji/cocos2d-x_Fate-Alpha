@@ -1,6 +1,7 @@
 ﻿#include "ActionManager.h"
 #include "Player.h"
 #include "NotifyMgr.h"
+#include "MainMapLayer.h"
 ActionMgr::ActionMgr(Player* _player)
 {
 	DoingAction = 0;
@@ -17,6 +18,11 @@ ActionMgr::~ActionMgr()
 
 void ActionMgr::OnPlayerPressKey(cocos2d::EventKeyboard::KeyCode keyCode)
 {
+	if (keyCode == EventKeyboard::KeyCode::KEY_J)
+	{
+		Sequence* sq = Sequence::create(ScaleTo::create(0.3f, 1.3f), ScaleTo::create(0.3f, 1.0f), NULL);
+		sMainMap->runAction(sq);
+	}
 	log("press Key: %d", keyCode);
 	uint16 keycode = (uint16)keyCode;
 	TempPlayerKeys.push_back((uint16)keyCode);

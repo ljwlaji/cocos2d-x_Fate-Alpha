@@ -50,6 +50,7 @@ public:
 
 	static Player* GetInstance();
 	bool CreatePlayer();
+	bool LoadPlayerSpells();
 	void DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType);
 	void ResetMoveKeyForRoker();
 	bool CanCancelActionForMove();

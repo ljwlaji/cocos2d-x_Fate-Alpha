@@ -2,6 +2,8 @@
 #include "HelloWorldScene.h"
 #include "MainMapLayer.h"
 #include "MovementMgr.h"
+#include "SpellMgr.h"
+#include "NotifyMgr.h"
 
 Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 {
@@ -168,4 +170,38 @@ void Unit::CheckMoveFall()
 {
 	if (sMoveMgr->CanMoveTo(this, Move_To_Down, Base_Falling_Speed))
 		setPositionY(getPositionY() - Base_Falling_Speed);
+}
+
+void Unit::CastSpell(uint32 spellid, Unit* pTarget)
+{
+	SpellInfo _info = sSpellMgr->GetSpellInfo(spellid);
+	if (!_info.ID)
+		return;
+
+	//Ä¿±êÅÐ¶Ï
+	switch (_info.SpellTargetType)
+	{
+	case SpellTargetType_Self:
+		if (pTarget != this)
+			return;
+	case SpellTargetType_Enemy_Single:
+	case SpellTargetType_Enemy_Multi:
+		if (pTarget->IsFrendlyTo(this) || pTarget == this)
+			return;
+	case SpellTargetType_Friend_Single:
+	case SpellTargetType_Friend_Multi:
+		if (!pTarget->IsFrendlyTo(this))
+			return;
+	}
+
+	if (_info.SpellTargetType != SpellTargetType_Self && pTarget != this)
+	if (_info.SpellCastRange > getPosition().getDistance(pTarget->getPosition()))
+	{
+		if (ToPlayer())
+			sNotifyMgr->ShowNotify("Out Of Range");
+		return;
+	}
+	//Missing ÒÆ¶¯ÅÐ¶Ï
+
+	
 }

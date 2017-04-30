@@ -10,6 +10,7 @@
 #include "CreateCharacterLayer.h"
 #include "ScriptMgr.h"
 #include "PlayerTalkLayer.h"
+#include "SpellMgr.h"
 
 #ifdef __APPLE__
 #include "spine/spine.h"
@@ -57,8 +58,10 @@ bool MainScene::init()
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(KeyBoardListener, this);
 #else
 #endif
+		sSpellMgr->Init();
 		sScriptMgr->InitScripts();
 		LoadUnitClassInfo();
+
 		LoadFactionInfo();
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);

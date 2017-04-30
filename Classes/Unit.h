@@ -63,6 +63,7 @@ private:
 	//End Of Combat
 
 public:
+	void CastSpell(uint32 _SpellID, Unit* pTarget);
 	bool UpdateUnitValues();
 	float GetPositionY();
 	void SetFacing(Facing _var);
@@ -97,6 +98,7 @@ public:
 	bool IsInAttackRange(Unit* pTarget);
 	UnitSide CheckSideForUnit(const Vec2& Loc);
 	virtual void DestorySelf() = 0;
+	void DealSpellDamage(Unit* pCaster, Unit* pTarget, SpellEffectType type, int32& damage);
 private:
 	SkeletonAnimation* m_UnitVision;
 	Facing m_Facing;

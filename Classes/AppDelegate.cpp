@@ -7,7 +7,7 @@ using namespace std;
 USING_NS_CC;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(480, 500);
-static cocos2d::Size smallResolutionSize = cocos2d::Size(900, 768);
+static cocos2d::Size smallResolutionSize = cocos2d::Size(1280, 760);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1920,1080/*1280, 760*/);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 static cocos2d::Size big = cocos2d::Size(2560, 1440);

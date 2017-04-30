@@ -168,6 +168,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\ScriptMgr.cpp" />
     <ClCompile Include="..\Classes\Scripts\TestScript_One.cpp" />
     <ClCompile Include="..\Classes\Scripts\TestScript_Two.cpp" />
+    <ClCompile Include="..\Classes\Spell.cpp" />
+    <ClCompile Include="..\Classes\SpellBook.cpp" />
+    <ClCompile Include="..\Classes\SpellMgr.cpp" />
     <ClCompile Include="..\Classes\sqlite\shell.c" />
     <ClCompile Include="..\Classes\sqlite\sqlite3.c" />
     <ClCompile Include="..\Classes\TypingLayer.cpp" />
@@ -197,6 +200,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\ScriptAI.h" />
     <ClInclude Include="..\Classes\ScriptLoader.h" />
     <ClInclude Include="..\Classes\ScriptMgr.h" />
+    <ClInclude Include="..\Classes\Spell.h" />
+    <ClInclude Include="..\Classes\SpellBook.h" />
+    <ClInclude Include="..\Classes\SpellMgr.h" />
     <ClInclude Include="..\Classes\sqlite\sqlite3.h" />
     <ClInclude Include="..\Classes\sqlite\sqlite3ext.h" />
     <ClInclude Include="..\Classes\Types.h" />

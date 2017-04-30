@@ -29,8 +29,19 @@
 class Unit;
 typedef std::map<Unit*, float> CreatureThreadList;
 
+enum ButtomMenuInfo
+{
+	Button_Menu_Setting,
+	Button_Menu_Spell,
+	Button_Menu_Quest,
+	Button_Menu_Bag,
+	Button_Menu_Equip,
+	Button_Menu_Character,
+	Button_Menu_End,
+};
 enum PlayerBagPage
 {
+	Page_None = -1,
 	Page_One,
 	Page_Two,
 	Page_Three,
@@ -172,11 +183,23 @@ struct FactionFrendlyInfo
 
 #define Base_Clear_Key_Time	0.5f
 typedef std::map<int, std::vector<RowInfo>> Result;
-#define Loading_Layer_Zorder	9999
-#define Notify_Layer_Zorder		10001
-#define UI_LAYER_ZORDER			9998
-#define PLAYER_ZORDER 			10000
-#define SlotRowCount			8
-#define SlotFieldCount			8
+#define Loading_Layer_Zorder			9999
+#define Notify_Layer_Zorder				10001
+#define UI_LAYER_ZORDER					9998
+#define PLAYER_ZORDER 					10000
+#define SlotRowCount					8
+#define SlotFieldCount					9
+#define PlayerBagImage					"Player_UI_Bag.png"
+#define PlayerSlotImage					"Player_UI_Bag_Slot.png"
+#define PlayerBagPageImage				"Player_UI_Bag_Page.png"
+#define PlayerBagPageSelectorImage		"Player_UI_Bag_Page_Selector.png"
+#define PlayerUIButtomMenuImage			"Player_UI_Buttom_Menu.png"
+#define PlayerUIButtonMenuListImage		"Player_UI_Buttom_Menu_"
+#define PlayerUIEquipFrame				"Player_UI_Equip_Frame.png"
+#define PlayerUISpellBookFrame			"Player_UI_Spell_Frame.png"
+#define SingleSlotTagStart				1
+#define SingleSlotTagEnded				73
+#define MaxSlotPerSpellBookPage			14
+typedef std::map<uint32, std::vector<uint32>> SpellChainMap;
 typedef std::vector<std::string> LoadAddress;
 #endif
