@@ -255,10 +255,11 @@ void Chose_Character_Layer::_SwapLayer(FadeType _FadeType)
 	case EnterGame:
 		if (!sPlayer)
 		{
-			SkeletonAnimation* sk = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 0.4f);
+			SkeletonAnimation* sk = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.3f);
 			Player* _player = new Player(sk, m_ChosedInfo);
 			if (!_player->CreatePlayer())
 				return;
+			_player->GetVision()->setAnimation(0, "idle_normal", true);
 		}
 		sGame->SwapLayer(Main_Map_Layer_Tag, getTag(), sPlayer->GetMapid());
 		if (sMainMap && sPlayer)

@@ -57,7 +57,7 @@ void Spell::update(float diff)
 	switch (m_status)
 	{
 	case STATUS_CASTING:
-		if (m_caster->getPosition().getDistance(m_Target->getPosition()) > m_SpellInfo.SpellCastRange)
+		if (m_Target && m_caster->getPosition().getDistance(m_Target->getPosition()) > m_SpellInfo.SpellCastRange)
 		{
 			if (m_caster->ToPlayer())
 				sNotifyMgr->ShowNotify("Out Of Range");

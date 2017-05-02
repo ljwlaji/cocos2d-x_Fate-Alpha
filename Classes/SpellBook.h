@@ -1,8 +1,9 @@
-#ifndef __SPELL_BOOK_H__
+﻿#ifndef __SPELL_BOOK_H__
 #define __SPELL_BOOK_H__
 
 #include "cocos2d.h"
 #include "Types.h"
+#include "SpellMgr.h"
 
 USING_NS_CC;
 
@@ -11,18 +12,22 @@ USING_NS_CC;
 class SpellSlot : public Sprite
 {
 public:
-	SpellSlot();
+	SpellSlot(const char* url = nullptr);
 	~SpellSlot();
-
+	uint32 GetSpellId()	{ return m_spellid; }
+	Sprite* GetSpellFrame()	{ return m_SpellFrame; }
+	void SetSpellFrame(Sprite* pFrame)	{ m_SpellFrame = pFrame; }
+	void SetSlotSpell(const SpellInfo& spellid);
 private:
-
+	Sprite* m_SpellFrame;
+	uint32 m_spellid;
 };
 
 class SpellBook : public Sprite
 {
 public:
 	static SpellBook* GetInstance();
-	void SwapVisiable()			{ isVisible() ? setVisible(false) : setVisible(true); }
+	void SwapVisiable();
 	bool onTouchBagBegan(Touch* touches);
 	void onTouchBagMoved(Touch* touches);
 	void onTouchBagEnded(Touch* touches);
@@ -41,9 +46,11 @@ private:
 		SpellBookTouchType_None,
 		SpellBookTouchType_Button,
 		SpellBookTouchType_Slot,
+		SpellBookTouchType_MoveSlot,
 	};
 	void InitFrame();
 	void InitSlot();
+	void LoadPlayerSpells();
 	void HandleTouchButton(SpellBookButtonTag _tag);
 	SpellBook();
 	~SpellBook();

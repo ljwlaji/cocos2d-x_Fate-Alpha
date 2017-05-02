@@ -1,14 +1,16 @@
-#include "Unit.h"
+ï»¿#include "Unit.h"
 #include "HelloWorldScene.h"
 #include "MainMapLayer.h"
 #include "MovementMgr.h"
 #include "SpellMgr.h"
 #include "NotifyMgr.h"
+#include "Spell.h"
 
 Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 {
 	initWithFile("1.png");
 	autorelease();
+	m_PlayerTarget_Sign = nullptr;
 	for (int i = Max_HP; i != UnitInt32_Value_End; i++)
 		m_UnitInt32Value[(UnitInt32Value)i] = 0;
 	setAnchorPoint(Vec2(0.5f, 0));
@@ -178,30 +180,39 @@ void Unit::CastSpell(uint32 spellid, Unit* pTarget)
 	if (!_info.ID)
 		return;
 
-	//Ä¿±êÅÐ¶Ï
-	switch (_info.SpellTargetType)
+	//ç›®æ ‡åˆ¤æ–­
+	if (_info.SpellTargetType != SpellTargetType_Empty && !pTarget)
 	{
-	case SpellTargetType_Self:
-		if (pTarget != this)
-			return;
-	case SpellTargetType_Enemy_Single:
-	case SpellTargetType_Enemy_Multi:
-		if (pTarget->IsFrendlyTo(this) || pTarget == this)
-			return;
-	case SpellTargetType_Friend_Single:
-	case SpellTargetType_Friend_Multi:
-		if (!pTarget->IsFrendlyTo(this))
-			return;
-	}
-
-	if (_info.SpellTargetType != SpellTargetType_Self && pTarget != this)
-	if (_info.SpellCastRange > getPosition().getDistance(pTarget->getPosition()))
-	{
-		if (ToPlayer())
-			sNotifyMgr->ShowNotify("Out Of Range");
+		sNotifyMgr->ShowNotify("You Need A Target!");
 		return;
 	}
-	//Missing ÒÆ¶¯ÅÐ¶Ï
 
-	
+	if (pTarget)
+	{
+		switch (_info.SpellTargetType)
+		{
+		case SpellTargetType_Self:
+			if (pTarget != this)
+				return;
+		case SpellTargetType_Enemy_Single:
+		case SpellTargetType_Enemy_Multi:
+			if (pTarget->IsFrendlyTo(this) || pTarget == this)
+				return;
+		case SpellTargetType_Friend_Single:
+		case SpellTargetType_Friend_Multi:
+			if (!pTarget->IsFrendlyTo(this))
+				return;
+		}
+
+		if (_info.SpellTargetType != SpellTargetType_Self && pTarget != this)
+		if (_info.SpellCastRange > getPosition().getDistance(pTarget->getPosition()))
+		{
+			if (ToPlayer())
+				sNotifyMgr->ShowNotify("Out Of Range");
+			return;
+		}
+	}
+	//Missing ç§»åŠ¨åˆ¤æ–­
+
+	Spell* CasttingSpell = new Spell(this, pTarget, _info);
 }

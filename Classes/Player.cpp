@@ -3,12 +3,16 @@
 #include "MovementMgr.h"
 #include "HelloWorldScene.h"
 #include "PlayerTalkLayer.h"
+#include "SpellMgr.h"
+
 static Player* _player = nullptr;
 
 Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) : Unit(_SkeletonAnimation)
 {
 	_player = this;
+	m_Player_Target = nullptr;
 	SetTypeId(TYPEID_PLAYER);
+	SetGuid(_info.guid);
 	SetName(_info.name.c_str());
 	SetClass(_info.Class);
 	SetMoney(_info.Money);
@@ -41,6 +45,19 @@ Player* Player::GetInstance()
 		return nullptr;
 
 	return _player;
+}
+
+void Player::SetPlayerTarget(Unit* pUnit)
+{
+	if (!pUnit || pUnit->GetPlayerTargetSign() || m_Player_Target == pUnit)
+		return;
+
+	if (m_Player_Target)
+		m_Player_Target->GetPlayerTargetSign()->removeFromParentAndCleanup(true);
+	Sprite* TempSign = Sprite::create("Player_Target_Sign.png");
+	TempSign->setPosition(pUnit->getContentSize().width / 2, 0);
+	pUnit->addChild(TempSign);
+	m_Player_Target = pUnit;
 }
 
 void Player::CloseGossipMenu()
@@ -118,7 +135,7 @@ void Player::UpdateMoveStatus()
 	{
 		SetMoveType(MoveType_None);
 		GetVision()->clearTracks();
-		GetVision()->setAnimation(Track_Idle, "idle", true);
+		GetVision()->setAnimation(Track_Idle, "idle_normal", true);
 		return;
 	}
 	//Calc
@@ -216,25 +233,25 @@ bool Player::CanCancelActionForMove()
 
 bool Player::LoadPlayerSpells()
 {
+	m_Spells.clear();
 	Result _Result;
-	char msg[255];//			0	1		2	3	  4		5		6	7
-	snprintf(msg, 255, "SELECT name,Class,Money,Exp,Level,Mapid,Pos_X,Pos_Y FROM characters WHERE guid = %u", GetGuid());
+	char msg[255];//			0	1
+	snprintf(msg, 255, "SELECT spell,active FROM player_spells WHERE guid = %u", GetGuid());
 	if (!sDataMgr->selectUnitDataList(msg, _Result))
 		return false;
 	else
 	{
 		if (_Result.empty())
-			return false;
-
-		std::vector<RowInfo> r_inf = _Result.begin()->second;
-		SetName(r_inf.at(0).GetString().c_str());
-		SetClass((UnitClasses)r_inf.at(1).GetInt());
-		SetMoney(r_inf.at(2).GetInt());
-		SetExp(r_inf.at(3).GetInt());
-		SetLevel(r_inf.at(4).GetInt());
-		SetMapid(r_inf.at(5).GetInt());
-		SetRealPosition(r_inf.at(6).GetFloat(), r_inf.at(7).GetFloat());
-		return true;
+			return true;
+		std::vector<RowInfo> row;
+		for (Result::iterator itr = _Result.begin(); itr != _Result.end(); itr++)
+		{
+			row = itr->second;
+			PlayerSpellTemplate _template;
+			_template.ID					= row.at(0).GetInt();
+			_template.Active				= row.at(1).GetBool();
+			m_Spells[row.at(0).GetInt()]	= _template;
+		}
 	}
 	return true;
 }
@@ -249,31 +266,35 @@ bool Player::CreatePlayer()
 	return false;
 }
 
+bool Player::HasSpell(uint32 spellid)
+{
+	if (m_Spells.find(spellid) != m_Spells.end())
+		return true;
+	return false;
+}
+
+void Player::CheckPlayerSpellActive()
+{
+	for (PlayerSpells::iterator itr = m_Spells.begin(); itr != m_Spells.end(); itr++)
+	{
+		SpellInfo info = sSpellMgr->GetSpellInfo(itr->first);
+		if (!info.ID)
+			continue;
+		uint32 NextLevelSpellID = sSpellMgr->GetSpellNextLevelID(info.ID, info.BaseLevelSpellID);
+
+		if (!NextLevelSpellID || !HasSpell(NextLevelSpellID))
+			itr->second.Active = true;
+		else
+			itr->second.Active = false;
+	}
+}
+
 bool Player::LoadFromDB()
 {
 	if (!LoadPlayerSpells())
 		return false;
+	CheckPlayerSpellActive();
 	return true;
-	//Result _Result;
-	//char msg[255];//			0	1		2	3	  4		5		6	7
-	//snprintf(msg, 255, "SELECT name,Class,Money,Exp,Level,Mapid,Pos_X,Pos_Y FROM characters WHERE guid = %u", GetGuid());
-	//if (!sDataMgr->selectUnitDataList(msg, _Result))
-	//	return false;
-	//else
-	//{
-	//	if (_Result.empty())
-	//		return false;
-	//
-	//	std::vector<RowInfo> r_inf = _Result.begin()->second;
-	//	SetName(r_inf.at(0).GetString().c_str());
-	//	SetClass((UnitClasses)r_inf.at(1).GetInt());
-	//	SetMoney(r_inf.at(2).GetInt());
-	//	SetExp(r_inf.at(3).GetInt());
-	//	SetLevel(r_inf.at(4).GetInt());
-	//	SetMapid(r_inf.at(5).GetInt());
-	//	SetRealPosition(r_inf.at(6).GetFloat(), r_inf.at(7).GetFloat());
-	//	return true;
-	//}
 }
 
 void Player::SaveToDB()

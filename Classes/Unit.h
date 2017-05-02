@@ -3,6 +3,7 @@
 
 #include "Types.h"
 #include "cocos2d.h"
+#include "SpellMgr.h"
 #ifdef WIN32
 #include "spine\spine.h"
 #include "cocos\editor-support\spine\SkeletonAnimation.h"
@@ -83,6 +84,7 @@ public:
 	int32 GetFaction()										{ return GetUnitInt32Value(Faction); }
 	TypeID GetTypeId()										{ return m_TypeId; }
 	Unit* UpdateVictim()									{ return m_Target; }
+	Sprite* GetPlayerTargetSign()							{ return m_PlayerTarget_Sign; }
 	void SetTypeId(TypeID _var)								{ m_TypeId = _var; }
 	void SetFaction(uint32 faction)							{ SetUnitInt32Value(Faction, faction); }
 	void SetInCombat(bool _var)								{ m_IsInCombat = _var; }
@@ -98,7 +100,7 @@ public:
 	bool IsInAttackRange(Unit* pTarget);
 	UnitSide CheckSideForUnit(const Vec2& Loc);
 	virtual void DestorySelf() = 0;
-	void DealSpellDamage(Unit* pCaster, Unit* pTarget, SpellEffectType type, int32& damage);
+	void DealSpellDamage(Unit* pCaster, Unit* pTarget, SpellEffectType type, int32& damage) {};
 private:
 	SkeletonAnimation* m_UnitVision;
 	Facing m_Facing;
@@ -115,7 +117,7 @@ private:
 	std::string m_Name;
 	bool m_IsInCombat;
 	TypeID m_TypeId;
-
+	Sprite* m_PlayerTarget_Sign;
 	Unit* m_Target;
 };
 

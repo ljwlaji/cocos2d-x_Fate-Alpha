@@ -98,7 +98,8 @@ void Main_Map_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 	case Touch_Monster:
 		if (Monster* pMonster = (Monster*)m_TouchedSprite)
 		{
-			pMonster->OnGossipHello(sPlayer);
+			sPlayer->SetPlayerTarget(pMonster);
+			//pMonster->OnGossipHello(sPlayer);
 		}
 		break;
 	case Touch_Player:

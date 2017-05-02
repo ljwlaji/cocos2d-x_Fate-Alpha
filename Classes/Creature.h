@@ -43,7 +43,6 @@ private:
 
 	CreatureThreadList m_Creature_Threat_List;
 
-
 	float m_Creature_Move_CheckTimer;
 	UnitMover* m_UnitMover;
 };

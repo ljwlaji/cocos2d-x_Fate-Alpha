@@ -29,6 +29,11 @@
 class Unit;
 typedef std::map<Unit*, float> CreatureThreadList;
 
+struct PlayerSpellTemplate
+{
+	uint32 ID;
+	bool Active;
+};
 enum ButtomMenuInfo
 {
 	Button_Menu_Setting,
@@ -197,9 +202,14 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define PlayerUIButtonMenuListImage		"Player_UI_Buttom_Menu_"
 #define PlayerUIEquipFrame				"Player_UI_Equip_Frame.png"
 #define PlayerUISpellBookFrame			"Player_UI_Spell_Frame.png"
+#define PlayerUISpellDefaultFrame		"Player_UI_SpellBook_Default_Frame.png"
+#define SpellInfoText
+#define PlayerUIButtonSpellBarImage		"Player_UI_ButtomSpell_Bar.png"
+#define MaxButtomSpellBarSlot			8
 #define SingleSlotTagStart				1
 #define SingleSlotTagEnded				73
 #define MaxSlotPerSpellBookPage			14
+typedef std::map<uint32, PlayerSpellTemplate> PlayerSpells;
 typedef std::map<uint32, std::vector<uint32>> SpellChainMap;
 typedef std::vector<std::string> LoadAddress;
 #endif

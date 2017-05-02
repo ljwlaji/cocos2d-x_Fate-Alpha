@@ -55,7 +55,7 @@ bool Player_Talk_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 	for (int i = 0; i != m_Showing_Message.size(); i++)
 	{
 		Sprite* SingleFrame = m_Showing_Message.at(i).SingleTalkClass;
-		if (SingleFrame && SingleFrame->getBoundingBox().containsPoint(touch->getLocation()))
+		if (SingleFrame && SingleFrame->IsContectPoint(touch->getLocation()))
 		{
 			m_Touched_Frame = i;
 			return true;
@@ -91,7 +91,7 @@ void Player_Talk_Layer::OnPlayerTouchedFrame(uint32 sender, uint32 action)
 
 void Player_Talk_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 {
-	if (m_Touched_Frame >= 0 && m_Showing_Message.at(m_Touched_Frame).SingleTalkClass->getBoundingBox().containsPoint(touch->getLocation()))
+	if (m_Touched_Frame >= 0 && m_Showing_Message.at(m_Touched_Frame).SingleTalkClass->IsContectPoint(touch->getLocation()))
 	{
 		if (m_Showing_Message.at(m_Touched_Frame).action)
 			OnPlayerTouchedFrame(m_Showing_Message.at(m_Touched_Frame).sender, m_Showing_Message.at(m_Touched_Frame).action);

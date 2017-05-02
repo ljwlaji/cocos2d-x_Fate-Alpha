@@ -30,7 +30,7 @@ void SpellMgr::LoadSpellTemplate()
 {
 	m_SpellTemplate.clear();
 	Result _Result;
-	if (sDataMgr->selectUnitDataList("SELECT id,base_level_spell_id,require_class,require_level,spell_cast_range,spell_real_range,spell_type,spell_target_type,spell_target_count,effect_type,spell_value,spell_cast_time,spell_cold_down_time,arua_total_duration,arua_single_damage_duration,can_cast_while_moving,spell_linked_aura,spell_action_name,play_action_time,spell_icon_url FROM spell_template", _Result))
+	if (sDataMgr->selectUnitDataList("SELECT id,base_level_spell_id,require_class,require_level,spell_cast_range,spell_real_range,spell_type,spell_target_type,spell_target_count,effect_type,spell_value,spell_cast_time,spell_cold_down_time,arua_total_duration,arua_single_damage_duration,can_cast_while_moving,spell_linked_aura,spell_action_name,play_action_time,spell_icon_url,spell_name FROM spell_template", _Result))
 	{
 		if (_Result.empty())
 		{
@@ -64,7 +64,7 @@ void SpellMgr::LoadSpellTemplate()
 				SpellChainInfo.SpellActionName			= row.at(17).GetString();
 				SpellChainInfo.PlayActionTime			= row.at(18).GetFloat();
 				SpellChainInfo.SpellIconUrl				= row.at(19).GetString();
-
+				SpellChainInfo.SpellName				= row.at(20).GetString();
 				m_SpellTemplate[row.at(0).GetInt()] = SpellChainInfo;
 			}
 		}
@@ -81,6 +81,45 @@ SpellInfo SpellMgr::GetSpellInfo(uint32 spellid)
 		return m_SpellTemplate[spellid];
 
 	return _info;
+}
+
+uint32 SpellMgr::GetSpellCurrentLevel(uint32 spellid, uint32 baseid)
+{
+	uint32 returnid = 0;
+	if (m_SpellChainMap.find(baseid) == m_SpellChainMap.end())
+		return returnid;
+
+	std::vector<uint32> TempCheck = m_SpellChainMap[baseid];
+
+	for (int i = 0; i != TempCheck.size(); i++)
+	{
+		if (TempCheck.at(i) == spellid)
+		{
+			return ++i;
+		}
+	}
+
+	return returnid;
+}
+
+uint32 SpellMgr::GetSpellNextLevelID(uint32 spellid, uint32 baseid)
+{
+	uint32 returnid = 0;
+	if (m_SpellChainMap.find(baseid) == m_SpellChainMap.end())
+		return returnid;
+
+	std::vector<uint32> TempCheck = m_SpellChainMap[baseid];
+
+	for (int i = 0; i != TempCheck.size(); i++)
+	{
+		if (TempCheck.at(i) == spellid && i != TempCheck.size() - 1)
+		{
+			returnid = TempCheck.at(i + 1);
+			break;
+		}
+	}
+
+	return returnid;
 }
 
 void SpellMgr::LoadSpellChain()

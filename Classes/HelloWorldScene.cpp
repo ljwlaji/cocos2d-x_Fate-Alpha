@@ -187,28 +187,28 @@ SkeletonAnimation* MainScene::GetAnimationByClass(UnitClasses _class)
 	switch (_class)
 	{
 	case Saber:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
 		break;
 	case Archer:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
 		break;
 	case Caster:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
 		break;
 	case Lancer:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
 		break;
 	case Assasin:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
 		break;
 	case Rider:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
 		break;
 	case Avenger:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
 		break;
 	case Berserker:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber.json", "Black_Saber.atlas", 1.0f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
 		break;
 	}
 	return SkeletonAnimation;

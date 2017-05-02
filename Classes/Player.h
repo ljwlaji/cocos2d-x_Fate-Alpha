@@ -50,7 +50,9 @@ public:
 
 	static Player* GetInstance();
 	bool CreatePlayer();
+	bool HasSpell(uint32 spellid);
 	bool LoadPlayerSpells();
+	void CheckPlayerSpellActive();
 	void DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType);
 	void ResetMoveKeyForRoker();
 	bool CanCancelActionForMove();
@@ -64,12 +66,15 @@ public:
 	uint32 GetMoney()											{ return m_Money; }
 	uint32 GetExp()												{ return m_Exp; }
 	uint32 GetMapid()											{ return m_Mapid; }
+	PlayerSpells GetSpells()									{ return m_Spells; }
+	Unit* GetPlayerTarget()										{ return m_Player_Target; }
 	void SetMapid(uint32 _var)									{ m_Mapid = _var; }
 	void SetExp(uint32 _var)									{ m_Exp = _var; }
 	void SetMoveKeyEnable(MoveKeyValue _key, bool enable)		{ MoveKeyStatus[_key] = enable; }
 	void ResetKeyTimer()										{ KeyVectorClearTimer = Base_Clear_Key_Time; }
 	virtual void DestorySelf()									{ removeFromParentAndCleanup(true); }
 	void SetMoney(uint32 _var)									{ m_Money = _var; }
+	void SetPlayerTarget(Unit* pUnit);
 	TalkClass* PlayerTalkClass;
 private:
 	ActionType m_Action;
@@ -78,10 +83,11 @@ private:
 	std::map<MoveKeyValue, bool> MoveKeyStatus;
 	virtual void UpdateMoveStatus();
 	float KeyVectorClearTimer;
-
+	PlayerSpells m_Spells;
 	uint32 m_Money;
 	uint32 m_Exp;
 	uint32 m_Mapid;
+	Unit* m_Player_Target;
 };
 
 #endif

@@ -1,8 +1,9 @@
-#include "PlayerUILayer.h"
+﻿#include "PlayerUILayer.h"
 #include "Player.h"
 #include "Item.h"
 #include "HelloWorldScene.h"
 #include "SpellBook.h"
+#pragma execution_character_set("utf-8")
 
 static PlayerBag* _PlayerBag = nullptr;
 static PlayerUILayer* _PlayerUILayer = nullptr;
@@ -156,7 +157,7 @@ void PlayerBag::InitPage()
 	m_PlayerBagPageSprites.clear();
 	for (int i = Page_One; i != End_Of_Player_Bag_Page; i++)
 	{
-		//���ȴ���ҳ��
+		//首先创建页面
 		Sprite* _TempPageSprite = Sprite::create(PlayerBagPageImage);
 		_TempPageSprite->setPosition(getContentSize().width * 0.53f, getContentSize().height * 0.1f + _TempPageSprite->getBoundingBox().size.height / 2);
 		addChild(_TempPageSprite);
@@ -271,6 +272,7 @@ bool PlayerUILayer::init()
 
 		InitUI();
 		InitButtomMenu();
+		InitButtomSpellBar();
 		sPlayerBag->setPosition(visiablesize.x * 0.75, visiablesize.y / 2);
 		addChild(sPlayerBag);
 
@@ -280,11 +282,94 @@ bool PlayerUILayer::init()
 		sPlayerSpellBook->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sPlayerSpellBook);
 
+		InitSpellDefaultFrame();
+
 		scheduleUpdate();
 		bRef = true;
 	} while (0);
 
 	return bRef;
+}
+
+SpellSlot* PlayerUILayer::CheckTouchSpellButton(const Vec2& Loc)
+{
+	return GetContactButtonSlot(Loc);
+}
+
+void PlayerUILayer::InitButtomSpellBar()
+{
+	m_ButtonSpellBar = Sprite::create(PlayerUIButtonSpellBarImage);
+	m_ButtonSpellBar->SetRealPosition(visiablesize.x / 2, m_ButtonSpellBar->getBoundingBox().size.height * 0.7f);
+	addChild(m_ButtonSpellBar);
+
+	for (int i = 0; i != MaxButtomSpellBarSlot; i++)
+	{
+		SpellSlot* TempSlot = new SpellSlot();
+		TempSlot->setPosition(TempSlot->getBoundingBox().size.width * 0.77f + (i * TempSlot->getBoundingBox().size.width * 1.1f), m_ButtonSpellBar->getContentSize().height / 2);
+		m_ButtonSpellBar->addChild(TempSlot);
+	}
+
+	m_ButtonSpellItem[0] = new SpellSlot("Player_UI_Button_Big.png");
+	m_ButtonSpellItem[0]->setPosition(visiablesize.x - m_ButtonSpellItem[0]->getBoundingBox().size.width / 2, m_ButtonSpellItem[0]->getBoundingBox().size.height / 2);
+	addChild(m_ButtonSpellItem[0]);
+
+	float PosX, PosY;
+	for (int i = 1, k = 0; i != MaxButtomSpellBarSlot; i++, k++)
+	{
+		m_ButtonSpellItem[i] = new SpellSlot();
+		PosX = m_ButtonSpellItem[0]->getBoundingBox().origin.x - m_ButtonSpellItem[i]->getBoundingBox().size.width / 2 + m_ButtonSpellItem[0]->getBoundingBox().size.width - (k > 3 ? (3 * m_ButtonSpellItem[i]->getBoundingBox().size.width) : k * m_ButtonSpellItem[i]->getBoundingBox().size.width);
+		PosY = m_ButtonSpellItem[0]->getBoundingBox().origin.y + m_ButtonSpellItem[0]->getBoundingBox().size.height + m_ButtonSpellItem[i]->getBoundingBox().size.height / 2 - (k <= 3 ? 0 : ((k - 3) * m_ButtonSpellItem[i]->getBoundingBox().size.height));
+		m_ButtonSpellItem[i]->setPosition(PosX, PosY);
+		addChild(m_ButtonSpellItem[i]);
+	}
+}
+
+SpellSlot* PlayerUILayer::GetContactButtonSlot(const Vec2& Loc)
+{
+	for (int i = 0; i != MaxButtomSpellBarSlot; i++)
+	{
+		for (Vector<Node*>::iterator itr = m_ButtonSpellBar->getChildren().begin(); itr != m_ButtonSpellBar->getChildren().end(); itr++)
+		{
+			if ((*itr)->IsContectPoint(Loc))
+				return (SpellSlot*)(*itr);
+		}
+	}
+	for (int i = 0; i < MaxButtomSpellBarSlot; i++)
+	{
+		if (m_ButtonSpellItem[i]->IsContectPoint(Loc))
+			return (SpellSlot*)m_ButtonSpellItem[i];
+	}
+	return nullptr;
+}
+
+void PlayerUILayer::InitSpellDefaultFrame()
+{
+	DefaultFrame = Sprite::create(PlayerUISpellDefaultFrame);
+	DefaultFrame->setPosition(sPlayerSpellBook->getBoundingBox().origin.x - DefaultFrame->getBoundingBox().size.width / 2, sPlayerSpellBook->getBoundingBox().origin.y +  sPlayerSpellBook->getBoundingBox().size.height - DefaultFrame->getBoundingBox().size.height / 2);
+	DefaultFrame->setVisible(false);
+	SpellText = LabelTTF::create("...", "Arial", 25, Size::ZERO, TextHAlignment::LEFT);
+	SpellText->setPosition(DefaultFrame->getContentSize().width * 0.05f, DefaultFrame->getContentSize().height * 0.9f);
+	SpellText->setAnchorPoint(Vec2(0, 1.0f));
+	DefaultFrame->addChild(SpellText);
+	addChild(DefaultFrame);
+}
+
+void PlayerUILayer::ReSetSpellFramePosition()
+{
+	DefaultFrame->setPosition(sPlayerSpellBook->getBoundingBox().origin.x - DefaultFrame->getBoundingBox().size.width / 2, sPlayerSpellBook->getBoundingBox().origin.y + sPlayerSpellBook->getBoundingBox().size.height - DefaultFrame->getBoundingBox().size.height / 2);
+}
+
+void PlayerUILayer::SwapSpellFrameVisable()
+{
+	sPlayerSpellBook->isVisible() ? DefaultFrame->setVisible(true) : DefaultFrame->setVisible(false);
+}
+
+void PlayerUILayer::ReSetSpellFrameText(uint32 SpellID)
+{
+	SpellInfo info = sSpellMgr->GetSpellInfo(SpellID);
+	char msg[255];
+	snprintf(msg, 255, "%s\n冷却时间: %u秒\n技能伤害: %d/次\n持续时间: %d秒\n技能范围: %d码\n施法时间: %d秒", info.SpellName.c_str(), (uint32)info.SpellColdDownTime, (uint32)info.SpellValue, (uint8)info.AruaTotalDuration, (uint32)info.SpellCastRange, (uint32)info.SpellCastTime);
+	SpellText->setString(msg);
 }
 
 void PlayerUILayer::SwapButtomMenuType()
@@ -382,7 +467,7 @@ void PlayerUILayer::CreateVirtualRoker()
 	m_VirtualRoker_Roker->setOpacity(80.0f);
 	m_VirtualRoker_BackGround->addChild(m_VirtualRoker_Roker);
 
-	//���:��ȷ����ҡ�˵�touch����Ψһ��ʶ��
+	//意见:给确认是摇杆的touch创建唯一标识符
 	auto RokerListener = EventListenerTouchOneByOne::create();
 	RokerListener->onTouchBegan = CC_CALLBACK_2(PlayerUILayer::onTouchBegan, this);
 	RokerListener->onTouchMoved = CC_CALLBACK_2(PlayerUILayer::onTouchMoved, this);
@@ -393,10 +478,16 @@ void PlayerUILayer::CreateVirtualRoker()
 
 bool PlayerUILayer::onTouchBegan(Touch* touches, Event *event)
 {
+	TouchedSpellSlot = nullptr;
 	m_touchtype = PlayerUITouch_None;
 	if (!sPlayer)
 		return false;
 
+	if (TouchedSpellSlot = CheckTouchSpellButton(touches->getLocation()))
+	{
+		m_touchtype = PlayerUITouch_Button_SpellSlot;
+		return true;
+	}
 	for (int i = 0; i < m_Buttom_Menus.size(); i++)
 	{
 		if (Sprite* TempButton = m_Buttom_Menus.at(i)._sprite)
@@ -508,6 +599,12 @@ void PlayerUILayer::onTouchEnded(Touch* touches, Event *event)
 				m_VirtualRoker_Roker->setPosition(m_VirtualRoker_BackGround->getContentSize().width / 2, m_VirtualRoker_BackGround->getContentSize().height / 2);
 
 			RockerLastPostion = Vec2(0, 0);
+			break;
+		}
+	case PlayerUITouch_Button_SpellSlot:
+		{
+			if (TouchedSpellSlot->GetSpellId())
+				sPlayer->CastSpell(TouchedSpellSlot->GetSpellId(), nullptr);
 			break;
 		}
 	}

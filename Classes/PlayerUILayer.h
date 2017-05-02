@@ -8,9 +8,9 @@ USING_NS_CC;
 #define sPlayerBag			PlayerBag::GetInstance()
 #define sPlayerUi			PlayerUILayer::GetInstance()
 #define sPlayerEquip		PlayerEquipWindow::GetInstance()
-#define sPlayerSpellBook	SpellBook::GetInstance()
 class Item;
 class PlayerBag;
+class SpellSlot;
 struct ButtonMenuInfo
 {
 	Sprite* _sprite;
@@ -20,6 +20,10 @@ class PlayerUILayer : public Layer
 {
 public:
 	static PlayerUILayer* GetInstance();
+	void ReSetSpellFramePosition();
+	void SwapSpellFrameVisable();
+	void ReSetSpellFrameText(uint32 SpellID);
+	SpellSlot* GetContactButtonSlot(const Vec2& Loc);
 private:
 	enum PlayerUITouchType
 	{
@@ -28,14 +32,19 @@ private:
 		PlayerUITouch_SpellBook,
 		PlayerUITouch_Roker,
 		PlayerUITouch_Buttom_Menu,
+		PlayerUITouch_Button_SpellSlot,
 	};
 	CREATE_FUNC(PlayerUILayer);
 	PlayerUILayer();
 	~PlayerUILayer();
 	virtual void update(float diff);
 	virtual bool init();
+	void InitSpellDefaultFrame();
 	void CreateVirtualRoker();
 	void InitUI();
+	void InitButtomSpellBar();
+	// Return A SpellSlot If Touched Button
+	SpellSlot* CheckTouchSpellButton(const Vec2& Loc);
 	void InitButtomMenu();
 	float GetVirtualRokerOrgin(Vec2 CenterPoint,Vec2 RokerPoint);
 	virtual bool onTouchBegan(Touch* touches, Event *_event);
@@ -55,8 +64,13 @@ private:
 	Sprite* m_Player_Info_UI_Level;
 	std::vector<ButtonMenuInfo> m_Buttom_Menus;
 	PlayerUITouchType m_touchtype;
+	SpellSlot* TouchedSpellSlot;
 	Sprite* m_ButtomMenu;
 	bool CanTouchButton;
+	Sprite* DefaultFrame;
+	LabelTTF* SpellText;
+	Sprite* m_ButtonSpellBar;
+	Sprite* m_ButtonSpellItem[8];
 };
 
 

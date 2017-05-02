@@ -1,4 +1,4 @@
-#ifndef __SPELL_MGR_H__
+ï»¿#ifndef __SPELL_MGR_H__
 #define __SPELL_MGR_H__
 
 
@@ -15,6 +15,7 @@ enum Spell_Type
 
 enum SpellTargetType
 {
+	SpellTargetType_Empty,
 	SpellTargetType_Self,
 	SpellTargetType_Enemy_Single,
 	SpellTargetType_Enemy_Multi,
@@ -24,60 +25,62 @@ enum SpellTargetType
 
 enum SpellEffectType
 {
-	//ÉúÃü
+	//ç”Ÿå‘½
 	Heath,
-	//ÒÆ¶¯ËÙ¶È
+	//ç§»åŠ¨é€Ÿåº¦
 	Speed,
-	//»èÃÔ
+	//æ˜è¿·
 	Stun,
-	//¹¥»÷ÊôĞÔ
+	//æ”»å‡»å±æ€§
 	Attack,
-	//·ÀÓùÊôĞÔ
+	//é˜²å¾¡å±æ€§
 	Defance,
 };
 
 struct SpellInfo
 {
-	//¼¼ÄÜID
+	//æŠ€èƒ½ID
 	uint32 ID = 0;
-	//Ò»¼¶¼¼ÄÜID--ÓÃÓÚ¶¨Î»¼¼ÄÜ¼¶±ğ
+	//ä¸€çº§æŠ€èƒ½ID--ç”¨äºå®šä½æŠ€èƒ½çº§åˆ«
 	uint32 BaseLevelSpellID = 0;
-	//ĞèÇóÖ°Òµ
+	//éœ€æ±‚èŒä¸š
 	uint8 RequireClass = 0;
-	//ĞèÇóµÈ¼¶
+	//éœ€æ±‚ç­‰çº§
 	uint8 RequireLevel = 0;
-	//¼¼ÄÜ·¶Î§
+	//æŠ€èƒ½èŒƒå›´
 	float SpellCastRange = 0;
-	//¼¼ÄÜ×÷ÓÃ·¶Î§
+	//æŠ€èƒ½ä½œç”¨èŒƒå›´
 	float SpellRealRange = 0;
-	//¼¼ÄÜ¶¨ÒåÀàĞÍ
+	//æŠ€èƒ½å®šä¹‰ç±»å‹
 	Spell_Type SpellType = SpellType_Melee;
-	//¼¼ÄÜÄ¿±êÀàĞÍ
+	//æŠ€èƒ½ç›®æ ‡ç±»å‹
 	SpellTargetType SpellTargetType = SpellTargetType_Self;
-	//¼¼ÄÜ×÷ÓÃÄ¿±êÊıÁ¿
+	//æŠ€èƒ½ä½œç”¨ç›®æ ‡æ•°é‡
 	uint8 SpellTargetCount = 0;
-	//¼¼ÄÜ×÷ÓÃÀàĞÍ
+	//æŠ€èƒ½ä½œç”¨ç±»å‹
 	SpellEffectType EffectType = Heath;
-	//ÊıÖµ
+	//æ•°å€¼
 	int32 SpellValue = 0;
-	//Ê©·¨Ê±¼ä
+	//æ–½æ³•æ—¶é—´
 	float SpellCastTime = 0;
-	//ÀäÈ´Ê±¼ä
+	//å†·å´æ—¶é—´
 	float SpellColdDownTime = 0;
-	//¼¼ÄÜ³ÖĞøÊ±¼ä
+	//æŠ€èƒ½æŒç»­æ—¶é—´
 	float AruaTotalDuration = 0;
-	//µ¥´Î×÷ÓÃ¼ä¸ô
+	//å•æ¬¡ä½œç”¨é—´éš”
 	float AruaSingleDamageDuration = 0;
-	//ÔÊĞíÒÆ¶¯ÊÍ·Å
+	//å…è®¸ç§»åŠ¨é‡Šæ”¾
 	bool CanCastWhileMoving = false;
-	//¼¼ÄÜÁ´½ÓĞ§¹û
+	//æŠ€èƒ½é“¾æ¥æ•ˆæœ
 	uint32 SpellLinkedAura = 0;
-	//¼¼ÄÜÊÍ·Å¶¯»­Ãû³Æ
+	//æŠ€èƒ½é‡Šæ”¾åŠ¨ç”»åç§°
 	std::string SpellActionName = "";
-	//¼¼ÄÜÊÍ·Å¶¯×÷Ê±³¤
+	//æŠ€èƒ½é‡Šæ”¾åŠ¨ä½œæ—¶é•¿
 	float PlayActionTime = 0;
-	//¼¼ÄÜÍ¼±êÂ·¾¶
+	//æŠ€èƒ½å›¾æ ‡è·¯å¾„
 	std::string SpellIconUrl = "";
+	//æŠ€èƒ½åç§°
+	std::string SpellName = "";
 };
 
 class SpellMgr
@@ -86,6 +89,8 @@ public:
 	static SpellMgr* GetInstance();
 	void Init();
 	SpellInfo GetSpellInfo(uint32 spellid);
+	uint32 GetSpellNextLevelID(uint32 spellid, uint32 baseid);
+	uint32 GetSpellCurrentLevel(uint32 spellid, uint32 baseid);
 private:
 	SpellMgr();
 	~SpellMgr();
