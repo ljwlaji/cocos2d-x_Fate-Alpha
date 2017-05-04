@@ -125,6 +125,8 @@ void Player::DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType)
 
 void Player::UpdateMoveStatus()
 {
+	if (GetCastingSpell())
+		return;
 	bool NeedResetMoveStatus = true;
 	for (int i = MoveKey_Left; i < MoveKey_Endl; i++)
 	{

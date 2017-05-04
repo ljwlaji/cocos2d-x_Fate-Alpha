@@ -3,56 +3,64 @@
 #include "Item.h"
 #include "HelloWorldScene.h"
 #include "SpellBook.h"
+#include "PlayerEquipWindow.h"
 #pragma execution_character_set("utf-8")
 
 static PlayerBag* _PlayerBag = nullptr;
 static PlayerUILayer* _PlayerUILayer = nullptr;
-static PlayerEquipWindow* _PlayerEquipWindow = nullptr;
 
-PlayerEquipWindow::PlayerEquipWindow()
+Slot::Slot(const std::string& url)
 {
-	initWithFile(PlayerUIEquipFrame);
-	autorelease();
-	InitWindow();
-	setVisible(false);
-}
+	if (url.empty())
+		initWithFile(PlayerSlotImage);
+	else
+		initWithFile(url.c_str());
 
-void PlayerEquipWindow::InitWindow()
-{
-	float TempXPoint = 0;
-	float TempYPoint = 0;
-	for (int i = SLOT_WEAPON; i != SLOT_END; i++)
-	{
-		Slot* TempSlot = new Slot();
-		i % 2 ? TempXPoint = getContentSize().width / 5 : TempXPoint = getContentSize().width - getContentSize().width / 5;
-		uint8 fieldcount = i / 2;
-		TempYPoint = getBoundingBox().size.height / 4 + (fieldcount * (getBoundingBox().size.height / 4));
-		TempSlot->setPosition(TempXPoint, TempYPoint);
-		addChild(TempSlot);
-	}
-}
-
-PlayerEquipWindow::~PlayerEquipWindow()
-{
-}
-
-PlayerEquipWindow* PlayerEquipWindow::GetInstance()
-{
-	if (!_PlayerEquipWindow)
-		_PlayerEquipWindow = new PlayerEquipWindow();
-	return _PlayerEquipWindow;
-}
-
-Slot::Slot()
-{
-	initWithFile(PlayerSlotImage);
 	autorelease();
 	m_Item = nullptr;
+	m_DisPlaySprite = nullptr;
 }
 
 Slot::~Slot()
 {
+	if (m_DisPlaySprite)
+		m_DisPlaySprite->removeFromParentAndCleanup(true);
+}
 
+void Slot::SetItem(Item* pItem)	
+{
+	if (!pItem)
+	{
+		m_Item = nullptr;
+		if (m_DisPlaySprite)
+			m_DisPlaySprite->removeFromParentAndCleanup(true);
+		return;
+	}
+	m_Item = pItem; 
+	if (!m_DisPlaySprite)
+	{
+		m_DisPlaySprite = Sprite::create(pItem->GetIconUrl().c_str());
+		if (getBoundingBox().size.width > 39.0f)
+			m_DisPlaySprite->setScale(getBoundingBox().size.width / 39.0f);
+		m_DisPlaySprite->setPosition(getContentSize().width / 2, getContentSize().height / 2);
+		addChild(m_DisPlaySprite);
+	}
+	else
+	{
+		setTexture(pItem->GetIconUrl().c_str());
+	}
+	return;
+}
+
+void Slot::SwapItem(Slot* Instead)
+{
+	if (!GetItem() || !Instead)
+		return;
+	Item* NewSlotItem = Instead->GetItem();
+	Item* OldSlotItem = GetItem();
+	if (NewSlotItem)
+		SetItem(NewSlotItem);
+	Instead->SetItem(OldSlotItem);
 }
 
 PlayerBag::PlayerBag()
@@ -276,8 +284,11 @@ bool PlayerUILayer::init()
 		sPlayerBag->setPosition(visiablesize.x * 0.75, visiablesize.y / 2);
 		addChild(sPlayerBag);
 
-		sPlayerEquip->setPosition(visiablesize.x * 0.25, visiablesize.y / 2);
+		sPlayerEquip->setPosition(visiablesize.x * 0.25, visiablesize.y * 0.75);
 		addChild(sPlayerEquip);
+
+		sPlayerValueWindow->setPosition(sPlayerEquip->getPositionX() * 1.032f, sPlayerEquip->getBoundingBox().origin.y * 1.04f - sPlayerValueWindow->getBoundingBox().size.height / 2);
+		addChild(sPlayerValueWindow);
 
 		sPlayerSpellBook->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sPlayerSpellBook);
@@ -518,7 +529,13 @@ bool PlayerUILayer::onTouchBegan(Touch* touches, Event *event)
 				return true;
 			}
 		}
+	}
 
+	if (sPlayerEquip->isVisible() && sPlayerEquip->IsContectPoint(touches->getLocation()))
+	{
+		sPlayerEquip->onTouchBagBegan(touches);
+		m_touchtype = PlayerUITouch_Equip_Window;
+		return true;
 	}
 	if (sPlayerBag->isVisible() && sPlayerBag->IsContectPoint(touches->getLocation()))
 	{
@@ -573,6 +590,9 @@ void PlayerUILayer::onTouchMoved(Touch* touches, Event *event)
 	case PlayerUITouch_SpellBook:
 		sPlayerSpellBook->onTouchBagMoved(touches);
 		return;
+	case PlayerUITouch_Equip_Window:
+		sPlayerEquip->onTouchBagMoved(touches);
+		return;
 	}
 }
 
@@ -583,16 +603,16 @@ void PlayerUILayer::onTouchEnded(Touch* touches, Event *event)
 
 	switch (m_touchtype)
 	{
-	case PlayerUITouch_Bag:
-		sPlayerBag->onTouchBagEnded(touches);
-		return;
-	case PlayerUITouch_SpellBook:
-		sPlayerSpellBook->onTouchBagEnded(touches);
-		return;
-	case PlayerUITouch_Buttom_Menu:
-		SwapButtomMenuType();
-		return;
-	case PlayerUITouch_Roker:
+		case PlayerUITouch_Bag:
+			sPlayerBag->onTouchBagEnded(touches);
+			return;
+		case PlayerUITouch_SpellBook:
+			sPlayerSpellBook->onTouchBagEnded(touches);
+			return;
+		case PlayerUITouch_Buttom_Menu:
+			SwapButtomMenuType();
+			return;
+		case PlayerUITouch_Roker:
 		{
 			sPlayer->ResetMoveKeyForRoker();
 			if (m_VirtualRoker_Roker)
@@ -601,10 +621,15 @@ void PlayerUILayer::onTouchEnded(Touch* touches, Event *event)
 			RockerLastPostion = Vec2(0, 0);
 			break;
 		}
-	case PlayerUITouch_Button_SpellSlot:
+		case PlayerUITouch_Button_SpellSlot:
 		{
 			if (TouchedSpellSlot->GetSpellId())
-				sPlayer->CastSpell(TouchedSpellSlot->GetSpellId(), nullptr);
+				sPlayer->CastSpell(TouchedSpellSlot->GetSpellId(), sPlayer->GetPlayerTarget());
+			break;
+		}
+		case PlayerUITouch_Equip_Window:
+		{
+			sPlayerEquip->onTouchBagEnded(touches);
 			break;
 		}
 	}

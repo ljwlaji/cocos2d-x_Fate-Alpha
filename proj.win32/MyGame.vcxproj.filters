@@ -82,6 +82,9 @@
     <Filter Include="src\Spell">
       <UniqueIdentifier>{74b2f7a3-9fe5-4faa-b70d-a19bda158110}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\PlayerEquip">
+      <UniqueIdentifier>{dda2382d-2a4b-4948-84c2-a8433269070b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -180,6 +183,9 @@
     <ClCompile Include="..\Classes\Spell.cpp">
       <Filter>src\Spell</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\PlayerEquipWindow.cpp">
+      <Filter>src\Layers\PlayerUILayer\PlayerEquip</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -274,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Spell.h">
       <Filter>src\Spell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PlayerEquipWindow.h">
+      <Filter>src\Layers\PlayerUILayer\PlayerEquip</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

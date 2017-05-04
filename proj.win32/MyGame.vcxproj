@@ -160,6 +160,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\NotifyMgr.cpp" />
     <ClCompile Include="..\Classes\Npc.cpp" />
     <ClCompile Include="..\Classes\Player.cpp" />
+    <ClCompile Include="..\Classes\PlayerEquipWindow.cpp" />
     <ClCompile Include="..\Classes\PlayerTalkLayer.cpp" />
     <ClCompile Include="..\Classes\PlayerUILayer.cpp" />
     <ClCompile Include="..\Classes\Result.cpp" />
@@ -194,6 +195,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\NotifyMgr.h" />
     <ClInclude Include="..\Classes\Npc.h" />
     <ClInclude Include="..\Classes\Player.h" />
+    <ClInclude Include="..\Classes\PlayerEquipWindow.h" />
     <ClInclude Include="..\Classes\PlayerTalkLayer.h" />
     <ClInclude Include="..\Classes\PlayerUILayer.h" />
     <ClInclude Include="..\Classes\Result.h" />

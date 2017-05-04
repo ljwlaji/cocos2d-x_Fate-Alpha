@@ -200,7 +200,8 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define PlayerBagPageSelectorImage		"Player_UI_Bag_Page_Selector.png"
 #define PlayerUIButtomMenuImage			"Player_UI_Buttom_Menu.png"
 #define PlayerUIButtonMenuListImage		"Player_UI_Buttom_Menu_"
-#define PlayerUIEquipFrame				"Player_UI_Equip_Frame.png"
+#define PlayerUIEquipFrame				"Player_UI_Equip_Character_Big_Frame.png"
+#define PlayerUIEquipValueFrame			"Player_UI_Equip_Character_Value_Frame.png"
 #define PlayerUISpellBookFrame			"Player_UI_Spell_Frame.png"
 #define PlayerUISpellDefaultFrame		"Player_UI_SpellBook_Default_Frame.png"
 #define SpellInfoText

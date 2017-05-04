@@ -317,7 +317,7 @@ Unit* Main_Map_Layer::GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget, b
 		if (SelectForTarget && pUnit->IsFrendlyTo(m_MonsterVector.at(i))) continue;
 		if (m_MonsterVector.at(i) == pUnit) continue;
 
-		float TempDis = pUnit->getPosition().distance(m_MonsterVector.at(i)->getPosition());
+		float TempDis = abs(pUnit->getPositionX() - m_MonsterVector.at(i)->getPositionX());
 		if (TempDis < NearestDistance)
 		{
 			NearestDistance = TempDis;
@@ -331,7 +331,7 @@ Unit* Main_Map_Layer::GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget, b
 		if (SelectForTarget && pUnit->IsFrendlyTo(m_NpcVector.at(i))) continue;
 		if (m_NpcVector.at(i) == pUnit) continue;
 
-		float TempDis = pUnit->getPosition().distance(m_NpcVector.at(i)->getPosition());
+		float TempDis = abs(pUnit->getPositionX() - m_NpcVector.at(i)->getPositionX());
 		if (TempDis < NearestDistance)
 		{
 			NearestDistance = TempDis;
@@ -339,10 +339,12 @@ Unit* Main_Map_Layer::GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget, b
 		}
 	}
 
-	if (pUnit != sPlayer && pUnit->getPosition().distance(sPlayer->getPosition()) < NearestDistance)
+	if (pUnit != sPlayer && abs(pUnit->getPositionX() - sPlayer->getPositionX()) < NearestDistance)
 	{
-		if (SelectForTarget && pUnit->IsFrendlyTo(sPlayer)) return NearestUnit;
-		if (CheckAlive && sPlayer->IsAlive()) return sPlayer;
+		if (SelectForTarget && pUnit->IsFrendlyTo(sPlayer))
+			return NearestUnit;
+		if (CheckAlive && sPlayer->IsAlive()) 
+			return sPlayer;
 	}
 
 	return NearestUnit;

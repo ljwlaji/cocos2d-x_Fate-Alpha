@@ -5,14 +5,14 @@
 #include "Types.h"
 USING_NS_CC;
 
-class Item : public Sprite
+class Item
 {
 public:
 	Item();
 	~Item();
-
+	std::string GetIconUrl()	{ return m_Icon_Url; }
 private:
-
+	std::string m_Icon_Url;
 };
 
 

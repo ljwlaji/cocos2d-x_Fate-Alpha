@@ -7,7 +7,6 @@ USING_NS_CC;
 
 #define sPlayerBag			PlayerBag::GetInstance()
 #define sPlayerUi			PlayerUILayer::GetInstance()
-#define sPlayerEquip		PlayerEquipWindow::GetInstance()
 class Item;
 class PlayerBag;
 class SpellSlot;
@@ -33,6 +32,7 @@ private:
 		PlayerUITouch_Roker,
 		PlayerUITouch_Buttom_Menu,
 		PlayerUITouch_Button_SpellSlot,
+		PlayerUITouch_Equip_Window,
 	};
 	CREATE_FUNC(PlayerUILayer);
 	PlayerUILayer();
@@ -77,35 +77,14 @@ private:
 class Slot : public Sprite
 {
 public:
-	Slot();
+	Slot(const std::string& url = "");
 	~Slot();
 	Item* GetItem()				{ return m_Item; }
-	bool SetItem(Item* pItem)	{ m_Item = pItem; }
+	void SetItem(Item* pItem = nullptr);
+	void SwapItem(Slot* Instead);
 private:
 	Item* m_Item;
-};
-
-
-class PlayerEquipWindow : public Sprite
-{
-public:
-	static PlayerEquipWindow* GetInstance();
-	void SwapVisiable()			{ isVisible() ? setVisible(false) : setVisible(true); }
-private:
-	enum PlayerEquipSlots
-	{
-		SLOT_WEAPON,
-		SLOT_SECOND_WEAPON,
-		SLOT_AMMOR,
-		SLOT_SHOES,
-		SLOT_RING_1,
-		SLOT_RING_2,
-		SLOT_END,
-	};
-	void InitWindow();
-	PlayerEquipWindow();
-	~PlayerEquipWindow();
-	std::map<PlayerEquipSlots, Slot*> m_EquipSlots;
+	Sprite* m_DisPlaySprite;
 };
 
 class PlayerBag : public Sprite

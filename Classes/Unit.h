@@ -41,16 +41,17 @@ class Creature;
 class Monster;
 class Player;
 class Npc;
+class Spell;
 class Unit : public Sprite
 {
 public:
 	Unit(SkeletonAnimation* UnitVision, uint32 entry = 0, uint32 guid = 0);
 	~Unit();
 
-	Player* ToPlayer()										{ if (GetTypeId() == TYPEID_PLAYER) return reinterpret_cast<Player*>(this); else return NULL; }
-	Creature* ToCreature()									{ if (GetTypeId() == TYPEID_PLAYER || GetTypeId() == TYPEID_NPC || GetTypeId() == TYPEID_MONSTER) return reinterpret_cast<Creature*>(this); else return NULL; }
-	Monster* ToMonster()									{ if (GetTypeId() == TYPEID_MONSTER) return reinterpret_cast<Monster*>(this); else return NULL; }
-	Npc* ToNpc()											{ if (GetTypeId() == TYPEID_NPC) return reinterpret_cast<Npc*>(this); else return NULL; }
+	Player* ToPlayer()										{ if (GetTypeId() == TYPEID_PLAYER) return reinterpret_cast<Player*>(this); else return nullptr; }
+	Creature* ToCreature()									{ if (GetTypeId() == TYPEID_PLAYER || GetTypeId() == TYPEID_NPC || GetTypeId() == TYPEID_MONSTER) return reinterpret_cast<Creature*>(this); else return nullptr; }
+	Monster* ToMonster()									{ if (GetTypeId() == TYPEID_MONSTER) return reinterpret_cast<Monster*>(this); else return nullptr; }
+	Npc* ToNpc()											{ if (GetTypeId() == TYPEID_NPC) return reinterpret_cast<Npc*>(this); else return nullptr; }
 	float GetPositionX()									{ return getBoundingBox().origin.x + (getBoundingBox().size.width / 2); }
 	float GetPositionZ()									{ return getBoundingBox().origin.y; }
 	//由Jump原点获取
@@ -64,7 +65,7 @@ private:
 	//End Of Combat
 
 public:
-	void CastSpell(uint32 _SpellID, Unit* pTarget);
+	void CastSpell(uint32 _SpellID, Unit* pTarget = nullptr);
 	bool UpdateUnitValues();
 	float GetPositionY();
 	void SetFacing(Facing _var);
@@ -85,6 +86,8 @@ public:
 	TypeID GetTypeId()										{ return m_TypeId; }
 	Unit* UpdateVictim()									{ return m_Target; }
 	Sprite* GetPlayerTargetSign()							{ return m_PlayerTarget_Sign; }
+	Spell* GetCastingSpell()								{ return m_Castting_Spell; }
+	void SetCastingSpell(Spell* pSpell)						{ m_Castting_Spell = pSpell; }
 	void SetTypeId(TypeID _var)								{ m_TypeId = _var; }
 	void SetFaction(uint32 faction)							{ SetUnitInt32Value(Faction, faction); }
 	void SetInCombat(bool _var)								{ m_IsInCombat = _var; }
@@ -119,6 +122,7 @@ private:
 	TypeID m_TypeId;
 	Sprite* m_PlayerTarget_Sign;
 	Unit* m_Target;
+	Spell* m_Castting_Spell;
 };
 
 #endif

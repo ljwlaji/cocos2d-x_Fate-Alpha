@@ -10,6 +10,7 @@ Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 {
 	initWithFile("1.png");
 	autorelease();
+	m_Castting_Spell = nullptr;
 	m_PlayerTarget_Sign = nullptr;
 	for (int i = Max_HP; i != UnitInt32_Value_End; i++)
 		m_UnitInt32Value[(UnitInt32Value)i] = 0;
@@ -141,9 +142,6 @@ bool Unit::UpdateUnitValues()
 				break;
 			}
 		}
-
-
-
 		return true;
 	}
 	return false;
@@ -176,6 +174,11 @@ void Unit::CheckMoveFall()
 
 void Unit::CastSpell(uint32 spellid, Unit* pTarget)
 {
+	if (m_Castting_Spell)
+	{
+		sNotifyMgr->ShowNotify("An Other Spell Is Casting!");
+		return;
+	}
 	SpellInfo _info = sSpellMgr->GetSpellInfo(spellid);
 	if (!_info.ID)
 		return;
@@ -205,7 +208,7 @@ void Unit::CastSpell(uint32 spellid, Unit* pTarget)
 		}
 
 		if (_info.SpellTargetType != SpellTargetType_Self && pTarget != this)
-		if (_info.SpellCastRange > getPosition().getDistance(pTarget->getPosition()))
+		if (getPosition().getDistance(pTarget->getPosition()) > _info.SpellCastRange)
 		{
 			if (ToPlayer())
 				sNotifyMgr->ShowNotify("Out Of Range");
@@ -215,4 +218,5 @@ void Unit::CastSpell(uint32 spellid, Unit* pTarget)
 	//Missing 移动判断
 
 	Spell* CasttingSpell = new Spell(this, pTarget, _info);
+	m_Castting_Spell = CasttingSpell;
 }
