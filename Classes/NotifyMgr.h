@@ -8,14 +8,13 @@ USING_NS_CC;
 class NotifyMgr : public Layer
 {
 public:
+	static NotifyMgr* GetInstance();
+	void ShowNotify(const char* args);
+private:
 	NotifyMgr();
 	~NotifyMgr();
 	virtual bool init();
-	static NotifyMgr* GetInstance();
 	CREATE_FUNC(NotifyMgr);
-	void ShowNotify(const char* args);
-private:
-
 	void DestorySingleNotifyText(LabelTTF* pLabelTTF);
 	std::vector<LabelTTF*> NotifyQueue;
 	Vec2 visablesize;

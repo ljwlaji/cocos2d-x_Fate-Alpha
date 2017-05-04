@@ -47,6 +47,7 @@ struct WaitFroLoadingUnitTemplate
 
 
 #define sMainMap Main_Map_Layer::GetInstance()
+
 class Monster;
 class Player;
 class Npc;

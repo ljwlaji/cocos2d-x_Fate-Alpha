@@ -42,7 +42,7 @@ bool Player_Talk_Layer::init()
 Player_Talk_Layer* Player_Talk_Layer::GetInstance()
 {
 	if (!_Player_Talk_Layer)
-		return nullptr;
+		_Player_Talk_Layer = Player_Talk_Layer::create();
 	return _Player_Talk_Layer;
 }
 

@@ -17,16 +17,16 @@ struct ShowingTalkClass
 class Player_Talk_Layer : public Layer
 {
 public:
-	Player_Talk_Layer();
-	~Player_Talk_Layer();
 	static Player_Talk_Layer* GetInstance();
-	CREATE_FUNC(Player_Talk_Layer);
 	void SendMenuToPlayer(std::string MainString);
 	void OnPlayerClickOnTalkClass();
 	void InitTalkClass();
 	void OnPlayerTouchedFrame( uint32 sender, uint32 action);
 	void CloseMenuWithCleanUp(bool cleanup = true);
 private:
+	Player_Talk_Layer();
+	~Player_Talk_Layer();
+	CREATE_FUNC(Player_Talk_Layer);
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
 	virtual void onTouchEnded(Touch *touch, Event *unused_event);
 	Sprite* TalkClassFrame;

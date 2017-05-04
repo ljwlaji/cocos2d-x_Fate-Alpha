@@ -66,13 +66,11 @@ bool MainScene::init()
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);
 
-		Player_Talk_Layer* TalkLayer = Player_Talk_Layer::create();
-		addChild(TalkLayer);
+		addChild(sPlayerTalkLayer);
 
 
-		LoadingLayer = LoadingUILayer::create();
-		LoadingLayer->DisAppear();
-		addChild(LoadingLayer);
+		sLoadingLayer->DisAppear();
+		addChild(sLoadingLayer);
 
 		sNotifyMgr->setLocalZOrder(Notify_Layer_Zorder);
 		addChild(sNotifyMgr);
@@ -231,8 +229,7 @@ void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 			}
 			case Loading_Layer_Tag:
 			{
-				NewLayer = LoadingUILayer::create();
-				addChild(NewLayer);
+				addChild(sLoadingLayer);
 				break;
 			}
 			case Typing_Layer_Tag:
@@ -243,14 +240,12 @@ void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 			}
 			case Chose_Character_Layer_Tag:
 			{
-				NewLayer = Chose_Character_Layer::create();
-				addChild(NewLayer);
+				addChild(sChoseCharacter);
 				break;
 			}
 			case Create_Character_Layer_Tag:
 			{
-				NewLayer = Create_Character_Layer::create();
-				addChild(NewLayer);
+				addChild(sCreate_Character);
 				break;
 			}
 			case Main_Map_Layer_Tag:

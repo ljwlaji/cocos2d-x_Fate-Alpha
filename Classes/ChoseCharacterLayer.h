@@ -32,12 +32,12 @@ enum FadeType
 class Chose_Character_Layer : public Layer
 {
 public:
+	static Chose_Character_Layer* GetInstance();
+private:
 	Chose_Character_Layer();
 	~Chose_Character_Layer();
 	virtual bool init();
 	CREATE_FUNC(Chose_Character_Layer);
-	static Chose_Character_Layer* GetInstance();
-private:
 	virtual void update(float diff);
 	bool LoadCharacters();
 	void InitFrames();

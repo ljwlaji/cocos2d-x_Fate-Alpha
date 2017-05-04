@@ -28,7 +28,7 @@ LoadingUILayer::~LoadingUILayer()
 LoadingUILayer* LoadingUILayer::GetInstance()
 {
 	if (!_LoadingUILayer)
-		return nullptr;
+		_LoadingUILayer = LoadingUILayer::create();
 	return _LoadingUILayer;
 }
 

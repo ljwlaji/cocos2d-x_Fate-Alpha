@@ -11,10 +11,6 @@ USING_NS_CC;
 class LoadingUILayer : public Layer
 {
 public:
-	LoadingUILayer();
-	~LoadingUILayer();
-	virtual bool init();
-	CREATE_FUNC(LoadingUILayer);
 	void Show();
 	void Reset();
 	void SetPretage(uint8 _var)	{ m_TimeBarPrescent = _var; }
@@ -22,6 +18,10 @@ public:
 	Player* GetPlayer()	{ return _Player; }
 	static LoadingUILayer* GetInstance();
 private:
+	LoadingUILayer();
+	~LoadingUILayer();
+	virtual bool init();
+	CREATE_FUNC(LoadingUILayer);
 	virtual void update(float diff);
 	void ResetTimeBar();
 	void InitTimeBar();

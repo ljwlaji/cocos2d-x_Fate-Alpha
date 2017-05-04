@@ -14,11 +14,11 @@ enum CheckMoveTo
 class MovementMgr
 {
 public:
-	MovementMgr();
-	~MovementMgr();
 	static MovementMgr* GetInstance();
 	bool CanMoveTo(Unit* pUnit, CheckMoveTo front, float modify);
 private:
+	MovementMgr();
+	~MovementMgr();
 	bool CheckEdge(Unit* pUnit, CheckMoveTo front);
 };
 
