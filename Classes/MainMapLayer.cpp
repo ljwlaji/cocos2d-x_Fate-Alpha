@@ -107,14 +107,36 @@ void Main_Map_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 	}
 }
 
-bool Main_Map_Layer::SwapMap(int insteadid)
+bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 {
+	if (!insteadid)
+		return false;
 	setTouchEnabled(false);
 	unscheduleUpdate();
 	sLoadingLayer->Show();
-	if (!insteadid)
-		insteadid = m_Mapid;
+	m_Mapid = insteadid;
+	if (!FirstLoad)
+	{
+		stopAllActions();
+		if (sPlayer && sPlayer->getParent())
+		{
+			sPlayer->retain();
+			sPlayer->removeFromParent();
+		}
+	}
 	removeAllChildrenWithCleanup(true);
+	if (!FirstLoad)
+	{
+		addChild(sPlayer);
+		sPlayer->setPosition(Visablesize.x * 0.4f, Visablesize.y * 0.25f);
+		sPlayer->setLocalZOrder(PLAYER_ZORDER);
+		sPlayer->scheduleUpdate();
+	}
+	else
+	{
+		sPlayerUi->setLocalZOrder(UI_LAYER_ZORDER);
+		sGame->addChild(sPlayerUi);
+	}
 	ClearVectors();
 	FillLoadVectors(insteadid);
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
@@ -238,7 +260,7 @@ void Main_Map_Layer::CreateObjects()
 			WaitForLoadingObjectTemplate _template = itr->second.at(itr->second.size() - 1);
 			Sprite* Temp = Sprite::create(_template.url.c_str());
 			if (itr->first == Object_GroundSprite)
-				Temp->SetRealPosition(Temp->getBoundingBox().size.width * 0.5 + (itr->second.size() - 1) * Temp->getBoundingBox().size.width, _template.pos_y);
+				Temp->SetRealPosition(Temp->getBoundingBox().size.width * 0.5 + (itr->second.size() - 1) * Temp->getBoundingBox().size.width, Temp->getBoundingBox().size.height / 2);
 			else
 				Temp->SetRealPosition(_template.pos_x, _template.pos_y);
 			addChild(Temp);
@@ -281,10 +303,17 @@ void Main_Map_Layer::CreateObjects()
 	Size s = Director::getInstance()->getWinSize();
 	runAction(Follow::create(sPlayer, Rect(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), s.height)));
 
-
-	sPlayerUi->setLocalZOrder(UI_LAYER_ZORDER);
-	sGame->addChild(sPlayerUi);
 	NeedCreateObjects = false;
+
+	m_Next_Map_Door = Sprite::create("TeleportDoor.png");
+	m_Next_Map_Door->setScaleX(-1.0f);
+	m_Next_Map_Door->setPosition(m_MapGroundSpriteVector.size() * m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width - m_Next_Map_Door->getBoundingBox().size.width, Visablesize.y * 0.4f);
+	addChild(m_Next_Map_Door);
+
+	m_Older_Map_Door = Sprite::create("TeleportDoor.png");
+	m_Older_Map_Door->setPosition(m_Older_Map_Door->getBoundingBox().size.width, Visablesize.y * 0.4f);
+	addChild(m_Older_Map_Door);
+
 }
 
 void Main_Map_Layer::update(float diff)
@@ -296,6 +325,16 @@ void Main_Map_Layer::update(float diff)
 		CreateObjects();
 		LoadedSize++;
 		return;
+	}
+	else
+	{
+		if (!sPlayer)
+			return;
+
+		if (m_Next_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))
+			SwapMap(m_Mapid + 1, false);
+		else if (m_Older_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))
+			SwapMap(m_Mapid - 1, false);
 	}
 }
 

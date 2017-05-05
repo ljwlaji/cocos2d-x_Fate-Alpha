@@ -12,6 +12,7 @@ Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 	autorelease();
 	m_Castting_Spell = nullptr;
 	m_PlayerTarget_Sign = nullptr;
+
 	for (int i = Max_HP; i != UnitInt32_Value_End; i++)
 		m_UnitInt32Value[(UnitInt32Value)i] = 0;
 	setAnchorPoint(Vec2(0.5f, 0));
@@ -168,8 +169,8 @@ bool Unit::IsInAttackRange(Unit* pTarget)
 
 void Unit::CheckMoveFall()
 {
-	if (sMoveMgr->CanMoveTo(this, Move_To_Down, Base_Falling_Speed))
-		setPositionY(getPositionY() - Base_Falling_Speed);
+	//if (sMoveMgr->CanMoveTo(this, Move_To_Down, Base_Falling_Speed))
+	//	setPositionY(getPositionY() - Base_Falling_Speed);
 }
 
 void Unit::CastSpell(uint32 spellid, Unit* pTarget)

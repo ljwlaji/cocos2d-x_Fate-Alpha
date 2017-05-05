@@ -58,7 +58,7 @@ public:
 	Main_Map_Layer(int MapId);
 	~Main_Map_Layer();
 	static Main_Map_Layer* GetInstance();
-	bool SwapMap(int insteadid);
+	bool SwapMap(int insteadid, bool FirstLoad = true);
 	WaitFroLoadingUnitTemplate GetCreatureTemplate(uint32 guid);
 	Sprite* GetCurrentGroundSprite(int id)		{ int size = m_MapGroundSpriteVector.size(); if (size + 1 <= id) return m_MapGroundSpriteVector.at(id); return nullptr; }
 	std::vector<Sprite*> GetGroundSprites()		{ return m_MapGroundSpriteVector; }
@@ -100,6 +100,9 @@ private:
 
 	Sprite* m_TouchedSprite;
 	TouchedType m_TouchedType;
+
+	Sprite* m_Next_Map_Door;
+	Sprite* m_Older_Map_Door;
 };
 
 #endif
