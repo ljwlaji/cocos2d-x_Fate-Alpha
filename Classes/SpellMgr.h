@@ -54,7 +54,7 @@ struct SpellInfo
 	//技能定义类型
 	Spell_Type SpellType = SpellType_Melee;
 	//技能目标类型
-	SpellTargetType SpellTargetType = SpellTargetType_Self;
+	SpellTargetType Spell_Target_Type = SpellTargetType_Self;
 	//技能作用目标数量
 	uint8 SpellTargetCount = 0;
 	//技能作用类型

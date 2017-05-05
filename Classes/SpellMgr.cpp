@@ -51,7 +51,7 @@ void SpellMgr::LoadSpellTemplate()
 				SpellChainInfo.SpellCastRange			= row.at(4).GetFloat();
 				SpellChainInfo.SpellRealRange			= row.at(5).GetFloat();
 				SpellChainInfo.SpellType				= (Spell_Type)row.at(6).GetInt();
-				SpellChainInfo.SpellTargetType			= (SpellTargetType)row.at(7).GetInt();
+				SpellChainInfo.Spell_Target_Type		= (SpellTargetType)row.at(7).GetInt();
 				SpellChainInfo.SpellTargetCount			= row.at(8).GetInt();
 				SpellChainInfo.EffectType				= (SpellEffectType)row.at(9).GetInt();
 				SpellChainInfo.SpellValue				= row.at(10).GetInt();

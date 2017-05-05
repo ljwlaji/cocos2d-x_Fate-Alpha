@@ -184,7 +184,7 @@ void Unit::CastSpell(uint32 spellid, Unit* pTarget)
 		return;
 
 	//目标判断
-	if (_info.SpellTargetType != SpellTargetType_Empty && !pTarget)
+	if (_info.Spell_Target_Type != SpellTargetType_Empty && !pTarget)
 	{
 		sNotifyMgr->ShowNotify("You Need A Target!");
 		return;
@@ -192,7 +192,7 @@ void Unit::CastSpell(uint32 spellid, Unit* pTarget)
 
 	if (pTarget)
 	{
-		switch (_info.SpellTargetType)
+		switch (_info.Spell_Target_Type)
 		{
 		case SpellTargetType_Self:
 			if (pTarget != this)
@@ -207,7 +207,7 @@ void Unit::CastSpell(uint32 spellid, Unit* pTarget)
 				return;
 		}
 
-		if (_info.SpellTargetType != SpellTargetType_Self && pTarget != this)
+		if (_info.Spell_Target_Type != SpellTargetType_Self && pTarget != this)
 		if (getPosition().getDistance(pTarget->getPosition()) > _info.SpellCastRange)
 		{
 			if (ToPlayer())
