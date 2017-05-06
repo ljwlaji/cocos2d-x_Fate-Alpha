@@ -67,15 +67,15 @@ bool MovementMgr::CheckEdge(Unit* pUnit, CheckMoveTo front)
 			return false;
 		return true;
 	case Move_To_Right:
-		if (pUnit->getBoundingBox().origin.x + pUnit->getBoundingBox().size.width > (sMainMap->GetGroundSprites().at(0)->getBoundingBox().size.width * sMainMap->GetGroundSprites().size()))
+		if (pUnit->getBoundingBox().origin.x + pUnit->getBoundingBox().size.width > sMainMap->GetMapMaxWidth())
 			return false;
 		return true;
 	case Move_To_Up:
-		if (pUnit->getBoundingBox().origin.y + pUnit->getBoundingBox().size.height > Director::getInstance()->getVisibleSize().height)
+		if (pUnit->getBoundingBox().origin.y > Director::getInstance()->getVisibleSize().height * 0.4f)
 			return false;
 		return true;
 	case Move_To_Down:
-		if (pUnit->getBoundingBox().origin.x < 0)
+		if (pUnit->getBoundingBox().origin.y < 0)
 			return false;
 		return true;
 	}

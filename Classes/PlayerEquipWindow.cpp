@@ -11,7 +11,21 @@ PlayerEquipWindow::PlayerEquipWindow()
 	initWithFile(PlayerUIEquipFrame);
 	autorelease();
 	InitWindow();
+	IsTouchedDisPlaySprite = false;
 	setVisible(false);
+}
+
+Slot* PlayerEquipWindow::GetSlotByTouch(Touch* toouch)
+{
+	for (int i = SLOT_WEAPON; i != SLOT_END; i++)
+	{
+		if (Slot* pSlot = (Slot*)getChildByTag(i))
+		{
+			if (pSlot->IsContectPoint(toouch->getLocation()))
+				return pSlot;
+		}
+	}
+	return nullptr;
 }
 
 void PlayerEquipWindow::InitWindow()
@@ -43,12 +57,15 @@ void PlayerEquipWindow::InitWindow()
 void PlayerEquipWindow::onTouchBagBegan(Touch* touches)
 {
 	m_TouchedSprite = nullptr;
+	IsTouchedDisPlaySprite = false;
 
 	for (Vector<Node*>::iterator itr = getChildren().begin(); itr != getChildren().end(); itr++)
 	{
 		if ((*itr)->IsContectPoint(touches->getLocation()))
 		{
 			m_TouchedSprite = (Sprite*)(*itr);
+			if (m_TouchedSprite->getTag() >= SLOT_WEAPON && m_TouchedSprite->getTag() < SLOT_END)
+				m_Start_Move_Position = touches->getLocation();
 			return;
 		}
 	}
@@ -67,30 +84,59 @@ void PlayerEquipWindow::onTouchBagMoved(Touch* touches)
 		sPlayerValueWindow->setPosition(sPlayerValueWindow->getPositionX() + X_Modify, sPlayerValueWindow->getPositionY() + Y_Modify);
 		m_Start_Move_Position = touches->getLocation();
 	}
+	else if (m_TouchedSprite->getTag() >= 0 && m_TouchedSprite->getTag() <= 8)
+	{
+		if (!((Slot*)m_TouchedSprite)->GetItem())
+			return;
+
+		if (Sprite* DisPlaySprite = ((Slot*)m_TouchedSprite)->GetDisPlaySprite())
+		{
+			float X_Modify = touches->getLocation().x - m_Start_Move_Position.x;
+			float Y_Modify = touches->getLocation().y - m_Start_Move_Position.y;
+			DisPlaySprite->setPosition(DisPlaySprite->getPositionX() + X_Modify, DisPlaySprite->getPositionY() + Y_Modify);
+			m_Start_Move_Position = touches->getLocation();
+			IsTouchedDisPlaySprite = true;
+		}
+	}
 }
 
 void PlayerEquipWindow::onTouchBagEnded(Touch* touches)
 {
-	if (!m_TouchedSprite || !m_TouchedSprite->IsContectPoint(touches->getLocation()))
+	if (!m_TouchedSprite)
 		return;
-	switch (m_TouchedSprite->getTag())
+
+	if (IsTouchedDisPlaySprite)
 	{
-	case PlayerEquipWindow::SLOT_WEAPON:
-	case PlayerEquipWindow::SLOT_SECOND_WEAPON:
-	case PlayerEquipWindow::SLOT_AMMOR:
-	case PlayerEquipWindow::SLOT_SHOES:
-	case PlayerEquipWindow::SLOT_RING_1:
-	case PlayerEquipWindow::SLOT_RING_2:
-	case PlayerEquipWindow::SLOT_RING_3:
-	case PlayerEquipWindow::SLOT_RING_4:
-	case PlayerEquipWindow::SLOT_END:
-		OnClickedItemSlot(m_TouchedSprite->getTag());
-		break;
-	case ValueButtonTag:
-		sPlayerValueWindow->isVisible() ? sPlayerValueWindow->setVisible(false) : sPlayerValueWindow->setVisible(true);
-		break;
-	case Name_Frame_Tag:
-		break;
+		Slot* OldSlot = ((Slot*)m_TouchedSprite);
+		Slot* NewSlot = GetSlotByTouch(touches);
+		if (!NewSlot)
+			NewSlot = sPlayerBag->GetSlotByTouch(touches);
+		OldSlot->SwapItem(NewSlot);
+		return;
+	}
+	else
+	{
+		if (!m_TouchedSprite->IsContectPoint(touches->getLocation()))
+			return;
+		switch (m_TouchedSprite->getTag())
+		{
+		case SLOT_WEAPON:
+		case SLOT_SECOND_WEAPON:
+		case SLOT_AMMOR:
+		case SLOT_SHOES:
+		case SLOT_RING_1:
+		case SLOT_RING_2:
+		case SLOT_RING_3:
+		case SLOT_RING_4:
+		case SLOT_END:
+			OnClickedItemSlot(m_TouchedSprite->getTag());
+			break;
+		case ValueButtonTag:
+			sPlayerValueWindow->isVisible() ? sPlayerValueWindow->setVisible(false) : sPlayerValueWindow->setVisible(true);
+			break;
+		case Name_Frame_Tag:
+			break;
+		}
 	}
 }
 
@@ -102,12 +148,14 @@ void PlayerEquipWindow::OnClickedItemSlot(uint32 _tag)
 void PlayerEquipWindow::SwapVisiable()			
 { 
 	if (isVisible())
+	{
 		setVisible(false);
+		sPlayerValueWindow->setVisible(false);
+	}
 	else
 	{
 		setVisible(true);
-		if (!sPlayerValueWindow->isVisible())
-			sPlayerValueWindow->setVisible(true);
+		sPlayerValueWindow->setVisible(true);
 	}
 }
 

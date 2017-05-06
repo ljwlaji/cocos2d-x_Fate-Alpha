@@ -111,6 +111,7 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 {
 	if (!insteadid)
 		return false;
+	m_MaxSize = 0;
 	setTouchEnabled(false);
 	unscheduleUpdate();
 	sLoadingLayer->Show();
@@ -301,13 +302,17 @@ void Main_Map_Layer::CreateObjects()
 	}
 
 	Size s = Director::getInstance()->getWinSize();
-	runAction(Follow::create(sPlayer, Rect(0, 0, m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width * m_MapGroundSpriteVector.size(), s.height)));
+	m_MaxSize = 0;
+	for (int i = 0; i != m_MapGroundSpriteVector.size(); i++)
+		m_MaxSize += m_MapGroundSpriteVector.at(i)->getBoundingBox().size.width;
+
+	runAction(Follow::create(sPlayer, Rect(0, 0, m_MaxSize, s.height)));
 
 	NeedCreateObjects = false;
 
 	m_Next_Map_Door = Sprite::create("TeleportDoor.png");
 	m_Next_Map_Door->setScaleX(-1.0f);
-	m_Next_Map_Door->setPosition(m_MapGroundSpriteVector.size() * m_MapGroundSpriteVector.at(0)->getBoundingBox().size.width - m_Next_Map_Door->getBoundingBox().size.width, Visablesize.y * 0.4f);
+	m_Next_Map_Door->setPosition(m_MaxSize - m_Next_Map_Door->getBoundingBox().size.width * 1.5, Visablesize.y * 0.4f);
 	addChild(m_Next_Map_Door);
 
 	m_Older_Map_Door = Sprite::create("TeleportDoor.png");

@@ -11,7 +11,7 @@ public:
 	ScriptAI(Creature* pCreature);
 	~ScriptAI();
 
-	virtual void UpdateAI(const uint32 diff) 
+	virtual void UpdateAI(const uint32& diff) 
 	{ 
 		int i = 0; 
 	}

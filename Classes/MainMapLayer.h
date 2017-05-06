@@ -62,7 +62,7 @@ public:
 	WaitFroLoadingUnitTemplate GetCreatureTemplate(uint32 guid);
 	Sprite* GetCurrentGroundSprite(int id)		{ int size = m_MapGroundSpriteVector.size(); if (size + 1 <= id) return m_MapGroundSpriteVector.at(id); return nullptr; }
 	std::vector<Sprite*> GetGroundSprites()		{ return m_MapGroundSpriteVector; }
-
+	float GetMapMaxWidth()						{ return m_MaxSize; }
 	Unit* GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget = true, bool CheckAlive = true);
 private:
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
@@ -103,6 +103,8 @@ private:
 
 	Sprite* m_Next_Map_Door;
 	Sprite* m_Older_Map_Door;
+
+	float m_MaxSize;
 };
 
 #endif

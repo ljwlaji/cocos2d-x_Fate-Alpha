@@ -10,24 +10,14 @@ class Slot;
 class PlayerEquipWindow : public Sprite
 {
 public:
+	Slot* GetSlotByTouch(Touch* toouch);
 	static PlayerEquipWindow* GetInstance();
 	void SwapVisiable();
 	void onTouchBagBegan(Touch* touches);
 	void onTouchBagMoved(Touch* touches);
 	void onTouchBagEnded(Touch* touches);
 private:
-	enum PlayerEquipSlots
-	{
-		SLOT_WEAPON,
-		SLOT_SECOND_WEAPON,
-		SLOT_AMMOR,
-		SLOT_SHOES,
-		SLOT_RING_1,
-		SLOT_RING_2,
-		SLOT_RING_3,
-		SLOT_RING_4,
-		SLOT_END,
-	};
+	bool IsTouchedDisPlaySprite;
 	void InitWindow();
 	PlayerEquipWindow();
 	~PlayerEquipWindow();

@@ -3,6 +3,7 @@
 #include "Item.h"
 #include "HelloWorldScene.h"
 #include "SpellBook.h"
+#include "DataMgr.h"
 #include "PlayerEquipWindow.h"
 #pragma execution_character_set("utf-8")
 
@@ -23,8 +24,7 @@ Slot::Slot(const std::string& url)
 
 Slot::~Slot()
 {
-	if (m_DisPlaySprite)
-		m_DisPlaySprite->removeFromParentAndCleanup(true);
+	removeAllChildrenWithCleanup(true);
 }
 
 void Slot::SetItem(Item* pItem)	
@@ -33,15 +33,17 @@ void Slot::SetItem(Item* pItem)
 	{
 		m_Item = nullptr;
 		if (m_DisPlaySprite)
+		{
 			m_DisPlaySprite->removeFromParentAndCleanup(true);
+			m_DisPlaySprite = nullptr;
+		}
 		return;
 	}
 	m_Item = pItem; 
 	if (!m_DisPlaySprite)
 	{
 		m_DisPlaySprite = Sprite::create(pItem->GetIconUrl().c_str());
-		if (getBoundingBox().size.width > 39.0f)
-			m_DisPlaySprite->setScale(getBoundingBox().size.width / 39.0f);
+		m_DisPlaySprite->setScale(getBoundingBox().size.width / m_DisPlaySprite->getBoundingBox().size.width);
 		m_DisPlaySprite->setPosition(getContentSize().width / 2, getContentSize().height / 2);
 		addChild(m_DisPlaySprite);
 	}
@@ -54,12 +56,16 @@ void Slot::SetItem(Item* pItem)
 
 void Slot::SwapItem(Slot* Instead)
 {
-	if (!GetItem() || !Instead)
+	if (!GetItem() || !Instead || Instead == this)
+	{
+		m_DisPlaySprite->setPosition(getContentSize().width / 2, getContentSize().height / 2);
 		return;
+	}
 	Item* NewSlotItem = Instead->GetItem();
 	Item* OldSlotItem = GetItem();
 	if (NewSlotItem)
 		SetItem(NewSlotItem);
+	else SetItem(nullptr);
 	Instead->SetItem(OldSlotItem);
 }
 
@@ -71,6 +77,7 @@ PlayerBag::PlayerBag()
 	InitPage();
 	SwapPage(Page_One);
 	TouchedSprite = nullptr;
+	LoadInventory();
 	setVisible(false);
 }
 
@@ -78,6 +85,63 @@ PlayerBag::~PlayerBag()
 {
 	removeAllChildrenWithCleanup(true);
 	removeFromParentAndCleanup(true);
+}
+
+void PlayerBag::LoadInventory()
+{
+	if (!sPlayer)
+		return;
+	char msg[255];//				0		1		2		3
+	snprintf(msg, 255, "SELECT item_entry,bag_page,bag_slot,count FROM player_inventory WHERE guid = %u", sPlayer->GetGuid());
+	Result result;
+	if (sDataMgr->selectUnitDataList(msg, result))
+	{
+		if (result.empty()) return;
+		else
+		{
+			for (Result::iterator itr = result.begin(); itr != result.end(); itr++)
+			{
+				std::vector<RowInfo> info = itr->second;
+				if (Slot* TempSlot = GetSlotByPageTag(info.at(1).GetInt(), info.at(2).GetInt()))
+				{
+					Item* pItem = Item::CreateItem(info.at(0).GetInt());
+					if (!pItem)
+						continue;
+					pItem->SetCount(info.at(3).GetInt());
+					TempSlot->SetItem(pItem);
+				}
+			}
+		}
+	}
+	
+}
+
+Slot* PlayerBag::GetSlotByPageTag(const uint8& Page, const uint8& SlotTag)
+{
+	Slot* TempSlot = nullptr;
+
+	if (Page < m_PlayerBagPageSprites.size() && SlotTag < SingleSlotTagEnded)
+	{
+		TempSlot = (Slot*)m_PlayerBagPageSprites.at(Page)->getChildByTag(SlotTag);
+	}
+	return TempSlot;
+}
+
+Slot* PlayerBag::GetSlotByTouch(Touch* touches)
+{
+	if (!m_PlayerBagPageSprites.at(m_CurrentPage)->isVisible())
+		return nullptr;
+	Sprite* TempPage = m_PlayerBagPageSprites.at(m_CurrentPage);
+	for (int i = 0; i != SingleSlotTagEnded; i++)
+	{
+		if (Slot* TempSlot = (Slot*)TempPage->getChildByTag(i))
+		{
+			if (!TempSlot->IsContectPoint(touches->getLocation()))
+				continue;
+			return TempSlot;
+		}
+	}
+	return nullptr;
 }
 
 bool PlayerBag::onTouchBagBegan(Touch* touches)
@@ -97,7 +161,7 @@ bool PlayerBag::onTouchBagBegan(Touch* touches)
 		}
 	}
 
-	for (int i = 0; i < m_PlayerBagPageSprites.size(); i++)
+	for (int i = 0; i != m_PlayerBagPageSprites.size(); i++)
 	{
 		if (!m_PlayerBagPageSprites.at(i)->isVisible())
 			continue;
@@ -109,6 +173,7 @@ bool PlayerBag::onTouchBagBegan(Touch* touches)
 				if (TempSlot->IsContectPoint(touches->getLocation()))
 				{
 					m_BagTouchType = Bag_Type_SeleItem;
+					m_Start_Move_Position = touches->getLocation();
 					TouchedSprite = TempSlot;
 					return true;
 				}
@@ -122,6 +187,18 @@ bool PlayerBag::onTouchBagBegan(Touch* touches)
 
 void PlayerBag::onTouchBagMoved(Touch* touches)
 {
+	if (m_BagTouchType == Bag_Type_SeleItem)
+	{
+		Sprite* DisplaySprite = ((Slot*)TouchedSprite)->GetDisPlaySprite();
+		if (DisplaySprite)
+		{
+			float X_Modify = touches->getLocation().x - m_Start_Move_Position.x;
+			float Y_Modify = touches->getLocation().y - m_Start_Move_Position.y;
+			DisplaySprite->setPosition(DisplaySprite->getPositionX() + X_Modify, DisplaySprite->getPositionY() + Y_Modify);
+			m_Start_Move_Position = touches->getLocation();
+			return;
+		}
+	}
 	if (TouchedSprite == this)
 	{
 		float X_Modify = touches->getLocation().x - m_Start_Move_Position.x;
@@ -135,22 +212,19 @@ void PlayerBag::onTouchBagEnded(Touch* touches)
 {
 	if (!TouchedSprite)
 		return;
-	if (!TouchedSprite->IsContectPoint(touches->getLocation()))
-		return;
-
 	switch (m_BagTouchType)
 	{
 	case Bag_Type_SwapPage:
+		if (!TouchedSprite->IsContectPoint(touches->getLocation()))
+			return;
 		SwapPage((PlayerBagPage)TouchedSprite->getTag(), m_CurrentPage);
 		break;
 	case Bag_Type_SeleItem:
-		if (Slot* TempSlot = (Slot*)TouchedSprite)
-		{
-			if (Item* pItem = TempSlot->GetItem())
-			{
-				//Do Sth;
-			}
-		}
+		Slot* OldSlot = ((Slot*)TouchedSprite);
+		Slot* NewSlot = GetSlotByTouch(touches);
+		if (!NewSlot)	
+			NewSlot = sPlayerEquip->GetSlotByTouch(touches);
+		OldSlot->SwapItem(NewSlot);
 		break;
 	}
 }

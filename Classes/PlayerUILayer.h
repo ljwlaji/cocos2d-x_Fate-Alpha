@@ -80,6 +80,7 @@ public:
 	Slot(const std::string& url = "");
 	~Slot();
 	Item* GetItem()				{ return m_Item; }
+	Sprite* GetDisPlaySprite()	{ return m_DisPlaySprite; }
 	void SetItem(Item* pItem = nullptr);
 	void SwapItem(Slot* Instead);
 private:
@@ -97,6 +98,8 @@ public:
 	void onTouchBagMoved(Touch* touches);
 	void onTouchBagEnded(Touch* touches);
 	void SwapVisiable()			{ isVisible() ? setVisible(false) : setVisible(true); }
+	Slot* GetSlotByTouch(Touch* touches);
+	Slot* GetSlotByPageTag(const uint8& Page, const uint8& SlotTag);
 private:
 	enum BagTouchType
 	{
@@ -106,7 +109,7 @@ private:
 	};
 	PlayerBag();
 	~PlayerBag();
-
+	void LoadInventory();
 	Slot* GetSlot(uint8 _Page, uint8 _Slot);
 	void InitPage();
 	void InitEmptySlots(Sprite* SinglePageSprite);

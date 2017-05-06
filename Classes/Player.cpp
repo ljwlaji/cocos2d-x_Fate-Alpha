@@ -49,10 +49,10 @@ Player* Player::GetInstance()
 
 void Player::SetPlayerTarget(Unit* pUnit)
 {
-	if (!pUnit || pUnit->GetPlayerTargetSign() || m_Player_Target == pUnit)
+	if (!pUnit || m_Player_Target == pUnit)
 		return;
 
-	if (m_Player_Target)
+	if (m_Player_Target && m_Player_Target->GetPlayerTargetSign())
 		m_Player_Target->GetPlayerTargetSign()->removeFromParentAndCleanup(true);
 	Sprite* TempSign = Sprite::create("Player_Target_Sign.png");
 	TempSign->setPosition(pUnit->getContentSize().width / 2, 0);

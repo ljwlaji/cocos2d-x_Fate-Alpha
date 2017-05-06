@@ -51,7 +51,7 @@ bool MainScene::init()
 	{
 		CC_BREAK_IF(!Scene::init());
 
-#ifdef WIN32 //Win32下创建键盘监听
+#ifdef WIN32 //Create KeyBoard Listner On Win32
 		KeyBoardListener = EventListenerKeyboard::create();
 		KeyBoardListener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
 		KeyBoardListener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
@@ -63,6 +63,7 @@ bool MainScene::init()
 		LoadUnitClassInfo();
 
 		LoadFactionInfo();
+		LoadItemTemplate();
 		EnterLayer = EnterGameLayer::create();
 		addChild(EnterLayer);
 
@@ -100,6 +101,56 @@ bool MainScene::GetFactionFriendly(uint32 factionA, uint32 FactionB)
 	return false;
 }
 
+void MainScene::LoadItemTemplate()
+{
+	m_ItemTemplate.clear();
+	Result _Result;//							0	1		2		3	4		5			6			7			8				9		10		11			12			13		14				15			16			17		18			19			20			21			22
+	if (sDataMgr->selectUnitDataList("SELECT entry,name,slot_type,url,quality,buy_price,sell_price,require_class,require_level,max_count,item_set,min_damage,max_damage,stat_type1,stat_value1,stat_type2,stat_value2,stat_type3,stat_value3,stat_type4,stat_value4,stat_type5,stat_value5 FROM item_template", _Result))
+	{
+		if (_Result.empty())
+		{
+			char msg[255];
+			snprintf(msg, 255, "ErrDB: LoadMapInfo: Empty Template For Loading Template 'item_template'");
+			sNotifyMgr->ShowNotify(msg);
+			return;
+		}
+		else
+		{
+			std::vector<RowInfo> info;
+			for (Result::iterator ito = _Result.begin(); ito != _Result.end(); ito++)
+			{
+				info = ito->second;
+				ItemTemplate _template;
+				_template.Entry			= info.at(0).GetInt();
+				_template.Name			= info.at(1).GetString();
+				_template.SlotType		= (PlayerEquipSlots)info.at(2).GetInt();
+				_template.Url			= info.at(3).GetString();
+				_template.Quality		= info.at(4).GetInt();
+				_template.BuyPrice		= info.at(5).GetInt();
+				_template.SellPrice		= info.at(6).GetInt();
+				_template.RequireClass	= (UnitClasses)info.at(7).GetInt();
+				_template.RequireLevel	= info.at(8).GetInt();
+				_template.MaxCount		= info.at(9).GetInt();
+				_template.ItemSet		= info.at(10).GetInt();
+				_template.MinDamage		= info.at(11).GetInt();
+				_template.MaxDamage		= info.at(12).GetInt();
+				for (int i = 13, k = 0; i != 23; i++, k++)
+				{
+					_template.Values[k] = info.at(++i).GetInt();
+				}
+				m_ItemTemplate[_template.Entry] = _template;
+			}
+		}
+	}
+}
+
+const ItemTemplate* MainScene::GetItemTemplate(const uint32& entry)
+{
+	if (m_ItemTemplate.find(entry) != m_ItemTemplate.end())
+		return &m_ItemTemplate[entry];
+	return nullptr;
+}
+
 void MainScene::LoadFactionInfo()
 {
 	m_Faction_Friendly_Info.clear();
@@ -111,7 +162,7 @@ void MainScene::LoadFactionInfo()
 		if (_Result.empty())
 		{
 			char msg[255];
-			snprintf(msg, 255, "ErrDB: LoadMapInfo: Empty Template %s For Loading Map 'faction_template'");
+			snprintf(msg, 255, "ErrDB: LoadMapInfo: Empty Template For Loading Map 'faction_template'");
 			sNotifyMgr->ShowNotify(msg);
 			return;
 		}

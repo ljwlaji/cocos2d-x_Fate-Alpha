@@ -28,6 +28,52 @@
 #define Base_Falling_Speed	5.0f
 class Unit;
 typedef std::map<Unit*, float> CreatureThreadList;
+typedef std::map<uint32, uint32> ItemValueInfo;
+
+enum UnitClasses
+{
+	Class_None,
+	Saber,
+	Archer,
+	Caster,
+	Lancer,
+	Assasin,
+	Rider,
+	Avenger,
+	Berserker,
+	Class_End,
+};
+
+enum PlayerEquipSlots
+{
+	SLOT_WEAPON,
+	SLOT_SECOND_WEAPON,
+	SLOT_AMMOR,
+	SLOT_SHOES,
+	SLOT_RING_1,
+	SLOT_RING_2,
+	SLOT_RING_3,
+	SLOT_RING_4,
+	SLOT_END,
+};
+
+struct ItemTemplate
+{
+	uint32 Entry;
+	std::string Name;
+	PlayerEquipSlots SlotType;
+	std::string Url;
+	uint8 Quality;
+	uint32 BuyPrice;
+	uint32 SellPrice;
+	UnitClasses RequireClass;
+	uint32 RequireLevel;
+	uint32 MaxCount;
+	uint32 ItemSet;
+	uint32 MinDamage;
+	uint32 MaxDamage;
+	ItemValueInfo Values;
+};
 
 struct PlayerSpellTemplate
 {
@@ -102,20 +148,6 @@ enum ActionType
 	Air_Sprint					= 6,
 	Move_Run_Right				= 7,
 	Move_Run_Left				= 8,
-};
-
-enum UnitClasses
-{
-	Class_None,
-	Saber,
-	Archer,
-	Caster,
-	Lancer,
-	Assasin,
-	Rider,
-	Avenger,
-	Berserker,
-	Class_End,
 };
 
 struct CharacterEnumInfo

@@ -28,7 +28,7 @@ struct TestAI_One : public ScriptAI
 		pPlayer->CLOSE_GOSSIP_MENU();
 	}
 
-	void UpdateAI(const uint32 diff)
+	void UpdateAI(const uint32& diff)
 	{
 		if (!me()->UpdateVictim())
 			return;
