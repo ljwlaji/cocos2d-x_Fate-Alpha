@@ -67,6 +67,7 @@ public:
 private:
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
 	virtual void onTouchEnded(Touch *touch, Event *unused_event);
+	void ReCheckZorder();
 	void ClearVectors();
 	void FillLoadVectors(int mapid);
 	void CreateObjects();
@@ -105,6 +106,9 @@ private:
 	Sprite* m_Older_Map_Door;
 
 	float m_MaxSize;
+	std::list<Unit*> CalcZorderList;
+	std::list<Unit*>::iterator Listitr;
+	float m_CheckZorderTimer = 1.0f;
 };
 
 #endif

@@ -75,6 +75,7 @@ public:
 	virtual void DestorySelf()									{ removeFromParentAndCleanup(true); }
 	void SetMoney(uint32 _var)									{ m_Money = _var; }
 	void SetPlayerTarget(Unit* pUnit);
+	void ReSetPlayerTarget();
 	TalkClass* PlayerTalkClass;
 private:
 	ActionType m_Action;

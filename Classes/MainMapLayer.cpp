@@ -61,7 +61,7 @@ bool Main_Map_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 	{
 		if (Sprite* Temp = m_NpcVector.at(i))
 		{
-			if (Temp->getBoundingBox().containsPoint(touch->getLocation()))
+			if (Temp->IsContectPoint(touch->getLocation()))
 			{
 				m_TouchedType = Touch_Npc;
 				m_TouchedSprite = Temp;
@@ -73,7 +73,7 @@ bool Main_Map_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 	{
 		if (Sprite* Temp = m_MonsterVector.at(i))
 		{
-			if (Temp->getBoundingBox().containsPoint(touch->getLocation()))
+			if (Temp->IsContectPoint(touch->getLocation()))
 			{
 				m_TouchedType = Touch_Monster;
 				m_TouchedSprite = Temp;
@@ -111,6 +111,7 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 {
 	if (!insteadid)
 		return false;
+	sPlayer->ReSetPlayerTarget();
 	m_MaxSize = 0;
 	setTouchEnabled(false);
 	unscheduleUpdate();
@@ -321,6 +322,27 @@ void Main_Map_Layer::CreateObjects()
 
 }
 
+bool GetBigger(const Unit*a, const Unit*b)
+{
+	return a->getBoundingBox().origin.y > b->getBoundingBox().origin.y;
+}
+
+void Main_Map_Layer::ReCheckZorder()
+{
+	CalcZorderList.clear();
+	for (int i = 0; i != m_NpcVector.size(); i++)
+		CalcZorderList.push_back(m_NpcVector.at(i));
+	for (int i = 0; i != m_MonsterVector.size(); i++)
+		CalcZorderList.push_back(m_MonsterVector.at(i));
+	if (sPlayer)
+		CalcZorderList.push_back(sPlayer);
+
+	CalcZorderList.sort(GetBigger);
+	int Zorder = 100;
+	for (Listitr = CalcZorderList.begin(); Listitr != CalcZorderList.end(); Listitr++, Zorder++)
+		(*Listitr)->setZOrder(Zorder);
+}
+
 void Main_Map_Layer::update(float diff)
 {
 	if (NeedCreateObjects)
@@ -340,6 +362,13 @@ void Main_Map_Layer::update(float diff)
 			SwapMap(m_Mapid + 1, false);
 		else if (m_Older_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))
 			SwapMap(m_Mapid - 1, false);
+
+		if (m_CheckZorderTimer <= diff)
+		{
+			ReCheckZorder();
+			m_CheckZorderTimer = 1.0f;
+		}
+		else m_CheckZorderTimer -= diff;
 	}
 }
 

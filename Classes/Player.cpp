@@ -56,8 +56,19 @@ void Player::SetPlayerTarget(Unit* pUnit)
 		m_Player_Target->GetPlayerTargetSign()->removeFromParentAndCleanup(true);
 	Sprite* TempSign = Sprite::create("Player_Target_Sign.png");
 	TempSign->setPosition(pUnit->getContentSize().width / 2, 0);
+	pUnit->SetPlayerTargetSign(TempSign);
 	pUnit->addChild(TempSign);
 	m_Player_Target = pUnit;
+}
+
+void Player::ReSetPlayerTarget()
+{
+	if (m_Player_Target)
+	{
+		m_Player_Target->GetPlayerTargetSign()->removeFromParentAndCleanup(true);
+		m_Player_Target->ResetPlayerTargetSign();
+		m_Player_Target = nullptr;
+	}
 }
 
 void Player::CloseGossipMenu()

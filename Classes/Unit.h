@@ -87,6 +87,8 @@ public:
 	Unit* UpdateVictim()									{ return m_Target; }
 	Sprite* GetPlayerTargetSign()							{ return m_PlayerTarget_Sign; }
 	Spell* GetCastingSpell()								{ return m_Castting_Spell; }
+	void ResetPlayerTargetSign()							{ m_PlayerTarget_Sign = nullptr; }
+	void SetPlayerTargetSign(Sprite* sign)					{ m_PlayerTarget_Sign = sign; }
 	void SetCastingSpell(Spell* pSpell)						{ m_Castting_Spell = pSpell; }
 	void SetTypeId(TypeID _var)								{ m_TypeId = _var; }
 	void SetFaction(uint32 faction)							{ SetUnitInt32Value(Faction, faction); }
