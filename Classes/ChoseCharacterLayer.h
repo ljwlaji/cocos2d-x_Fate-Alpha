@@ -64,6 +64,7 @@ private:
 	ParticleSystem* p;
 	CharacterEnumInfo m_ChosedInfo;
 	TouchType m_TouchType;
+	EventListenerTouchOneByOne* listener;
 };
 
 

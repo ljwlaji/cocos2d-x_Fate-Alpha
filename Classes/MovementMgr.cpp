@@ -8,6 +8,7 @@ MovementMgr::MovementMgr()
 
 MovementMgr::~MovementMgr()
 {
+	sMovement = nullptr;
 }
 
 MovementMgr* MovementMgr::GetInstance()

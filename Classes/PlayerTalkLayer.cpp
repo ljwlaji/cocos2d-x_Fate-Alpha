@@ -18,6 +18,7 @@ Player_Talk_Layer::Player_Talk_Layer()
 
 Player_Talk_Layer::~Player_Talk_Layer()
 {
+	_Player_Talk_Layer = nullptr;
 	removeAllChildrenWithCleanup(true);
 }
 
@@ -28,11 +29,11 @@ bool Player_Talk_Layer::init()
 	{
 		CC_BREAK_IF(!Layer::init());
 		InitTalkClass();
-		auto listener = EventListenerTouchOneByOne::create();
-		listener->setSwallowTouches(true);
-		listener->onTouchBegan = CC_CALLBACK_2(Player_Talk_Layer::onTouchBegan, this);
-		listener->onTouchEnded = CC_CALLBACK_2(Player_Talk_Layer::onTouchEnded, this);
-		_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+		//auto listener = EventListenerTouchOneByOne::create();
+		//listener->setSwallowTouches(true);
+		//listener->onTouchBegan = CC_CALLBACK_2(Player_Talk_Layer::onTouchBegan, this);
+		//listener->onTouchEnded = CC_CALLBACK_2(Player_Talk_Layer::onTouchEnded, this);
+		//_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 		bRef = true;
 	} while (0);
 

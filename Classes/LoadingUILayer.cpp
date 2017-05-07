@@ -23,6 +23,7 @@ LoadingUILayer::LoadingUILayer()
 
 LoadingUILayer::~LoadingUILayer()
 {
+	_LoadingUILayer = nullptr;
 }
 
 LoadingUILayer* LoadingUILayer::GetInstance()

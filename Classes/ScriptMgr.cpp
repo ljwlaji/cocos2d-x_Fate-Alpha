@@ -10,7 +10,7 @@ ScriptMgr::ScriptMgr()
 
 ScriptMgr::~ScriptMgr()
 {
-
+	_ScriptMgr = nullptr;
 }
 
 ScriptMgr* ScriptMgr::GetInstance()

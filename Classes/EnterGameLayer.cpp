@@ -16,7 +16,7 @@ EnterGameLayer::EnterGameLayer()
 
 EnterGameLayer::~EnterGameLayer()
 {
-
+	_eventDispatcher->removeEventListener(listener);
 }
 
 bool EnterGameLayer::init()
@@ -257,7 +257,7 @@ void EnterGameLayer::InitDiffcuteMenu()
 
 void EnterGameLayer::InitListener()
 {
-	auto listener = EventListenerTouchOneByOne::create();
+	listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(EnterGameLayer::onTouchBegan, this);
 	listener->onTouchEnded = CC_CALLBACK_2(EnterGameLayer::onTouchEnded, this);

@@ -17,6 +17,7 @@ SpellSlot::SpellSlot(const char* url)
 
 SpellSlot::~SpellSlot()
 {
+
 }
 
 void SpellSlot::SetSlotSpell(const SpellInfo& _SpellInfo)
@@ -51,6 +52,7 @@ SpellBook::SpellBook()
 
 SpellBook::~SpellBook()
 {
+	_SpellBook = nullptr;
 }
 
 void SpellBook::LoadPlayerSpells()

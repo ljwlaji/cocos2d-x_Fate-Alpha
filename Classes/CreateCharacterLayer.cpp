@@ -20,6 +20,7 @@ Create_Character_Layer::~Create_Character_Layer()
 {
 	removeAllChildrenWithCleanup(true);
 	_Create_Character_Layer = nullptr;
+	_eventDispatcher->removeEventListener(listener);
 }
 
 bool Create_Character_Layer::init()
@@ -99,7 +100,7 @@ void Create_Character_Layer::InitFrame()
 	NameTyping->setPosition(CreateNameFrame->getPositionX(), CreateNameFrame->getPositionY() + NameTyping->getBoundingBox().size.height * 0.5f);//().width / 2, CreateNameFrame->getContentSize().height / 2);
 	addChild(NameTyping);
 
-	auto listener = EventListenerTouchOneByOne::create();
+	listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(Create_Character_Layer::onTouchBegan, this);
 	listener->onTouchEnded = CC_CALLBACK_2(Create_Character_Layer::onTouchEnded, this);

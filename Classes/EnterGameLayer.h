@@ -65,6 +65,7 @@ private:
 	int m_TouchedButton;
 	Vec2 Visablesize;
 	Vec2 OrginSize;
+	EventListenerTouchOneByOne* listener;
 };
 
 

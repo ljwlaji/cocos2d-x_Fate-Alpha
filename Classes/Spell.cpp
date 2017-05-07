@@ -3,18 +3,15 @@
 #include "NotifyMgr.h"
 Spell::Spell(Unit* caster, Unit* pTarget, const SpellInfo& _info)
 {
-	initWithFile("1.png");
-	autorelease();
-	caster->addChild(this);
+	caster->SetCastingSpell(this);
 	m_SpellInfo = _info;
 	m_caster = caster;
 	m_Target = pTarget;
 	m_status = STATUS_CASTING;
-
+	m_Spell_Total_Casting_Time = _info.SpellCastTime;
 	m_caster->SetMoveType(MoveType_Actioning);
 	m_caster->GetVision()->clearTracks();
 	m_caster->GetVision()->setAnimation(0, _info.SpellActionName.c_str(), false);
-	scheduleUpdate();
 }
 
 Spell::~Spell()
@@ -52,19 +49,20 @@ void Spell::FillTargetMap()
 
 void Spell::cancel()
 {
+	sNotifyMgr->ShowNotify("Spell Canceled");
 	m_caster->SetCastingSpell(nullptr);
-	removeFromParentAndCleanup(true);
+	delete this;
 	//仅内存清理 重置CD时间
 }
 
 void Spell::finish()
 {
 	m_caster->SetCastingSpell(nullptr);
-	removeFromParentAndCleanup(true);
+	delete this;
 	//做降低使用XX动作 及内存清理 不重置CD时间
 }
 
-void Spell::update(float diff)
+void Spell::update(const float& diff)
 {
 	switch (m_status)
 	{

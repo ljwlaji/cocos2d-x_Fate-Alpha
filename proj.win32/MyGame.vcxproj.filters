@@ -85,6 +85,9 @@
     <Filter Include="src\Layers\PlayerUILayer\PlayerEquip">
       <UniqueIdentifier>{dda2382d-2a4b-4948-84c2-a8433269070b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\SettingSprite">
+      <UniqueIdentifier>{79535210-e47d-4d42-9270-4fd2d714891d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -186,6 +189,9 @@
     <ClCompile Include="..\Classes\PlayerEquipWindow.cpp">
       <Filter>src\Layers\PlayerUILayer\PlayerEquip</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\PlayerUISettingSprite.cpp">
+      <Filter>src\Layers\PlayerUILayer\SettingSprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -283,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\PlayerEquipWindow.h">
       <Filter>src\Layers\PlayerUILayer\PlayerEquip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PlayerUISettingSprite.h">
+      <Filter>src\Layers\PlayerUILayer\SettingSprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

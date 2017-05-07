@@ -109,6 +109,7 @@ private:
 	std::list<Unit*> CalcZorderList;
 	std::list<Unit*>::iterator Listitr;
 	float m_CheckZorderTimer = 1.0f;
+	EventListenerTouchOneByOne* listener;
 };
 
 #endif

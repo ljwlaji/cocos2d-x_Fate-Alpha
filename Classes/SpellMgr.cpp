@@ -10,6 +10,7 @@ SpellMgr::SpellMgr()
 
 SpellMgr::~SpellMgr()
 {
+	_SpellMgr = nullptr;
 }
 
 void SpellMgr::Init()

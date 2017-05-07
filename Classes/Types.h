@@ -238,6 +238,31 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define PlayerUISpellDefaultFrame		"Player_UI_SpellBook_Default_Frame.png"
 #define SpellInfoText
 #define PlayerUIButtonSpellBarImage		"Player_UI_ButtomSpell_Bar.png"
+
+#define PlayerUICharacterHeadImage			"Player_UI_Character_Head.png"
+#define PlayerUICharacterHPFrameImage		"Player_UI_Character_HP_Frame.png"
+#define PlayerUICharacterHPProccessImage	"Player_UI_Character_HP_score.png"
+#define PlayerUICharacterMPFrameImage		"Player_UI_Character_MP_Frame.png"
+#define PlayerUICharacterMPPorccessImage	"Player_UI_Character_MP_Score.png"
+#define PlayerUICastingBarImage				"Player_UI_Casting.png"
+#define PlayerUICastingBarFrame				"Player_UI_Character_Casting_Frame.png"
+#define PlayerUICastingBarPorccessImage		"Player_UI_Character_Casting_Score.png"
+
+
+#define PlayerUISettingMenuFrame			"Player_Setting_UI_Setting_Frame.png"
+#define PlayerUISettingMenuButtonNormal		"Player_Setting_UI_Normal_Frame.png"
+#define PlayerUISettingMenuButtonSelected	"Player_Setting_UI_Selected_Frame.png"
+
+enum SettingButtonTag
+{
+	TAG_RESUME_GAME = 1,
+	TAG_EXIT_GAME,
+	TAG_LOG_OUT,
+	TAG_GAME_SETTING,
+	TAG_SYS_SETTING,
+	MaxSettingButton,
+};
+
 #define MaxButtomSpellBarSlot			8
 #define SingleSlotTagStart				1
 #define SingleSlotTagEnded				73

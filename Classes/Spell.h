@@ -5,11 +5,14 @@
 #include "SpellMgr.h"
 USING_NS_CC;
 
-class Spell : public Sprite
+class Spell
 {
 public:
 	Spell(Unit* _caster, Unit* pTarget, const SpellInfo& _info);
 	~Spell();
+	float GetSpellTotalCastTime()	{ return m_Spell_Total_Casting_Time; }
+	float GetSpellCurrentTimeLeft()	{ return m_SpellInfo.SpellCastTime; }
+	void update(const float& diff);
 private:
 	enum SpellStatus
 	{
@@ -19,7 +22,6 @@ private:
 	};
 	void cast();
 	void FillTargetMap();
-	virtual void update(float diff);
 	SpellInfo m_SpellInfo;
 	void cancel();
 	void finish();
@@ -27,6 +29,7 @@ private:
 	Unit* m_Target;
 	Unit* m_caster;
 	SpellStatus m_status;
+	float m_Spell_Total_Casting_Time;
 };
 
 #endif

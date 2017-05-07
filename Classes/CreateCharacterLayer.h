@@ -36,6 +36,7 @@ private:
 	std::vector<Sprite*> ClassFrame;
 	Vec2 ReturnPos;
 	std::string CreateName;
+	EventListenerTouchOneByOne* listener;
 };
 
 

@@ -18,8 +18,8 @@ enum UnitInt32Value
 {
 	Max_HP,
 	Curr_HP,
-	Max_Rage,
-	Curr_Rage,
+	Max_Mana,
+	Curr_Mana,
 	Base_Def,
 	Base_Str,
 	Base_Dex,

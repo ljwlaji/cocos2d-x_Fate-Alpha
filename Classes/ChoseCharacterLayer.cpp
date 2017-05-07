@@ -21,8 +21,9 @@ Chose_Character_Layer::Chose_Character_Layer()
 
 Chose_Character_Layer::~Chose_Character_Layer()
 {
-	removeAllChildrenWithCleanup(true);
 	_Chose_Character_Layer = nullptr;
+	_eventDispatcher->removeEventListener(listener);
+	removeAllChildrenWithCleanup(true);
 }
 
 bool Chose_Character_Layer::init()
@@ -35,7 +36,7 @@ bool Chose_Character_Layer::init()
 		//if (TotalCharacterCount)
 		//	SetChoseedCharacter(CharacterEnumMap.begin()->second.guid);
 		InitFrames();
-		auto listener = EventListenerTouchOneByOne::create();
+		listener = EventListenerTouchOneByOne::create();
 		listener->setSwallowTouches(true);
 		listener->onTouchBegan = CC_CALLBACK_2(Chose_Character_Layer::onTouchBegan, this);
 		listener->onTouchEnded = CC_CALLBACK_2(Chose_Character_Layer::onTouchEnded, this);

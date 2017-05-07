@@ -12,7 +12,7 @@ Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 	autorelease();
 	m_Castting_Spell = nullptr;
 	m_PlayerTarget_Sign = nullptr;
-
+	m_DeathStatus = Alive;
 	for (int i = Max_HP; i != UnitInt32_Value_End; i++)
 		m_UnitInt32Value[(UnitInt32Value)i] = 0;
 	setAnchorPoint(Vec2(0.5f, 0));
@@ -31,6 +31,8 @@ Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 
 Unit::~Unit()
 {
+	if (m_Castting_Spell)
+		delete m_Castting_Spell;
 	removeAllChildrenWithCleanup(true);
 }
 

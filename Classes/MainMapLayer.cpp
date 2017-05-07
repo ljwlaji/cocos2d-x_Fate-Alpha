@@ -28,7 +28,7 @@ Main_Map_Layer::Main_Map_Layer(int MapId)
 		m_WaitForLoadingObjects[(MapObjectType)i] = TempSprite;
 	}
 	SwapMap(m_Mapid);
-	auto listener = EventListenerTouchOneByOne::create();
+	listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(Main_Map_Layer::onTouchBegan, this);
 	listener->onTouchEnded = CC_CALLBACK_2(Main_Map_Layer::onTouchEnded, this);
@@ -40,6 +40,7 @@ Main_Map_Layer::Main_Map_Layer(int MapId)
 Main_Map_Layer::~Main_Map_Layer()
 {
 	_Main_Map_Layer = nullptr;
+	_eventDispatcher->removeEventListener(listener);
 }
 
 Main_Map_Layer* Main_Map_Layer::GetInstance()
@@ -111,7 +112,6 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 {
 	if (!insteadid)
 		return false;
-	sPlayer->ReSetPlayerTarget();
 	m_MaxSize = 0;
 	setTouchEnabled(false);
 	unscheduleUpdate();
@@ -119,6 +119,7 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 	m_Mapid = insteadid;
 	if (!FirstLoad)
 	{
+		sPlayer->ReSetPlayerTarget();
 		stopAllActions();
 		if (sPlayer && sPlayer->getParent())
 		{
@@ -340,7 +341,7 @@ void Main_Map_Layer::ReCheckZorder()
 	CalcZorderList.sort(GetBigger);
 	int Zorder = 100;
 	for (Listitr = CalcZorderList.begin(); Listitr != CalcZorderList.end(); Listitr++, Zorder++)
-		(*Listitr)->setZOrder(Zorder);
+		(*Listitr)->setLocalZOrder(Zorder);
 }
 
 void Main_Map_Layer::update(float diff)

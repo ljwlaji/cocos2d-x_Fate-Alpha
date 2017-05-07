@@ -4,6 +4,7 @@
 #include "HelloWorldScene.h"
 #include "PlayerTalkLayer.h"
 #include "SpellMgr.h"
+#include "Spell.h"
 
 static Player* _player = nullptr;
 
@@ -37,6 +38,7 @@ Player::~Player()
 {
 	if (_ActionMgr)
 		delete _ActionMgr;
+	_player = nullptr;
 }
 
 Player* Player::GetInstance()
@@ -210,6 +212,8 @@ void Player::UpdateMoveStatus()
 
 void Player::update(float diff)
 {
+	if (GetCastingSpell())
+		GetCastingSpell()->update(diff);
 	UpdateMoveStatus();
 
 	//Clear Key

@@ -161,6 +161,7 @@ void PlayerEquipWindow::SwapVisiable()
 
 PlayerEquipWindow::~PlayerEquipWindow()
 {
+	_PlayerEquipWindow = nullptr;
 }
 
 PlayerEquipWindow* PlayerEquipWindow::GetInstance()
@@ -180,6 +181,7 @@ PlayerEuqipValueWindow::PlayerEuqipValueWindow()
 
 PlayerEuqipValueWindow::~PlayerEuqipValueWindow()
 {
+	_PlayerEuqipValueWindow = nullptr;
 }
 
 

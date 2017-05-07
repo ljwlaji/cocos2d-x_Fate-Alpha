@@ -11,6 +11,7 @@ NotifyMgr::NotifyMgr()
 
 NotifyMgr::~NotifyMgr()
 {
+	_NotifyMgr = nullptr;
 }
 
 bool NotifyMgr::init()
@@ -35,11 +36,14 @@ NotifyMgr* NotifyMgr::GetInstance()
 void NotifyMgr::ShowNotify(const char* args)
 {
 	LabelTTF* Temp = LabelTTF::create(args, "Arial", 20);
-	NotifyQueue.push_back(Temp);
-	CCDelayTime* pdelay = CCDelayTime::create(13.0f);
+	Temp->setColor(ccc3(255, 0, 0));
+	CCDelayTime* pdelay = CCDelayTime::create(2.0f);
 	CCFadeOut* pFadeOut = CCFadeOut::create(1.0f);
 	CCSequence* spawn = CCSequence::create(pdelay, pFadeOut, CallFunc::create(CC_CALLBACK_0(NotifyMgr::DestorySingleNotifyText, this, Temp)), NULL);
-	Temp->SetRealPosition(visablesize.x - Temp->getBoundingBox().size.width, NotifyQueue.size() * Temp->getBoundingBox().size.height);
+	Temp->SetRealPosition(visablesize.x / 2, visablesize.y * 0.85f + Temp->getBoundingBox().size.height);
+	for (int i = 0; i != NotifyQueue.size(); i++)
+		NotifyQueue.at(i)->setPositionY(NotifyQueue.at(i)->getPositionY() + Temp->getBoundingBox().size.height);
+	NotifyQueue.push_back(Temp);
 	addChild(Temp);
 	Temp->runAction(spawn);
 }
@@ -51,6 +55,7 @@ void NotifyMgr::DestorySingleNotifyText(LabelTTF* pLabelTTF)
 		if (*i == pLabelTTF)
 		{
 			NotifyQueue.erase(i);
+			pLabelTTF->removeFromParentAndCleanup(true);
 			break;
 		}
 	}

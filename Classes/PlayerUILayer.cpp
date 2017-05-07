@@ -5,6 +5,9 @@
 #include "SpellBook.h"
 #include "DataMgr.h"
 #include "PlayerEquipWindow.h"
+#include "Spell.h"
+#include "PlayerUISettingSprite.h"
+
 #pragma execution_character_set("utf-8")
 
 static PlayerBag* _PlayerBag = nullptr;
@@ -58,7 +61,8 @@ void Slot::SwapItem(Slot* Instead)
 {
 	if (!GetItem() || !Instead || Instead == this)
 	{
-		m_DisPlaySprite->setPosition(getContentSize().width / 2, getContentSize().height / 2);
+		if (m_DisPlaySprite)
+			m_DisPlaySprite->setPosition(getContentSize().width / 2, getContentSize().height / 2);
 		return;
 	}
 	Item* NewSlotItem = Instead->GetItem();
@@ -85,6 +89,7 @@ PlayerBag::~PlayerBag()
 {
 	removeAllChildrenWithCleanup(true);
 	removeFromParentAndCleanup(true);
+	_PlayerBag = nullptr;
 }
 
 void PlayerBag::LoadInventory()
@@ -318,7 +323,6 @@ PlayerBag* PlayerBag::GetInstance()
 								/////////////////
 PlayerUILayer::PlayerUILayer()
 {
-	_PlayerUILayer = this;
 	visiablesize = Director::getInstance()->getVisibleSize();
 	m_VirtualRokerLayer = nullptr;
 	m_VirtualRoker_BackGround = nullptr;
@@ -330,6 +334,7 @@ PlayerUILayer::PlayerUILayer()
 
 PlayerUILayer::~PlayerUILayer()
 {
+	_PlayerUILayer = nullptr;
 }
 
 PlayerUILayer* PlayerUILayer::GetInstance()
@@ -366,6 +371,9 @@ bool PlayerUILayer::init()
 
 		sPlayerSpellBook->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sPlayerSpellBook);
+
+		sSettingMenu->setPosition(visiablesize.x / 2, visiablesize.y / 2);
+		addChild(sSettingMenu);
 
 		InitSpellDefaultFrame();
 
@@ -464,7 +472,7 @@ void PlayerUILayer::SwapButtomMenuType()
 	CanTouchButton = false;
 	if (m_Buttom_Menus.at(0)._sprite->getPositionX() == m_ButtomMenu->getPositionX())
 	{
-		for (int i = 0; i < m_Buttom_Menus.size(); i++)
+		for (int i = 0; i != m_Buttom_Menus.size(); i++)
 		{
 			Sprite* TempSprite = m_Buttom_Menus.at(i)._sprite;
 			TempSprite->runAction(MoveTo::create(0.3f, m_Buttom_Menus.at(i).Loc));
@@ -473,7 +481,7 @@ void PlayerUILayer::SwapButtomMenuType()
 	}
 	else
 	{
-		for (int i = 0; i < m_Buttom_Menus.size(); i++)
+		for (int i = 0; i != m_Buttom_Menus.size(); i++)
 		{
 			Sprite* TempSprite = m_Buttom_Menus.at(i)._sprite;
 			TempSprite->runAction(MoveTo::create(0.3f, m_ButtomMenu->getPosition()));
@@ -514,27 +522,64 @@ void PlayerUILayer::InitButtomMenu()
 
 void PlayerUILayer::InitUI()
 {
-	m_Player_Info_UI = Sprite::create("Player_UI_Info.png");
+	//Character Head
+	m_Player_Info_UI = Sprite::create(PlayerUICharacterHeadImage);
 	m_Player_Info_UI->SetRealPosition(m_Player_Info_UI->getBoundingBox().size.width / 2, visiablesize.y - m_Player_Info_UI->getBoundingBox().size.height / 2);
-	addChild(m_Player_Info_UI);
 
-
-	m_Player_Info_UI_Hp = ProgressTimer::create(Sprite::create("Player_UI_Info_HP.png"));
-	m_Player_Info_UI_Hp->setPosition(m_Player_Info_UI->getContentSize().width * 0.70f, m_Player_Info_UI->getContentSize().height * 0.4f);
+	//Character Heath
+	m_Player_Info_UI_Hp_Back = Sprite::create(PlayerUICharacterHPFrameImage);
+	m_Player_Info_UI_Hp_Back->SetRealPosition(m_Player_Info_UI->getPositionX() + m_Player_Info_UI->getBoundingBox().size.width * 0.2f, m_Player_Info_UI->getPositionY() + m_Player_Info_UI_Hp_Back->getBoundingBox().size.height * 0.45f);
+	m_Player_Info_UI_Hp_Back->setAnchorPoint(Vec2(0, 0.5f));
+	addChild(m_Player_Info_UI_Hp_Back);
+	m_Player_Info_UI_Hp = ProgressTimer::create(Sprite::create(PlayerUICharacterHPProccessImage));
+	m_Player_Info_UI_Hp->setPosition(m_Player_Info_UI_Hp_Back->getContentSize().width * 0.05f, m_Player_Info_UI_Hp_Back->getContentSize().height / 2);
+	m_Player_Info_UI_Hp->setAnchorPoint(Vec2(0, 0.5f));
 	m_Player_Info_UI_Hp->setPercentage(0);
 	m_Player_Info_UI_Hp->setBarChangeRate(Vec2(1, 0));
 	m_Player_Info_UI_Hp->setMidpoint(Vec2(0, 0));
 	m_Player_Info_UI_Hp->setType(ProgressTimer::Type::BAR);
-	m_Player_Info_UI_Hp_Back = Sprite::create("Player_UI_Info_HP_Back.png");
-	m_Player_Info_UI_Hp_Back->setPosition(m_Player_Info_UI_Hp->getPosition());
-	m_Player_Info_UI->addChild(m_Player_Info_UI_Hp_Back);
-	m_Player_Info_UI->addChild(m_Player_Info_UI_Hp);
+	m_Player_Info_UI_Hp_Back->addChild(m_Player_Info_UI_Hp);
 
+	//Character Mana
+	m_Player_Info_UI_MP_Back = Sprite::create(PlayerUICharacterMPFrameImage);
+	m_Player_Info_UI_MP_Back->SetRealPosition(m_Player_Info_UI->getPositionX() + m_Player_Info_UI->getBoundingBox().size.width * 0.2f, m_Player_Info_UI->getPositionY() - m_Player_Info_UI_MP_Back->getBoundingBox().size.height * 0.45f);
+	m_Player_Info_UI_MP_Back->setAnchorPoint(Vec2(0, 0.5f));
+	addChild(m_Player_Info_UI_MP_Back);
+	m_Player_Info_UI_Mp = ProgressTimer::create(Sprite::create(PlayerUICharacterMPPorccessImage));
+	m_Player_Info_UI_Mp->setPosition(m_Player_Info_UI_Hp_Back->getContentSize().width * 0.05f, m_Player_Info_UI_Hp_Back->getContentSize().height / 2);
+	m_Player_Info_UI_Mp->setAnchorPoint(Vec2(0, 0.5f));
+	m_Player_Info_UI_Mp->setPercentage(0);
+	m_Player_Info_UI_Mp->setBarChangeRate(Vec2(1, 0));
+	m_Player_Info_UI_Mp->setMidpoint(Vec2(0, 0));
+	m_Player_Info_UI_Mp->setType(ProgressTimer::Type::BAR);
+	m_Player_Info_UI_MP_Back->addChild(m_Player_Info_UI_Mp);
+
+	addChild(m_Player_Info_UI);
+
+	m_Player_Info_Casting_Bar_Icon = Sprite::create(PlayerUICastingBarImage);
+	m_Player_Info_Casting_Bar_Icon->SetRealPosition(visiablesize.x * 0.45f, visiablesize.y * 0.13f);
+
+	m_Player_Info_Casting_Bar_Frame = Sprite::create(PlayerUICastingBarFrame);
+	m_Player_Info_Casting_Bar_Frame->SetRealPosition(m_Player_Info_Casting_Bar_Icon->getPositionX() - m_Player_Info_Casting_Bar_Icon->getBoundingBox().size.width * 0.2f, m_Player_Info_Casting_Bar_Icon->getPositionY() - m_Player_Info_Casting_Bar_Icon->getBoundingBox().size.height * 0.05f);
+	m_Player_Info_Casting_Bar_Frame->setAnchorPoint(Vec2(0, 0.5f));
+	addChild(m_Player_Info_Casting_Bar_Frame);
+
+	m_Player_Info_Casting_Bar = ProgressTimer::create(Sprite::create(PlayerUICastingBarPorccessImage));
+	m_Player_Info_Casting_Bar->setAnchorPoint(Vec2(0, 0.5f));
+	m_Player_Info_Casting_Bar->setPercentage(0);
+	m_Player_Info_Casting_Bar->setBarChangeRate(Vec2(1, 0));
+	m_Player_Info_Casting_Bar->setMidpoint(Vec2(0, 0));
+	m_Player_Info_Casting_Bar->setType(ProgressTimer::Type::BAR);
+	m_Player_Info_Casting_Bar->setPosition(m_Player_Info_Casting_Bar_Frame->getBoundingBox().size.width * 0.075f, m_Player_Info_Casting_Bar_Frame->getContentSize().height / 2);
+	m_Player_Info_Casting_Bar_Frame->addChild(m_Player_Info_Casting_Bar);
+
+	addChild(m_Player_Info_Casting_Bar_Icon);
 	if (!sPlayer)
 		return;
 	m_Player_Info_UI_Level = sGame->GetNumberSpriteByInt(sPlayer->GetLevel());
-	m_Player_Info_UI_Level->setPosition(m_Player_Info_UI->getBoundingBox().size.width * 0.285f, m_Player_Info_UI->getBoundingBox().size.height * 0.4f);
 	m_Player_Info_UI_Level->setScale(0.5f);
+	m_Player_Info_UI_Level->setPosition(m_Player_Info_UI->getContentSize().width * 0.2f, m_Player_Info_UI->getContentSize().height * 0.2f);
+	m_Player_Info_UI_Level->setAnchorPoint(Vec2(0, 0.5f));
 	m_Player_Info_UI->addChild(m_Player_Info_UI_Level);
 }
 
@@ -553,158 +598,210 @@ void PlayerUILayer::CreateVirtualRoker()
 	m_VirtualRoker_BackGround->addChild(m_VirtualRoker_Roker);
 
 	//意见:给确认是摇杆的touch创建唯一标识符
-	auto RokerListener = EventListenerTouchOneByOne::create();
-	RokerListener->onTouchBegan = CC_CALLBACK_2(PlayerUILayer::onTouchBegan, this);
-	RokerListener->onTouchMoved = CC_CALLBACK_2(PlayerUILayer::onTouchMoved, this);
-	RokerListener->onTouchEnded = CC_CALLBACK_2(PlayerUILayer::onTouchEnded, this);
-	RokerListener->setSwallowTouches(true);
+	auto RokerListener = EventListenerTouchAllAtOnce::create();
+	RokerListener->onTouchesBegan = CC_CALLBACK_2(PlayerUILayer::onTouchBegan, this);
+	RokerListener->onTouchesMoved = CC_CALLBACK_2(PlayerUILayer::onTouchMoved, this);
+	RokerListener->onTouchesEnded = CC_CALLBACK_2(PlayerUILayer::onTouchEnded, this);
+	//RokerListener->setSwallowTouches(true);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(RokerListener, this);
 }
 
-bool PlayerUILayer::onTouchBegan(Touch* touches, Event *event)
+bool PlayerUILayer::IsSingleTouch(const std::vector<Touch*>& touches, PlayerUITouchType _type)
+{
+	for (int i = 0; i != touches.size(); i++)
+	{
+		if (touches.at(i)->GetTouchType() == _type)
+			return false;
+	}
+	return true;
+}
+
+void PlayerUILayer::onTouchBegan(const std::vector<Touch*>& touchesVector, Event *event)
 {
 	TouchedSpellSlot = nullptr;
 	m_touchtype = PlayerUITouch_None;
 	if (!sPlayer)
-		return false;
+		return;
 
-	if (TouchedSpellSlot = CheckTouchSpellButton(touches->getLocation()))
+	for (int i = 0; i != touchesVector.size(); i++)
 	{
-		m_touchtype = PlayerUITouch_Button_SpellSlot;
-		return true;
-	}
-	for (int i = 0; i < m_Buttom_Menus.size(); i++)
-	{
-		if (Sprite* TempButton = m_Buttom_Menus.at(i)._sprite)
+		Touch* touches = touchesVector.at(i);
+		if (TouchedSpellSlot = CheckTouchSpellButton(touches->getLocation()))
 		{
-			if (TempButton->getOpacity() < 245.0f)
-				break;
-			if (TempButton->IsContectPoint(touches->getLocation()))
+			if (IsSingleTouch(touchesVector,PlayerUITouch_Button_SpellSlot))
+				touches->SetTouchType(PlayerUITouch_Button_SpellSlot);
+			return;
+		}
+		for (int i = 0; i != m_Buttom_Menus.size(); i++)
+		{
+			if (Sprite* TempButton = m_Buttom_Menus.at(i)._sprite)
 			{
-				switch (i)
+				if (TempButton->getOpacity() < 245.0f)
+					break;
+				if (!IsSingleTouch(touchesVector, PlayerUITouch_UperButton))
+					break;
+				if (TempButton->IsContectPoint(touches->getLocation()))
 				{
-				case Button_Menu_Setting:
-					break;
-				case Button_Menu_Spell:
-					sPlayerSpellBook->SwapVisiable();
-					break;
-				case Button_Menu_Quest:
-					break;
-				case Button_Menu_Bag:
-					sPlayerBag->SwapVisiable();
-					break;
-				case Button_Menu_Equip:
-					sPlayerEquip->SwapVisiable();
-					break;
-				case Button_Menu_Character:
+					switch (i)
+					{
+					case Button_Menu_Setting:
+						sSettingMenu->OnClickSettingButton();
+						break;
+					case Button_Menu_Spell:
+						sPlayerSpellBook->SwapVisiable();
+						break;
+					case Button_Menu_Quest:
+						break;
+					case Button_Menu_Bag:
+						sPlayerBag->SwapVisiable();
+						break;
+					case Button_Menu_Equip:
+						sPlayerEquip->SwapVisiable();
+						break;
+					case Button_Menu_Character:
+						break;
+					}
+					touches->SetTouchType(PlayerUITouch_UperButton);
+					return;
+				}
+			}
+		}
+
+		if (sSettingMenu->isVisible() && sSettingMenu->IsContectPoint(touches->getLocation()))
+		{
+			if (IsSingleTouch(touchesVector, PlayerUITouch_SettingMenu))
+			{
+				sSettingMenu->OnTouchBegin(touches);
+				touches->SetTouchType(PlayerUITouch_SettingMenu);
+			}
+			return;
+		}
+		if (sPlayerEquip->isVisible() && sPlayerEquip->IsContectPoint(touches->getLocation()))
+		{
+			if (IsSingleTouch(touchesVector, PlayerUITouch_Equip_Window))
+			{
+				sPlayerEquip->onTouchBagBegan(touches);
+				touches->SetTouchType(PlayerUITouch_Equip_Window);
+			}
+			return;
+		}
+		if (sPlayerBag->isVisible() && sPlayerBag->IsContectPoint(touches->getLocation()))
+		{
+			if (IsSingleTouch(touchesVector, PlayerUITouch_Bag))
+			{
+				sPlayerBag->onTouchBagBegan(touches);
+				touches->SetTouchType(PlayerUITouch_Bag);
+			}
+			return;
+		}
+
+		if (sPlayerSpellBook->isVisible() && sPlayerSpellBook->IsContectPoint(touches->getLocation()))
+		{
+			if (IsSingleTouch(touchesVector, PlayerUITouch_SpellBook))
+			{
+				sPlayerSpellBook->onTouchBagBegan(touches);
+				touches->SetTouchType(PlayerUITouch_SpellBook);
+			}
+			return;
+		}
+		if (m_ButtomMenu->IsContectPoint(touches->getLocation()))
+		{
+			if (IsSingleTouch(touchesVector, PlayerUITouch_Buttom_Menu))
+				touches->SetTouchType(PlayerUITouch_Buttom_Menu);
+			return;
+		}
+		if (m_VirtualRoker_Roker && m_VirtualRoker_Roker->getBoundingBox().containsPoint(touches->getLocation()))
+		{
+			if (IsSingleTouch(touchesVector, PlayerUITouch_Roker))
+			{
+				touches->SetTouchType(PlayerUITouch_Roker);
+				RockerLastPostion = touches->getLocation();
+				m_VirtualRoker_Roker->setPosition(touches->getLocation());
+			}
+			return;
+		}
+	}
+}
+
+void PlayerUILayer::onTouchMoved(const std::vector<Touch*>& touchesVector, Event *event)
+{
+	if (!sPlayer)
+		return;
+	for (int i = 0; i != touchesVector.size(); i++)
+	{
+		if (Touch* touches = touchesVector.at(i))
+		{
+			switch (touches->GetTouchType())
+			{
+			case PlayerUITouch_Bag:
+				sPlayerBag->onTouchBagMoved(touches);
+				return;
+			case PlayerUITouch_Roker:
+				{
+					Vec2 NowLoc = touches->getLocation();
+					float X_move = NowLoc.x - RockerLastPostion.x;
+					float Y_move = NowLoc.y - RockerLastPostion.y;
+					if (ccpDistance(Vec2(m_VirtualRoker_BackGround->getPositionY() - X_move, m_VirtualRoker_BackGround->getPositionY() - Y_move), m_VirtualRoker_Roker->getPosition()) < 140.0f)
+						m_VirtualRoker_Roker->setPosition(m_VirtualRoker_Roker->getPositionX() + X_move, m_VirtualRoker_Roker->getPositionY() + Y_move);
+
+					float Orgin = GetVirtualRokerOrgin(m_VirtualRoker_BackGround->getPosition(), m_VirtualRoker_Roker->getPosition());
+					RockerLastPostion = touches->getLocation();
+					ResetVirtualRokerOrgin(Orgin);
 					break;
 				}
-				m_touchtype = PlayerUITouch_None;
-				return true;
+			case PlayerUITouch_SpellBook:
+				sPlayerSpellBook->onTouchBagMoved(touches);
+				return;
+			case PlayerUITouch_Equip_Window:
+				sPlayerEquip->onTouchBagMoved(touches);
+				return;
 			}
 		}
 	}
-
-	if (sPlayerEquip->isVisible() && sPlayerEquip->IsContectPoint(touches->getLocation()))
-	{
-		sPlayerEquip->onTouchBagBegan(touches);
-		m_touchtype = PlayerUITouch_Equip_Window;
-		return true;
-	}
-	if (sPlayerBag->isVisible() && sPlayerBag->IsContectPoint(touches->getLocation()))
-	{
-		sPlayerBag->onTouchBagBegan(touches);
-		m_touchtype = PlayerUITouch_Bag;
-		return true;
-	}
-
-	if (sPlayerSpellBook->isVisible() && sPlayerSpellBook->IsContectPoint(touches->getLocation()))
-	{
-		sPlayerSpellBook->onTouchBagBegan(touches);
-		m_touchtype = PlayerUITouch_SpellBook;
-		return true;
-	}
-	if (m_ButtomMenu->IsContectPoint(touches->getLocation()))
-	{
-		m_touchtype = PlayerUITouch_Buttom_Menu;
-		return true;
-	}
-	if (m_VirtualRoker_Roker && m_VirtualRoker_Roker->getBoundingBox().containsPoint(touches->getLocation()))
-	{
-		m_touchtype = PlayerUITouch_Roker;
-		RockerLastPostion = touches->getLocation();
-		m_VirtualRoker_Roker->setPosition(touches->getLocation());
-		return true;
-	}
-	return false;
 }
 
-void PlayerUILayer::onTouchMoved(Touch* touches, Event *event)
+void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event *event)
 {
 	if (!sPlayer)
 		return;
-	switch (m_touchtype)
+	for (int i = 0; i != touchesVector.size(); i++)
 	{
-	case PlayerUITouch_Bag:
-		sPlayerBag->onTouchBagMoved(touches);
-		return;
-	case PlayerUITouch_Roker:
+		if (Touch* touches = touchesVector.at(i))
 		{
-			Vec2 NowLoc = touches->getLocation();
-			float X_move = NowLoc.x - RockerLastPostion.x;
-			float Y_move = NowLoc.y - RockerLastPostion.y;
-			if (ccpDistance(Vec2(m_VirtualRoker_BackGround->getPositionY() - X_move, m_VirtualRoker_BackGround->getPositionY() - Y_move), m_VirtualRoker_Roker->getPosition()) < 140.0f)
-				m_VirtualRoker_Roker->setPosition(m_VirtualRoker_Roker->getPositionX() + X_move, m_VirtualRoker_Roker->getPositionY() + Y_move);
-
-			float Orgin = GetVirtualRokerOrgin(m_VirtualRoker_BackGround->getPosition(), m_VirtualRoker_Roker->getPosition());
-			RockerLastPostion = touches->getLocation();
-			ResetVirtualRokerOrgin(Orgin);
-			break;
-		}
-	case PlayerUITouch_SpellBook:
-		sPlayerSpellBook->onTouchBagMoved(touches);
-		return;
-	case PlayerUITouch_Equip_Window:
-		sPlayerEquip->onTouchBagMoved(touches);
-		return;
-	}
-}
-
-void PlayerUILayer::onTouchEnded(Touch* touches, Event *event)
-{
-	if (!sPlayer)
-		return;
-
-	switch (m_touchtype)
-	{
-		case PlayerUITouch_Bag:
-			sPlayerBag->onTouchBagEnded(touches);
-			return;
-		case PlayerUITouch_SpellBook:
-			sPlayerSpellBook->onTouchBagEnded(touches);
-			return;
-		case PlayerUITouch_Buttom_Menu:
-			SwapButtomMenuType();
-			return;
-		case PlayerUITouch_Roker:
-		{
-			sPlayer->ResetMoveKeyForRoker();
-			if (m_VirtualRoker_Roker)
-				m_VirtualRoker_Roker->setPosition(m_VirtualRoker_BackGround->getContentSize().width / 2, m_VirtualRoker_BackGround->getContentSize().height / 2);
-
-			RockerLastPostion = Vec2(0, 0);
-			break;
-		}
-		case PlayerUITouch_Button_SpellSlot:
-		{
-			if (TouchedSpellSlot->GetSpellId())
-				sPlayer->CastSpell(TouchedSpellSlot->GetSpellId(), sPlayer->GetPlayerTarget());
-			break;
-		}
-		case PlayerUITouch_Equip_Window:
-		{
-			sPlayerEquip->onTouchBagEnded(touches);
-			break;
+			switch (touches->GetTouchType())
+			{
+				case PlayerUITouch_Bag:
+					sPlayerBag->onTouchBagEnded(touches);
+					return;
+				case PlayerUITouch_SpellBook:
+					sPlayerSpellBook->onTouchBagEnded(touches);
+					return;
+				case PlayerUITouch_Buttom_Menu:
+					SwapButtomMenuType();
+					return;
+				case PlayerUITouch_Roker:
+				{
+					sPlayer->ResetMoveKeyForRoker();
+					if (m_VirtualRoker_Roker)
+						m_VirtualRoker_Roker->setPosition(m_VirtualRoker_BackGround->getContentSize().width / 2, m_VirtualRoker_BackGround->getContentSize().height / 2);
+					RockerLastPostion = Vec2(0, 0);
+					break;
+				}
+				case PlayerUITouch_Button_SpellSlot:
+				{
+					if (TouchedSpellSlot->GetSpellId())
+						sPlayer->CastSpell(TouchedSpellSlot->GetSpellId(), sPlayer->GetPlayerTarget());
+					break;
+				}
+				case PlayerUITouch_Equip_Window:
+				{
+					sPlayerEquip->onTouchBagEnded(touches);
+					break;
+				}
+				case PlayerUITouch_SettingMenu:
+					sSettingMenu->OnTouchEnded(touches);
+					break;
+			}
 		}
 	}
 }
@@ -762,11 +859,50 @@ float PlayerUILayer::GetVirtualRokerOrgin(Vec2 CenterPoint, Vec2 RokerPoint)
 	return Correct_Orgin;
 }
 
+void PlayerUILayer::SwapCastingBarVisable()
+{
+	if (m_Player_Info_Casting_Bar->isVisible())
+	{
+		m_Player_Info_Casting_Bar_Frame->setVisible(false);
+		m_Player_Info_Casting_Bar_Icon->setVisible(false);
+		m_Player_Info_Casting_Bar->setVisible(false);
+	}
+	else
+	{
+		m_Player_Info_Casting_Bar_Frame->setVisible(true);
+		m_Player_Info_Casting_Bar_Icon->setVisible(true);
+		m_Player_Info_Casting_Bar->setVisible(true);
+	}
+}
+
+void PlayerUILayer::AutoUpdateCastingBar()
+{
+	if (Spell* pSpell = sPlayer->GetCastingSpell())
+	{
+		if (!m_Player_Info_Casting_Bar->isVisible())
+			SwapCastingBarVisable();
+		float TotalTime = pSpell->GetSpellTotalCastTime();
+		float TimeLeft = pSpell->GetSpellCurrentTimeLeft();
+		float Proccess = (TotalTime - TimeLeft) / TotalTime;
+		m_Player_Info_Casting_Bar->setPercentage(Proccess * 100.0f);
+	}
+	else if (m_Player_Info_Casting_Bar->isVisible())
+		SwapCastingBarVisable();
+}
+
 void PlayerUILayer::update(float diff)
 {
+	if (!sPlayer)
+		return;
+	AutoUpdateCastingBar();
 	if (m_Player_Info_UI_Hp->getPercentage() != 100.0f)
 	{
 		float posnow = m_Player_Info_UI_Hp->getPercentage();
 		m_Player_Info_UI_Hp->setPercentage(posnow + 1);
+	}
+	if (m_Player_Info_UI_Mp->getPercentage() != 100.0f)
+	{
+		float posnow = m_Player_Info_UI_Mp->getPercentage();
+		m_Player_Info_UI_Mp->setPercentage(posnow + 1);
 	}
 }

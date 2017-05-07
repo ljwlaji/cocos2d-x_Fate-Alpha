@@ -27,18 +27,22 @@ private:
 	enum PlayerUITouchType
 	{
 		PlayerUITouch_None,
+		PlayerUITouch_UperButton,
 		PlayerUITouch_Bag,
 		PlayerUITouch_SpellBook,
 		PlayerUITouch_Roker,
 		PlayerUITouch_Buttom_Menu,
 		PlayerUITouch_Button_SpellSlot,
 		PlayerUITouch_Equip_Window,
+		PlayerUITouch_SettingMenu,
 	};
 	CREATE_FUNC(PlayerUILayer);
 	PlayerUILayer();
 	~PlayerUILayer();
 	virtual void update(float diff);
 	virtual bool init();
+	void AutoUpdateCastingBar();
+	void SwapCastingBarVisable();
 	void InitSpellDefaultFrame();
 	void CreateVirtualRoker();
 	void InitUI();
@@ -47,9 +51,10 @@ private:
 	SpellSlot* CheckTouchSpellButton(const Vec2& Loc);
 	void InitButtomMenu();
 	float GetVirtualRokerOrgin(Vec2 CenterPoint,Vec2 RokerPoint);
-	virtual bool onTouchBegan(Touch* touches, Event *_event);
-	virtual void onTouchMoved(Touch* touches, Event *_event);
-	virtual void onTouchEnded(Touch* touches, Event *_event);
+	virtual void onTouchBegan(const std::vector<Touch*>& touches, Event *_event);
+	virtual void onTouchMoved(const std::vector<Touch*>& touches, Event *_event);
+	virtual void onTouchEnded(const std::vector<Touch*>& touches, Event *_event);
+	bool IsSingleTouch(const std::vector<Touch*>& touches, PlayerUITouchType _type);
 	void ResetVirtualRokerOrgin(float Orgin);
 	void SwapButtomMenuType();
 	void ButtonMenuCallBack();
@@ -59,9 +64,17 @@ private:
 	Vec2 visiablesize;
 	Vec2 RockerLastPostion;
 	Sprite* m_Player_Info_UI;
-	ProgressTimer* m_Player_Info_UI_Hp;
 	Sprite* m_Player_Info_UI_Hp_Back;
+	ProgressTimer* m_Player_Info_UI_Hp;
+	Sprite* m_Player_Info_UI_MP_Back;
+	ProgressTimer* m_Player_Info_UI_Mp;
+
+	Sprite* m_Player_Info_Casting_Bar_Frame;
+	Sprite* m_Player_Info_Casting_Bar_Icon;
+	ProgressTimer* m_Player_Info_Casting_Bar;
+
 	Sprite* m_Player_Info_UI_Level;
+
 	std::vector<ButtonMenuInfo> m_Buttom_Menus;
 	PlayerUITouchType m_touchtype;
 	SpellSlot* TouchedSpellSlot;
