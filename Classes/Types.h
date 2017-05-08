@@ -33,6 +33,41 @@ class Unit;
 typedef std::map<Unit*, float> CreatureThreadList;
 typedef std::map<uint32, uint32> ItemValueInfo;
 
+struct SingleMapInfo
+{
+	std::string BackGroundMusicUrl;
+};
+
+enum QuestRequireType
+{
+	Require_None,
+	Require_Monster,
+	Require_Item,
+	Require_Money,
+	Require_Rep,
+};
+
+enum QuestRewardType
+{
+	Reward_None,
+	Reward_Item,
+	Reward_Rep,
+};
+
+struct SingleQuestRequire
+{
+	QuestRequireType RequireType;
+	uint32 RequireID;
+	uint32 Count;
+};
+
+struct SingleQuestReWard
+{
+	QuestRewardType RewardType;
+	uint32 RewardID;
+	uint32 Count;
+};
+
 enum UnitClasses
 {
 	Class_None,
@@ -235,6 +270,7 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define PlayerBagPageSelectorImage		"Player_UI_Bag_Page_Selector.png"
 #define PlayerUIButtomMenuImage			"Player_UI_Buttom_Menu.png"
 #define PlayerUIButtonMenuListImage		"Player_UI_Buttom_Menu_"
+#define PlayerUIButtonMenuSwapButton	"Player_UI_TopBar_Swap_Button.png"
 #define PlayerUIEquipFrame				"Player_UI_Equip_Character_Big_Frame.png"
 #define PlayerUIEquipValueFrame			"Player_UI_Equip_Character_Value_Frame.png"
 #define PlayerUISpellBookFrame			"Player_UI_Spell_Frame.png"
@@ -243,10 +279,9 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define PlayerUIButtonSpellBarImage		"Player_UI_ButtomSpell_Bar.png"
 
 #define PlayerUICharacterHeadImage			"Player_UI_Character_Head.png"
-#define PlayerUICharacterHPFrameImage		"Player_UI_Character_HP_Frame.png"
 #define PlayerUICharacterHPProccessImage	"Player_UI_Character_HP_score.png"
-#define PlayerUICharacterMPFrameImage		"Player_UI_Character_MP_Frame.png"
 #define PlayerUICharacterMPPorccessImage	"Player_UI_Character_MP_Score.png"
+#define PlayerUICharacterLevelFrame			"Player_UI_Character_Level.png"
 #define PlayerUICastingBarImage				"Player_UI_Casting.png"
 #define PlayerUICastingBarFrame				"Player_UI_Character_Casting_Frame.png"
 #define PlayerUICastingBarPorccessImage		"Player_UI_Character_Casting_Score.png"
@@ -273,6 +308,19 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define ChoseCharacterLayerMenuButton		"Chose_Character_MenuButton.png"
 #define ChoseCharacterLayerSelectFrame		"Chose_Character_SelectFrame.png"
 #define ChoseCharacterLayerSelectTitle		"Chose_Character_SelectTitle.png"
+
+
+
+#define QuestBookBaseFrame						"QuestBook_BaseFrame.png"
+#define QuestBookRewardFrame					"QuestBook_SrcollBar_Quest_Reward_Frame.png"
+#define QuestBookQuestCheckFrameBig				"QuestBook_SrcollBar_Check_Frame_Sign.png"
+#define QuestBookQuestCheckArrow				"QuestBook_SrcollBar_Check_Sign.png"
+#define QuestBookScorllBarHandler				"QuestBook_SrcollBar_Scroll_Handler.png"
+#define QuestBookScrollBar_Bar					"QuestBook_SrcollBar_scroll_bar.png"
+#define QuestBookSingleQuestFrame				"QuestBook_SrcollBar_SingleQuestFrame.png"
+#define QuestBookSingleCheckFrameLittle			"QuestBook_SrcollBar_Check_Frame_Little.png"
+#define QuestBookButton							"QuestBook_Button_%d.png"
+
 
 enum SettingButtonTag
 {

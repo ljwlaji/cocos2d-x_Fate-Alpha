@@ -164,6 +164,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\PlayerTalkLayer.cpp" />
     <ClCompile Include="..\Classes\PlayerUILayer.cpp" />
     <ClCompile Include="..\Classes\PlayerUISettingSprite.cpp" />
+    <ClCompile Include="..\Classes\QuestBook.cpp" />
+    <ClCompile Include="..\Classes\QuestMgr.cpp" />
     <ClCompile Include="..\Classes\Result.cpp" />
     <ClCompile Include="..\Classes\ScriptAI.cpp" />
     <ClCompile Include="..\Classes\ScriptLoader.cpp" />
@@ -200,6 +202,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\PlayerTalkLayer.h" />
     <ClInclude Include="..\Classes\PlayerUILayer.h" />
     <ClInclude Include="..\Classes\PlayerUISettingSprite.h" />
+    <ClInclude Include="..\Classes\QuestBook.h" />
+    <ClInclude Include="..\Classes\QuestMgr.h" />
     <ClInclude Include="..\Classes\Result.h" />
     <ClInclude Include="..\Classes\ScriptAI.h" />
     <ClInclude Include="..\Classes\ScriptLoader.h" />

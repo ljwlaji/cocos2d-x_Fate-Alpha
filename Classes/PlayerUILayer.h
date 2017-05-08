@@ -36,6 +36,8 @@ private:
 		PlayerUITouch_Button_SpellSlot,
 		PlayerUITouch_Equip_Window,
 		PlayerUITouch_SettingMenu,
+		PlayerUITouch_SwapTopButton,
+		PlayerUITouch_QuestBook,
 	};
 	enum TopButtonLabelTTF
 	{
@@ -74,10 +76,11 @@ private:
 	Vec2 visiablesize;
 	Vec2 RockerLastPostion;
 	Sprite* m_Player_Info_UI;
-	Sprite* m_Player_Info_UI_Hp_Back;
 	ProgressTimer* m_Player_Info_UI_Hp;
-	Sprite* m_Player_Info_UI_MP_Back;
 	ProgressTimer* m_Player_Info_UI_Mp;
+	Sprite* m_Player_Info_UI_Level_Frame;
+	std::vector<Sprite*> m_Player_Info_UI_Level_Sprite;
+	Sprite* m_Player_UI_TopButton_Swap_Button;
 
 	Sprite* m_Player_Info_Casting_Bar_Frame;
 	Sprite* m_Player_Info_Casting_Bar_Icon;
@@ -96,6 +99,8 @@ private:
 	Sprite* m_ButtonSpellItem[8];
 
 	std::map<TopButtonLabelTTF, LabelTTF*> TopMenuLabel;
+
+	bool m_TopMenuIsVisable;
 };
 
 

@@ -88,6 +88,12 @@
     <Filter Include="src\Layers\PlayerUILayer\PlayerTalkLayer">
       <UniqueIdentifier>{d7b6b49a-9f82-4e2d-9c89-cad2603230a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\QuestBook">
+      <UniqueIdentifier>{bc4162dc-10b2-4dfe-bf82-9187bb08fc21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Quest">
+      <UniqueIdentifier>{39a96484-8d8a-4bfb-9d98-9e28d8da71f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -192,6 +198,12 @@
     <ClCompile Include="..\Classes\PlayerUISettingSprite.cpp">
       <Filter>src\Layers\PlayerUILayer\SettingSprite</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\QuestBook.cpp">
+      <Filter>src\Layers\PlayerUILayer\QuestBook</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\QuestMgr.cpp">
+      <Filter>src\Quest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -292,6 +304,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\PlayerUISettingSprite.h">
       <Filter>src\Layers\PlayerUILayer\SettingSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\QuestBook.h">
+      <Filter>src\Layers\PlayerUILayer\QuestBook</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\QuestMgr.h">
+      <Filter>src\Quest</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

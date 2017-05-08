@@ -41,6 +41,8 @@ bool Chose_Character_Layer::init()
 		listener->onTouchBegan = CC_CALLBACK_2(Chose_Character_Layer::onTouchBegan, this);
 		listener->onTouchEnded = CC_CALLBACK_2(Chose_Character_Layer::onTouchEnded, this);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+		sMusic->stopBackgroundMusic();
+		sMusic->playBackgroundMusic("ChosePlayer.mp3", true);
 		scheduleUpdate();
 		bRef = true;
 	} while (0);

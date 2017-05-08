@@ -24,6 +24,12 @@ enum VirtualRockerOrginType
 	Roker_Right,
 };
 
+struct PlayerQuestStatus
+{
+	std::vector<SingleQuestRequire>* QuestRequire;
+	std::vector<uint32> FinishCount;
+};
+
 #define sPlayer Player::GetInstance()
 
 class ActionMgr;
@@ -68,6 +74,7 @@ public:
 	uint32 GetMapid()											{ return m_Mapid; }
 	PlayerSpells GetSpells()									{ return m_Spells; }
 	Unit* GetPlayerTarget()										{ return m_Player_Target; }
+	std::map<uint32, PlayerQuestStatus>& GetQuests()			{ return m_QuestsStat; }
 	void SetMapid(uint32 _var)									{ m_Mapid = _var; }
 	void SetExp(uint32 _var)									{ m_Exp = _var; }
 	void SetMoveKeyEnable(MoveKeyValue _key, bool enable)		{ MoveKeyStatus[_key] = enable; }
@@ -78,6 +85,7 @@ public:
 	void ReSetPlayerTarget();
 	TalkClass* PlayerTalkClass;
 private:
+	void LoadPlayerQuests();
 	ActionType m_Action;
 	virtual void update(float diff);
 	ActionMgr* _ActionMgr;
@@ -89,6 +97,7 @@ private:
 	uint32 m_Exp;
 	uint32 m_Mapid;
 	Unit* m_Player_Target;
+	std::map<uint32, PlayerQuestStatus> m_QuestsStat;
 };
 
 #endif

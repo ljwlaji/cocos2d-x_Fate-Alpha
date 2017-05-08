@@ -11,7 +11,7 @@
 #include "ScriptMgr.h"
 #include "PlayerTalkLayer.h"
 #include "SpellMgr.h"
-
+#include "QuestMgr.h"
 #ifdef __APPLE__
 #include "spine/spine.h"
 #include "cocos/editor-support/spine/SkeletonAnimation.h"
@@ -63,8 +63,10 @@ bool MainScene::init()
 #endif
 		sSpellMgr->Init();
 		sScriptMgr->InitScripts();
-		LoadUnitClassInfo();
 
+		sQuestMgr;
+		LoadUnitClassInfo();
+		LoadMapInfo();
 		LoadFactionInfo();
 		LoadItemTemplate();
 		EnterLayer = EnterGameLayer::create();
@@ -85,6 +87,37 @@ bool MainScene::init()
     
     
     return bRef;
+}
+
+const SingleMapInfo* MainScene::GetMapInfo(uint32 _mapid)
+{
+	if (m_MapInfo.find(_mapid) != m_MapInfo.end())
+		return &m_MapInfo[_mapid];
+	return nullptr;
+}
+
+void MainScene::LoadMapInfo()
+{
+	m_MapInfo.clear();
+	Result _result;
+	if (sDataMgr->selectUnitDataList("SELECT id,background_music_url FROM map_template", _result))
+	{
+		std::vector<RowInfo> row;
+		for (Result::iterator itr = _result.begin(); itr != _result.end(); itr++)
+		{
+			row = itr->second;
+			SingleMapInfo _SingleMapInfo;
+
+			_SingleMapInfo.BackGroundMusicUrl = row.at(1).GetString();
+
+			m_MapInfo[row.at(0).GetInt()] = _SingleMapInfo;
+		}
+	}
+	else
+	{
+		//Do Sth;
+	}
+
 }
 
 bool MainScene::GetFactionFriendly(uint32 factionA, uint32 FactionB)
@@ -433,14 +466,15 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 	}
 }
 
-Sprite* MainScene::GetNumberSpriteByInt(int number)
+std::vector<Sprite*> MainScene::GetNumberSpriteByInt(int number)
 {
 	std::vector<int> numberVector;
-	Sprite* TempSprite;
+	std::vector<Sprite*> SpriteVector;
 	if (!number)
 	{
-		TempSprite = Sprite::create("number_0.png");
-		return TempSprite;
+		Sprite* TempSprite = Sprite::create("number_0.png");
+		SpriteVector.push_back(TempSprite);
+		return SpriteVector;
 	}
 	while (number)
 	{
@@ -448,17 +482,15 @@ Sprite* MainScene::GetNumberSpriteByInt(int number)
 		numberVector.push_back(temp);
 		number = number / 10;
 	}
-	TempSprite = Sprite::create("1.png");
 	int i = 0;
 	while (numberVector.size())
 	{
 		char msg[255];
 		snprintf(msg, 255, "number_%d.png", numberVector.at(numberVector.size() - 1));
 		Sprite* Temp = Sprite::create(msg);
-		Temp->setPosition(Temp->getBoundingBox().size.width / 2 + (i * Temp->getBoundingBox().size.width / 2), TempSprite->getContentSize().height / 2);
-		TempSprite->addChild(Temp);
+		SpriteVector.push_back(Temp);
 		numberVector.pop_back();
 		i++;
 	}
-	return TempSprite;
+	return SpriteVector;
 }

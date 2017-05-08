@@ -5,6 +5,9 @@
 #include "PlayerTalkLayer.h"
 #include "SpellMgr.h"
 #include "Spell.h"
+#include "DataMgr.h"
+#include "QuestMgr.h"
+#include "QuestBook.h"
 
 static Player* _player = nullptr;
 
@@ -31,6 +34,7 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) 
 	KeyVectorClearTimer = Base_Clear_Key_Time;
 	PlayerTalkClass = new TalkClass();
 	PlayerTalkClass->ClearMenu();
+	LoadPlayerQuests();
 	scheduleUpdate();
 }
 
@@ -89,6 +93,35 @@ void Player::SendGossipMenu(std::string Main_String, Creature* pCreature)
 	{
 		sPlayerTalkLayer->SendMenuToPlayer(Main_String);
 		PlayerTalkClass->TalkingCreature = pCreature;
+	}
+}
+void Player::LoadPlayerQuests()
+{
+	m_QuestsStat.clear();
+	char msg[255];
+	snprintf(msg, 255, "SELECT quest_id,count_1,count_2,count_3,count_4 FROM player_quest_status WHERE guid = %u", GetGuid());
+	Result _Result;
+	if (sDataMgr->selectUnitDataList(msg, _Result))
+	{
+		if (!_Result.empty())
+		{
+			std::vector<RowInfo> row;
+			for (Result::iterator itr = _Result.begin(); itr != _Result.end(); itr++)
+			{
+				row = itr->second;
+				PlayerQuestStatus _PlayerQuestStatus;
+				_PlayerQuestStatus.QuestRequire = sQuestMgr->GetQuestRequire(itr->second.at(0).GetInt());
+				if (!_PlayerQuestStatus.QuestRequire)
+					continue;
+				for (int i = 1; i != itr->second.size(); i++)
+					_PlayerQuestStatus.FinishCount.push_back(itr->second.at(i).GetInt());
+				m_QuestsStat[itr->second.at(0).GetInt()] = _PlayerQuestStatus;
+			}
+		}
+	}
+	else
+	{
+
 	}
 }
 

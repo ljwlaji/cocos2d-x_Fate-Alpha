@@ -37,6 +37,7 @@ class PlayerEuqipValueWindow : public Sprite
 {
 public:
 	static PlayerEuqipValueWindow* GetInstance();
+	void SwapVisable()	{ isVisible() ? setVisible(false) : setVisible(true); }
 private:
 	PlayerEuqipValueWindow();
 	~PlayerEuqipValueWindow();

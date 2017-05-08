@@ -32,7 +32,7 @@ public:
 	CREATE_FUNC(MainScene);
 	void SwapLayer(int instead, int removetag, int mapid = 0);
 	SkeletonAnimation* GetAnimationByClass(UnitClasses _class);
-	Sprite* GetNumberSpriteByInt(int _var);
+	std::vector<Sprite*> GetNumberSpriteByInt(int _var);
 	bool GetFactionFriendly(uint32 factionA, uint32 FactionB);
 	const ItemTemplate* GetItemTemplate(const uint32& ItemEntry);
 	void SetCanPlaySound(bool var)					{ CanPlaySound = var; }
@@ -43,7 +43,11 @@ public:
 	GameDiffcute GetDiffCute()						{ return m_Diffcute; }
 	bool GetCanPlaySound()							{ return CanPlaySound; }
 	ClassInfo GetUnitClassInfo(UnitClasses _car)	{ ClassInfo _ClassInfo; if (m_UnitClasses_Class_Info.find(_car) != m_UnitClasses_Class_Info.end()) _ClassInfo = m_UnitClasses_Class_Info[_car]; return _ClassInfo; }
+	const SingleMapInfo* GetMapInfo(uint32 _mapid);
+
+
 private: 
+	void LoadMapInfo();
 	void LoadUnitClassInfo();
 	void LoadFactionInfo();
 	void LoadItemTemplate();
@@ -62,6 +66,7 @@ private:
 	std::map<UnitClasses, ClassInfo> m_UnitClasses_Class_Info;
 	std::map<uint32, std::map<uint32, bool>> m_Faction_Friendly_Info;
 	std::map<uint32, ItemTemplate> m_ItemTemplate;
+	std::map<uint32, SingleMapInfo> m_MapInfo;
 protected:
 	GameDiffcute m_Diffcute;
 };

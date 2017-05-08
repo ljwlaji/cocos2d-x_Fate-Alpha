@@ -147,6 +147,15 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 	scheduleUpdate();
 	setTouchEnabled(true);
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
+
+	if (const SingleMapInfo* _info = sGame->GetMapInfo(insteadid))
+	{
+		if (!_info->BackGroundMusicUrl.empty())
+		{
+			sMusic->stopBackgroundMusic();
+			sMusic->playBackgroundMusic(_info->BackGroundMusicUrl.c_str());
+		}
+	}
 	return true;
 }
 
