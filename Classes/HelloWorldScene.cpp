@@ -32,7 +32,10 @@ MainScene::MainScene()
 	CanPlaySound = true;
 	_MainScene = this;
 }
-MainScene::~MainScene(){}
+MainScene::~MainScene()
+{
+	removeAllChildrenWithCleanup(true);
+}
 
 MainScene* MainScene::GetInstance()
 {
@@ -265,7 +268,6 @@ SkeletonAnimation* MainScene::GetAnimationByClass(UnitClasses _class)
 
 void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 {
-	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	if (Layer* OldLayer = (Layer*)getChildByTag(removetag))
 	{
 		OldLayer->removeFromParentAndCleanup(true);
@@ -307,6 +309,7 @@ void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 			}
 		}
 	}
+	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 }
 
 Sprite* MainScene::ShowDiffcuteImage()

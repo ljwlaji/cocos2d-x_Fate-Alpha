@@ -8,6 +8,7 @@ TypingLayer::TypingLayer()
 
 TypingLayer::~TypingLayer()
 {
+	removeAllChildrenWithCleanup(true);
 }
 
 bool TypingLayer::init()

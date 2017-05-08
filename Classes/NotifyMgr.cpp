@@ -11,6 +11,7 @@ NotifyMgr::NotifyMgr()
 
 NotifyMgr::~NotifyMgr()
 {
+	removeAllChildrenWithCleanup(true);
 	_NotifyMgr = nullptr;
 }
 

@@ -17,7 +17,7 @@ SpellSlot::SpellSlot(const char* url)
 
 SpellSlot::~SpellSlot()
 {
-
+	removeAllChildrenWithCleanup(true);
 }
 
 void SpellSlot::SetSlotSpell(const SpellInfo& _SpellInfo)
@@ -52,6 +52,7 @@ SpellBook::SpellBook()
 
 SpellBook::~SpellBook()
 {
+	removeAllChildrenWithCleanup(true);
 	_SpellBook = nullptr;
 }
 

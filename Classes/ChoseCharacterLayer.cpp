@@ -14,7 +14,7 @@ Chose_Character_Layer::Chose_Character_Layer()
 	VisableSize = Director::getInstance()->getVisibleSize();
 	TotalCharacterCount = 0;
 	CharacterEnumMap.clear();
-	DisplaySprites.clear();
+	Buttons.clear();
 	m_TouchedSprite = nullptr;
 	m_TouchType = None;
 }
@@ -50,10 +50,10 @@ bool Chose_Character_Layer::init()
 
 bool Chose_Character_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 {
-	for (int i = 0; i != DisplaySprites.size(); i++)
+	for (int i = 0; i != Buttons.size(); i++)
 	{
-		if (Sprite* Temp = DisplaySprites.at(i))
-		if (Temp->getBoundingBox().containsPoint(touch->getLocation()))
+		if (Sprite* Temp = Buttons.at(i))
+		if (Temp->IsContectPoint(touch->getLocation()))
 		{
 			Temp->setScale(0.8f);
 			m_TouchedSprite = Temp;
@@ -64,7 +64,7 @@ bool Chose_Character_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 	for (int i = 0; i != CharacterEnumFrame.size(); i++)
 	{
 		if (Sprite* Temp = CharacterEnumFrame.at(i))
-		if (Temp->getBoundingBox().containsPoint(touch->getLocation()))
+		if (Temp->IsContectPoint(touch->getLocation()))
 		{
 			Temp->setScale(0.8f);
 			m_TouchedSprite = Temp;
@@ -80,28 +80,27 @@ void Chose_Character_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 	if (m_TouchedSprite)
 		m_TouchedSprite->setScale(1.0f);
 
-	if (!m_TouchedSprite->getBoundingBox().containsPoint(touch->getLocation()))
+	if (!m_TouchedSprite->IsContectPoint(touch->getLocation()))
 		return;
 	switch (m_TouchType)
 	{
 	case Button:
-		if (m_TouchedSprite == CreateOrEnterGameButton)
+		if (m_TouchedSprite == EnterButton)
 		{
 			if (m_ChosedInfo.guid)
 			{
 				SpritesFadeOut(EnterGame);
 				return;
 			}
-			else
-			{
-				if (CharacterEnumMap.size() < 5)
-					SpritesFadeOut(GoToCreate);
-				return;
-			}
+		}
+		else if (m_TouchedSprite == CanCelButton)
+		{
+			SpritesFadeOut(BackToMenu);
+			return;
 		}
 		else
 		{
-			SpritesFadeOut(BackToMenu);
+			SpritesFadeOut(GoToCreate);
 			return;
 		}
 		break;
@@ -112,8 +111,6 @@ void Chose_Character_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 		}
 		else
 		{
-			CreateOrEnterGameButton->setTexture("Button_Create_Character.png");
-			CreateOrEnterGameButton->setOpacity(140.0f);
 			m_ChosedInfo.guid = 0;
 			if (CharacterEnumSprite)
 				CharacterEnumSprite->setVisible(false);
@@ -137,8 +134,6 @@ void Chose_Character_Layer::SetChoseedCharacter(uint32 guid)
 	{
 		m_ChosedInfo = CharacterEnumMap.find(guid)->second;
 		SwapChosedCharacter(m_ChosedInfo.guid);
-		CreateOrEnterGameButton->setTexture("tet.png");
-		CreateOrEnterGameButton->setOpacity(255.0f);
 	}
 }
 
@@ -152,7 +147,7 @@ void Chose_Character_Layer::SwapChosedCharacter(uint32 CharacterGuid)
 		return;
 	CharacterEnumSprite->setLocalZOrder(5);
 	CharacterEnumSprite->setAnchorPoint(Vec2(0.5, 0));
-	CharacterEnumSprite->setPosition(Taiji->getPositionX(), Taiji->getPositionY() * 1.1f);
+	CharacterEnumSprite->setPosition(VisableSize.x / 2, VisableSize.y * 0.25f);
 	CharacterEnumSprite->setAnimation(0, "idle_chose_character", true);
 	addChild(CharacterEnumSprite);
 	//SpriteFrameCache::getInstance()->removeSpriteFrames();
@@ -161,85 +156,106 @@ void Chose_Character_Layer::SwapChosedCharacter(uint32 CharacterGuid)
 
 void Chose_Character_Layer::InitFrames()
 {
-	Sprite* BackGround = Sprite::create("White_Back_Ground.png");
+		//ChoseCharacterLayerMenuButton
+	Sprite* BackGround = Sprite::create("BackGround.png");
 	BackGround->SetRealPosition(VisableSize.x / 2, VisableSize.y / 2);
 	BackGround->setLocalZOrder(-2);
 	addChild(BackGround);
 
-	Title = Sprite::create("Chose_Character_Title.png");
-	Title->SetRealPosition(Title->getBoundingBox().size.width * 0.4f, VisableSize.y - Title->getBoundingBox().size.height * 0.3f/* - Title->getBoundingBox().size.height / 2*/);
-	Title->setScale(0.0f);
-	addChild(Title);
-	DisplaySprites.push_back(Title);
 
-	std::string url = "";
-	m_ChosedInfo.guid ? url = "tet.png" : url = "Button_Create_Character.png";
-	CreateOrEnterGameButton = Sprite::create(url.c_str());
-	CreateOrEnterGameButton->SetRealPosition(VisableSize.x / 2 - CreateOrEnterGameButton->getBoundingBox().size.width / 2, VisableSize.y * 0.15f);
-	CreateOrEnterGameButton->setScale(0.0f);
-	CreateOrEnterGameButton->setOpacity(140.0f);
-	addChild(CreateOrEnterGameButton);
-	DisplaySprites.push_back(CreateOrEnterGameButton);
+	FactionFrame = Sprite::create(ChoseCharacterLayerFactionFrame);
+	FactionFrame->SetRealPosition(FactionFrame->getBoundingBox().size.width / 2, VisableSize.y - FactionFrame->getBoundingBox().size.height / 2);
+	addChild(FactionFrame);
 
-	CanCelButton = Sprite::create("test1.png");
-	CanCelButton->SetRealPosition(VisableSize.x / 2 + CanCelButton->getBoundingBox().size.width / 2, VisableSize.y * 0.15f);
-	CanCelButton->setScale(0.0f);
-	CanCelButton->setOpacity(140.0f);
+	FactionInfo = LabelTTF::create("Please Chose Your \nCharacter.", "Ariral", 28, Size::ZERO, TextHAlignment::LEFT);
+	FactionInfo->setAnchorPoint(Vec2(0, 1));
+	FactionInfo->setPosition(FactionFrame->getContentSize().width * 0.15f, FactionFrame->getContentSize().height * 0.6f);
+	FactionFrame->addChild(FactionInfo);
+
+	ClassFrame = Sprite::create(ChoseCharacterLayerClassFrame);
+	ClassFrame->SetRealPosition(ClassFrame->getBoundingBox().size.width / 2, FactionFrame->getBoundingBox().origin.y - ClassFrame->getBoundingBox().size.height * 0.45f);
+	addChild(ClassFrame);
+
+	ClassInfo = LabelTTF::create("Please Chose Your \nCharacter.", "Ariral", 28, Size::ZERO, TextHAlignment::LEFT);
+	ClassInfo->setAnchorPoint(Vec2(0, 1));
+	ClassInfo->setPosition(ClassFrame->getContentSize().width * 0.15f, ClassFrame->getContentSize().height * 0.75f);
+	ClassFrame->addChild(ClassInfo);
+
+	ButtomBar = Sprite::create(ChoseCharacterLayerButtomBar);
+	ButtomBar->SetRealPosition(VisableSize.x / 2, ButtomBar->getBoundingBox().size.height / 2);
+	addChild(ButtomBar);
+
+	EnterButton = Sprite::create(ChoseCharacterLayerEnterButton);
+	EnterButton->SetRealPosition(VisableSize.x / 2 - EnterButton->getBoundingBox().size.width / 2, ButtomBar->getPositionY() * 0.9f);
+	addChild(EnterButton);
+	Buttons.push_back(EnterButton);
+
+	CanCelButton = Sprite::create(ChoseCharacterLayerCancelButton);
+	CanCelButton->SetRealPosition(VisableSize.x / 2 + CanCelButton->getBoundingBox().size.width / 2, ButtomBar->getPositionY() * 0.9f);
 	addChild(CanCelButton);
-	DisplaySprites.push_back(CanCelButton);
+	Buttons.push_back(CanCelButton);
 
-	for (int i = 0; i != 5; i++)
+	ChoseCharacterFrame = Sprite::create(ChoseCharacterLayerSelectFrame);
+	ChoseCharacterFrame->setPosition(VisableSize.x - ChoseCharacterFrame->getBoundingBox().size.width / 2, VisableSize.y - ChoseCharacterFrame->getBoundingBox().size.height / 2);
+	addChild(ChoseCharacterFrame);
+
+	ChoseCharacterTitle = Sprite::create(ChoseCharacterLayerSelectTitle);
+	ChoseCharacterTitle->setPosition(ChoseCharacterFrame->getContentSize().width / 2, ChoseCharacterFrame->getContentSize().height - ChoseCharacterTitle->getBoundingBox().size.height * 0.9f);
+	ChoseCharacterFrame->addChild(ChoseCharacterTitle);
+
+	float PosY = 0;
+	int k = 0;
+	for (std::map<uint32, CharacterEnumInfo>::iterator itr = CharacterEnumMap.begin(); itr != CharacterEnumMap.end(); itr++)
 	{
-		int Tag = 0;
-		Sprite* TempFrame = Sprite::create("Chose_Character_Character_Frame.png");
-		TempFrame->SetRealPosition(VisableSize.x - TempFrame->getBoundingBox().size.width / 2, VisableSize.y / 2 + (TempFrame->getBoundingBox().size.height * 2.5) - (i * TempFrame->getBoundingBox().size.height));
-		addChild(TempFrame);
+		Sprite* TempFrame = Sprite::create(ChoseCharacterLayerCharacterFrame);
+		TempFrame->setPosition(ChoseCharacterTitle->getPositionX() - TempFrame->getBoundingBox().size.width * 0.06f, ChoseCharacterTitle->getPositionY() - TempFrame->getBoundingBox().size.height * 0.7f - (k * TempFrame->getBoundingBox().size.height));
+		ChoseCharacterFrame->addChild(TempFrame);
+		TempFrame->setTag(itr->first);
+		PosY = TempFrame->getPositionY();
+		k++;
 		CharacterEnumFrame.push_back(TempFrame);
-		//Sprite* LevelFrame = Sprite::create("Chose_Character_Character_Level_Frame.png");
-		//LevelFrame->setPosition(TempFrame->getBoundingBox().origin.x + TempFrame->getBoundingBox().size.width - LevelFrame->getBoundingBox().size.width / 2, TempFrame->getPositionY() - LevelFrame->getBoundingBox().size.height * 0.1f);
-		//addChild(LevelFrame);
 
-		Sprite* CharacterNameText;
+		LabelTTF* CharacterName = LabelTTF::create(itr->second.name.c_str(), "Arial", 35);
+		CharacterName->setAnchorPoint(Vec2(0, 0));
+		CharacterName->setPosition(TempFrame->getContentSize().width * 0.3f, TempFrame->getContentSize().height / 2);
+		TempFrame->addChild(CharacterName);
 
-		bool Match = false;
-		int k = 0;
-		for (std::map<uint32, CharacterEnumInfo>::iterator itr = CharacterEnumMap.begin(); itr != CharacterEnumMap.end(); itr++)
-		{
-			if (k != i)
-			{
-				k++;
-				continue;
-			}
-			if (itr->second.Class)
-			{
-				char msg[255];
-				snprintf(msg, 255, "Chose_Character_Character_%d.png", itr->second.Class);
-				CharacterNameText = Sprite::create(msg);
-				CharacterNameText->setPosition(TempFrame->getContentSize().width * 0.2f, TempFrame->getContentSize().height * 0.45f);
-				TempFrame->addChild(CharacterNameText);
-				k++;
-				Match = true;
-				Tag = itr->second.guid;
-				break;
-			}
-		}
-		TempFrame->setTag(Tag);
-		if (!Match)
-		{
-			CharacterNameText = Sprite::create("Chose_Character_Create_Text.png");
-			CharacterNameText->setPosition(TempFrame->getContentSize().width * 0.25f, TempFrame->getContentSize().height * 0.45f);
-			TempFrame->addChild(CharacterNameText);
-		}
+		LabelTTF* ClassString = LabelTTF::create(GetClassNameByClass(itr->second.Class).c_str(), "Arial", 28);
+		ClassString->setAnchorPoint(Vec2(0, 1));
+		ClassString->setPosition(TempFrame->getContentSize().width * 0.3f, TempFrame->getContentSize().height / 2);
+		TempFrame->addChild(ClassString);
+
+		char msg[255];
+		snprintf(msg, 255, "Level: %d", itr->second.Level);
+		LabelTTF* LevelText = LabelTTF::create(msg, "Arial", 28);
+		LevelText->setAnchorPoint(Vec2(0, 1));
+		LevelText->setPosition(TempFrame->getPositionX() + TempFrame->getBoundingBox().size.width * 0.2f, TempFrame->getContentSize().height / 2);
+		TempFrame->addChild(LevelText);
 	}
-	Taiji = Sprite::create("taiji.png");
-	Taiji->SetRealPosition(VisableSize.x * 0.45f, VisableSize.y * 0.28f);
-	Taiji->setLocalZOrder(4);
-	Taiji->setScaleY(0.2f);
-	addChild(Taiji);
-
 	
+	CreateCharacterButton = Sprite::create(ChoseCharacterLayerCreateButton);
+	CreateCharacterButton->setPosition(ChoseCharacterFrame->getContentSize().width / 2, CreateCharacterButton->getBoundingBox().size.height);
+	ChoseCharacterFrame->addChild(CreateCharacterButton);
+	Buttons.push_back(CreateCharacterButton);
 
-	SpritesFadeIn();
+	//SpritesFadeIn();
+}
+
+std::string Chose_Character_Layer::GetClassNameByClass(const UnitClasses& _class)
+{
+	std::string Name = "Unknow";
+	switch (_class)
+	{
+	case Saber:		Name = "Saber     ";	break;
+	case Archer:	Name = "Archer    ";	break;
+	case Caster:	Name = "Caster    ";	break;
+	case Lancer:	Name = "Lancer    ";	break;
+	case Assasin:	Name = "Assasin   ";	break;
+	case Rider:		Name = "Rider     ";	break;
+	case Avenger:	Name = "Avenger   ";	break;
+	case Berserker:	Name = "Berserker ";	break;
+	}
+	return Name;
 }
 
 void Chose_Character_Layer::_SwapLayer(FadeType _FadeType)
@@ -277,40 +293,21 @@ void Chose_Character_Layer::_SwapLayer(FadeType _FadeType)
 void Chose_Character_Layer::SpritesFadeOut(FadeType _FadeType)
 {
 	setTouchEnabled(false);
-	Taiji->runAction(ScaleTo::create(1.0f, 0.0f));
-	for (int i = 0; i != CharacterEnumFrame.size(); i++)
-	{
-		if (Sprite* Temp = CharacterEnumFrame.at(i))
-			Temp->runAction(MoveTo::create(1.0f, Vec2(Temp->getPositionX() + Temp->getBoundingBox().size.width, Temp->getPositionY())));
-	}
-	for (int i = 0; i != DisplaySprites.size(); i++)
-	{
-		if (Sprite* TempSprite = DisplaySprites.at(i))
-		{
-			Vec2 Pos;
-			if (Title == TempSprite)
-				Pos = Vec2(0 - TempSprite->getPositionX(), TempSprite->getPositionY());
-			else
-				Pos = Vec2(TempSprite->getPositionX(), 0 - TempSprite->getPositionY());
-
-			Sequence* TempSQ = Sequence::create(CCMoveTo::create(1.0f, Pos), DelayTime::create(1.0f), CallFunc::create(CC_CALLBACK_0(Chose_Character_Layer::_SwapLayer, this, _FadeType)), NULL);
-			TempSprite->runAction(TempSQ);
-		}
-	}
+	_SwapLayer(_FadeType);
 }
 
 void Chose_Character_Layer::SpritesFadeIn()
 {
-	float DelayTime = 0;
-	for (int i = 0; i != DisplaySprites.size(); i++)
-	{
-		if (Sprite* TempSprite = DisplaySprites.at(i))
-		{
-			Sequence* TempSQ = Sequence::create(DelayTime::create(DelayTime), ScaleTo::create(0.5f, 1.0f), ScaleTo::create(0.2f, 0.5f), ScaleTo::create(0.2f, 1.0f), NULL);
-			TempSprite->runAction(TempSQ);
-		}
-		DelayTime += 0.5f;
-	}
+	//float DelayTime = 0;
+	//for (int i = 0; i != Buttons.size(); i++)
+	//{
+	//	if (Sprite* TempSprite = Buttons.at(i))
+	//	{
+	//		Sequence* TempSQ = Sequence::create(DelayTime::create(DelayTime), ScaleTo::create(0.5f, 1.0f), ScaleTo::create(0.2f, 0.5f), ScaleTo::create(0.2f, 1.0f), NULL);
+	//		TempSprite->runAction(TempSQ);
+	//	}
+	//	DelayTime += 0.5f;
+	//}
 }
 
 bool Chose_Character_Layer::LoadCharacters()

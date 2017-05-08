@@ -10,6 +10,7 @@ Monster::Monster(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 gui
 
 Monster::~Monster()
 {
+	removeAllChildrenWithCleanup(true);
 }
 
 bool Monster::InitWithLoadedData()

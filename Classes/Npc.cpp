@@ -7,4 +7,5 @@ Npc::Npc(SkeletonAnimation* _animation, uint32 entry, uint32 guid) : Creature(_a
 
 Npc::~Npc()
 {
+	removeAllChildrenWithCleanup(true);
 }

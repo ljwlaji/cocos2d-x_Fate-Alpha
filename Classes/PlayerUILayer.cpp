@@ -334,6 +334,7 @@ PlayerUILayer::PlayerUILayer()
 
 PlayerUILayer::~PlayerUILayer()
 {
+	removeAllChildrenWithCleanup(true);
 	_PlayerUILayer = nullptr;
 }
 
@@ -470,26 +471,8 @@ void PlayerUILayer::SwapButtomMenuType()
 	if (!CanTouchButton)
 		return;
 	CanTouchButton = false;
-	if (m_Buttom_Menus.at(0)._sprite->getPositionX() == m_ButtomMenu->getPositionX())
-	{
-		for (int i = 0; i != m_Buttom_Menus.size(); i++)
-		{
-			Sprite* TempSprite = m_Buttom_Menus.at(i)._sprite;
-			TempSprite->runAction(MoveTo::create(0.3f, m_Buttom_Menus.at(i).Loc));
-			TempSprite->runAction(FadeIn::create(0.3f));
-		}
-	}
-	else
-	{
-		for (int i = 0; i != m_Buttom_Menus.size(); i++)
-		{
-			Sprite* TempSprite = m_Buttom_Menus.at(i)._sprite;
-			TempSprite->runAction(MoveTo::create(0.3f, m_ButtomMenu->getPosition()));
-			TempSprite->runAction(FadeOut::create(0.3f));
-		}
-	}
-	Sequence* sq = Sequence::create(DelayTime::create(0.5f), CallFunc::create(CC_CALLBACK_0(PlayerUILayer::ButtonMenuCallBack, this)), NULL);
-	runAction(sq);
+	Sequence* sq = Sequence::create(MoveTo::create(1.0f, Vec2(m_ButtomMenu->getPositionX(), m_ButtomMenu->getPositionY() + 300.0f)), CallFunc::create(CC_CALLBACK_0(PlayerUILayer::ButtonMenuCallBack, this)), NULL);
+	m_ButtomMenu->runAction(sq);
 }
 
 void PlayerUILayer::ButtonMenuCallBack()
@@ -500,23 +483,74 @@ void PlayerUILayer::ButtonMenuCallBack()
 void PlayerUILayer::InitButtomMenu()
 {
 	m_ButtomMenu = Sprite::create(PlayerUIButtomMenuImage);
-	m_ButtomMenu->SetRealPosition(visiablesize.x - m_ButtomMenu->getBoundingBox().size.width / 2, visiablesize.y - m_ButtomMenu->getBoundingBox().size.height / 2);
+	m_ButtomMenu->SetRealPosition(visiablesize.x / 2, visiablesize.y - m_ButtomMenu->getBoundingBox().size.height / 2);
 	addChild(m_ButtomMenu);
 
 	//character equip bag quest spell setting
 	char msg[255];
+	float PosX = 0;
 	for (int i = Button_Menu_Setting; i != Button_Menu_End; i++)
 	{
 		snprintf(msg, 255, "%s%d.png", PlayerUIButtonMenuListImage, i);
 		Sprite* TempSprite = Sprite::create(msg);
-		Vec2 TempPos = Vec2(m_ButtomMenu->getBoundingBox().origin.x - TempSprite->getBoundingBox().size.width * 0.55f - (i * TempSprite->getBoundingBox().size.width * 1.05f), m_ButtomMenu->getPositionY());
-		ButtonMenuInfo _info;
-		_info._sprite = TempSprite;
-		_info.Loc = TempPos;
-		TempSprite->SetRealPosition(m_ButtomMenu->getPosition());
-		addChild(TempSprite);
-		TempSprite->setOpacity(0.0f);
-		m_Buttom_Menus.push_back(_info);
+		TempSprite->setPosition(m_ButtomMenu->getContentSize().width * 0.882f - TempSprite->getBoundingBox().size.width / 2 - (i * TempSprite->getBoundingBox().size.width * 0.9f), m_ButtomMenu->getContentSize().height * 0.65f);
+		m_ButtomMenu->addChild(TempSprite);
+		m_Buttom_Menus.push_back(TempSprite);
+		PosX = TempSprite->getPositionX();
+	}
+	Sprite* MapButton = Sprite::create("Player_UI_Buttom_Menu_6.png");
+	MapButton->setPosition(PosX - MapButton->getBoundingBox().size.width * 0.52f, m_ButtomMenu->getContentSize().height * 0.55f);
+	m_ButtomMenu->addChild(MapButton);
+	m_Buttom_Menus.push_back(MapButton);
+
+	Sprite* NameFrame = Sprite::create("Player_UI_Buttom_Menu_7.png");
+	Sprite* ValueFrame = Sprite::create("Player_UI_Buttom_Menu_8.png");
+	Sprite* HeadFrame = Sprite::create("Player_UI_Buttom_Menu_9.png");
+
+	NameFrame->setPosition(MapButton->getBoundingBox().origin.x - NameFrame->getBoundingBox().size.width * 0.4f, m_ButtomMenu->getContentSize().height * 0.55f + NameFrame->getBoundingBox().size.height / 2);
+	m_ButtomMenu->addChild(NameFrame);
+
+	ValueFrame->setPosition(NameFrame->getPositionX(), m_ButtomMenu->getContentSize().height * 0.5f);
+	m_ButtomMenu->addChild(ValueFrame);
+
+	HeadFrame->setPosition(ValueFrame->getBoundingBox().origin.x - HeadFrame->getBoundingBox().size.width * 0.35f, m_ButtomMenu->getContentSize().height * 0.62f);
+	m_ButtomMenu->addChild(HeadFrame);
+
+	float FirstPoint = ValueFrame->getBoundingBox().size.width / 9;
+	float SinglePoint = ValueFrame->getBoundingBox().size.width / 3;
+	for (int i = MoneyTTF; i != EndOfTopTTF; i++)
+	{
+		LabelTTF* TempTTF = LabelTTF::create("1234", "Arial", 20, Size::ZERO, i == NameTTF ? TextHAlignment::CENTER : TextHAlignment::LEFT);
+		i == NameTTF ? TempTTF->setAnchorPoint(Vec2(0.5f,0.5f)) : TempTTF->setAnchorPoint(Vec2(0, 0.5f));
+		i == NameTTF ? TempTTF->setPosition(NameFrame->getContentSize().width / 2, NameFrame->getContentSize().height) : TempTTF->setPosition(FirstPoint + (i * SinglePoint), ValueFrame->getContentSize().height / 2);
+		ValueFrame->addChild(TempTTF);
+		TopMenuLabel[(TopButtonLabelTTF)i] = TempTTF;
+	}
+	ResetUpButtonString();
+}
+
+void PlayerUILayer::ResetUpButtonString()
+{
+	for (std::map<TopButtonLabelTTF, LabelTTF*>::iterator itr = TopMenuLabel.begin(); itr != TopMenuLabel.end(); itr++)
+	{
+		LabelTTF* TempTTF = itr->second;
+		char msg[255];
+		switch (itr->first)
+		{
+		case PlayerUILayer::MoneyTTF:
+			snprintf(msg, 255, "%d", sPlayer->GetMoney());
+			break;
+		case PlayerUILayer::AttackTTF:
+			snprintf(msg, 255, "%d", sPlayer->GetUnitInt32Value(Base_Att));
+			break;
+		case PlayerUILayer::CashTTF:
+			snprintf(msg, 255, "%d", 99999);
+			break;
+		case PlayerUILayer::NameTTF:
+			snprintf(msg, 255, "%s", sPlayer->GetName().c_str());
+			break;
+		}
+		TempTTF->setString(msg);
 	}
 }
 
@@ -634,7 +668,7 @@ void PlayerUILayer::onTouchBegan(const std::vector<Touch*>& touchesVector, Event
 		}
 		for (int i = 0; i != m_Buttom_Menus.size(); i++)
 		{
-			if (Sprite* TempButton = m_Buttom_Menus.at(i)._sprite)
+			if (Sprite* TempButton = m_Buttom_Menus.at(i))
 			{
 				if (TempButton->getOpacity() < 245.0f)
 					break;

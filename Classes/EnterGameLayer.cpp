@@ -16,6 +16,7 @@ EnterGameLayer::EnterGameLayer()
 
 EnterGameLayer::~EnterGameLayer()
 {
+	removeAllChildrenWithCleanup(true);
 	_eventDispatcher->removeEventListener(listener);
 }
 
@@ -25,13 +26,28 @@ bool EnterGameLayer::init()
 	do
 	{
 		CC_BREAK_IF(!Layer::init());
+
+		Sprite* BackGround = Sprite::create(EnterGameLayerBackGroundImage);
+		BackGround->SetRealPosition(Visablesize.x / 2, Visablesize.y / 2);
+		addChild(BackGround);
+
+		Sprite* LeftFrameBig = Sprite::create(EnterGameLayerLeftFrameBig);
+		LeftFrameBig->SetRealPosition(LeftFrameBig->getBoundingBox().size.width / 2, Visablesize.y - LeftFrameBig->getBoundingBox().size.height / 2);
+		addChild(LeftFrameBig);
+		Sprite* LeftFrameSmall = Sprite::create(EnterGameLayerLeftFrameSmall);
+		LeftFrameSmall->SetRealPosition(LeftFrameBig->getPositionX(), LeftFrameBig->getBoundingBox().origin.y - LeftFrameSmall->getBoundingBox().size.height * 0.35f);
+		addChild(LeftFrameSmall);
+		Sprite* CopyRight = Sprite::create(EnterGameLayerCopyingRight);
+		CopyRight->SetRealPosition(Visablesize.x / 2, CopyRight->getBoundingBox().size.height * 0.35f);
+		addChild(CopyRight);
+
 		float SingleSize = Visablesize.y * 0.1f;
 		for (int i = button_entergame; i != menu_settings; i++)
 		{
 			char url[255];
 			snprintf(url, 255, "EnterGame_%u.png", i);
 			Sprite* TempButton = Sprite::create(url);
-			TempButton->SetRealPosition(Visablesize.x / 2, Visablesize.y * 0.4 - (i * SingleSize));
+			TempButton->SetRealPosition(Visablesize.x / 2, Visablesize.y * 0.55f - (i * TempButton->getBoundingBox().size.height * 0.73f));
 			TempButton->setOpacity(0.0f);
 			TempButton->setTag(i);
 			this->addChild(TempButton);
@@ -40,6 +56,7 @@ bool EnterGameLayer::init()
 		InitListener();
 		InitSettingMenu();
 		InitDiffcuteMenu();
+		sMusic->playBackgroundMusic("EnterGame.mp3", true);
 		bRef = true;
 	} while (0);
 

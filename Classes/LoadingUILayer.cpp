@@ -23,6 +23,7 @@ LoadingUILayer::LoadingUILayer()
 
 LoadingUILayer::~LoadingUILayer()
 {
+	removeAllChildrenWithCleanup(true);
 	_LoadingUILayer = nullptr;
 }
 
@@ -101,7 +102,11 @@ void LoadingUILayer::InitTimeBar()
 		m_TimeBar->setBarChangeRate(Vec2(1, 0));
 		m_TimeBar->setMidpoint(Vec2(0, 0));
 		m_TimeBar->setType(ProgressTimer::Type::BAR);
+
+		Sprite* LoadingText = Sprite::create("LoadingLayer_Text.png");
+		LoadingText->setPosition(Back->getContentSize().width / 2, Back->getContentSize().height / 2);
 		Back->addChild(m_TimeBar);
+		Back->addChild(LoadingText);
 	}
 }
 

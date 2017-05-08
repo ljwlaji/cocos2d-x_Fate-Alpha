@@ -3,7 +3,10 @@
 
 #include "cocos2d.h"
 #include "Result.h"
+#include "SimpleAudioEngine.h"
+using namespace CocosDenshion;
 
+#define sMusic									SimpleAudioEngine::getInstance()->sharedEngine()
 #define	int8				signed char				
 #define	int16				short
 #define	int32				int
@@ -252,6 +255,24 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define PlayerUISettingMenuFrame			"Player_Setting_UI_Setting_Frame.png"
 #define PlayerUISettingMenuButtonNormal		"Player_Setting_UI_Normal_Frame.png"
 #define PlayerUISettingMenuButtonSelected	"Player_Setting_UI_Selected_Frame.png"
+
+
+#define EnterGameLayerBackGroundImage		"FateAlpha.png"
+#define EnterGameLayerLeftFrameBig			"NotificationWindow.png"
+#define EnterGameLayerLeftFrameSmall		"NotificationWindow1.png"
+#define EnterGameLayerCopyingRight			"CopingRight.png"
+
+
+#define ChoseCharacterLayerCancelButton		"Chose_Character_CancelButton.png"
+#define ChoseCharacterLayerEnterButton		"Chose_Character_EnterButton.png"
+#define ChoseCharacterLayerCreateButton		"Chose_Character_CreateButton.png"
+#define ChoseCharacterLayerCharacterFrame	"Chose_Character_SingleCharacterFrame.png"
+#define ChoseCharacterLayerButtomBar		"Chose_Character_ButtomBar.png"
+#define ChoseCharacterLayerClassFrame		"Chose_Character_ClassFrame.png"
+#define ChoseCharacterLayerFactionFrame		"Chose_Character_FactionFrame.png"
+#define ChoseCharacterLayerMenuButton		"Chose_Character_MenuButton.png"
+#define ChoseCharacterLayerSelectFrame		"Chose_Character_SelectFrame.png"
+#define ChoseCharacterLayerSelectTitle		"Chose_Character_SelectTitle.png"
 
 enum SettingButtonTag
 {

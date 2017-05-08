@@ -161,6 +161,7 @@ void PlayerEquipWindow::SwapVisiable()
 
 PlayerEquipWindow::~PlayerEquipWindow()
 {
+	removeAllChildrenWithCleanup(true);
 	_PlayerEquipWindow = nullptr;
 }
 
@@ -181,6 +182,7 @@ PlayerEuqipValueWindow::PlayerEuqipValueWindow()
 
 PlayerEuqipValueWindow::~PlayerEuqipValueWindow()
 {
+	removeAllChildrenWithCleanup(true);
 	_PlayerEuqipValueWindow = nullptr;
 }
 

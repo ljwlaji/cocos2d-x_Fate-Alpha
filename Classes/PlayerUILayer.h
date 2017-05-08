@@ -23,6 +23,7 @@ public:
 	void SwapSpellFrameVisable();
 	void ReSetSpellFrameText(uint32 SpellID);
 	SpellSlot* GetContactButtonSlot(const Vec2& Loc);
+	void ResetUpButtonString();
 private:
 	enum PlayerUITouchType
 	{
@@ -35,6 +36,14 @@ private:
 		PlayerUITouch_Button_SpellSlot,
 		PlayerUITouch_Equip_Window,
 		PlayerUITouch_SettingMenu,
+	};
+	enum TopButtonLabelTTF
+	{
+		MoneyTTF,
+		AttackTTF,
+		CashTTF,
+		NameTTF,
+		EndOfTopTTF,
 	};
 	CREATE_FUNC(PlayerUILayer);
 	PlayerUILayer();
@@ -49,6 +58,7 @@ private:
 	void InitButtomSpellBar();
 	// Return A SpellSlot If Touched Button
 	SpellSlot* CheckTouchSpellButton(const Vec2& Loc);
+	//∂•≤„Button
 	void InitButtomMenu();
 	float GetVirtualRokerOrgin(Vec2 CenterPoint,Vec2 RokerPoint);
 	virtual void onTouchBegan(const std::vector<Touch*>& touches, Event *_event);
@@ -75,7 +85,7 @@ private:
 
 	Sprite* m_Player_Info_UI_Level;
 
-	std::vector<ButtonMenuInfo> m_Buttom_Menus;
+	std::vector<Sprite*> m_Buttom_Menus;
 	PlayerUITouchType m_touchtype;
 	SpellSlot* TouchedSpellSlot;
 	Sprite* m_ButtomMenu;
@@ -84,6 +94,8 @@ private:
 	LabelTTF* SpellText;
 	Sprite* m_ButtonSpellBar;
 	Sprite* m_ButtonSpellItem[8];
+
+	std::map<TopButtonLabelTTF, LabelTTF*> TopMenuLabel;
 };
 
 

@@ -39,6 +39,7 @@ Main_Map_Layer::Main_Map_Layer(int MapId)
 
 Main_Map_Layer::~Main_Map_Layer()
 {
+	removeAllChildrenWithCleanup(true);
 	_Main_Map_Layer = nullptr;
 	_eventDispatcher->removeEventListener(listener);
 }
@@ -145,6 +146,7 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	scheduleUpdate();
 	setTouchEnabled(true);
+	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	return true;
 }
 

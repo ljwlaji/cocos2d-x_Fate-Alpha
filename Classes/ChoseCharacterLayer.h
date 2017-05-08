@@ -46,15 +46,25 @@ private:
 	void SpritesFadeIn();
 	void SpritesFadeOut(FadeType _FadeType);
 	void _SwapLayer(FadeType _FadeType);
-	std::vector<Sprite*> DisplaySprites;
+	std::string GetClassNameByClass(const UnitClasses& _class);
+	std::vector<Sprite*> Buttons;
 
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
 	virtual void onTouchEnded(Touch *touch, Event *unused_event);
 
-	Sprite* Title;
-	Sprite* Taiji;
-	Sprite* CreateOrEnterGameButton;
+	Sprite* ButtomBar;
+	Sprite* EnterButton;
 	Sprite* CanCelButton;
+	Sprite* CreateButton;
+	Sprite* ChoseCharacterFrame;
+	Sprite* ChoseCharacterTitle;
+	Sprite* CreateCharacterButton;
+
+	Sprite* ClassFrame;
+	Sprite* FactionFrame;
+
+	LabelTTF* ClassInfo;
+	LabelTTF* FactionInfo;
 	SkeletonAnimation* CharacterEnumSprite;
 	std::vector<Sprite*> CharacterEnumFrame;
 	Vec2 VisableSize;

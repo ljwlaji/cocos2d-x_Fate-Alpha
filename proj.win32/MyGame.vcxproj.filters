@@ -70,9 +70,6 @@
     <Filter Include="src\Sripts\SingleScript">
       <UniqueIdentifier>{c6515967-168f-4ebd-8631-60d5381cd7af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Layers\PlayerTalkLayer">
-      <UniqueIdentifier>{d7b6b49a-9f82-4e2d-9c89-cad2603230a4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Item">
       <UniqueIdentifier>{c232edc6-b9d8-47b3-885c-ee01808208f6}</UniqueIdentifier>
     </Filter>
@@ -87,6 +84,9 @@
     </Filter>
     <Filter Include="src\Layers\PlayerUILayer\SettingSprite">
       <UniqueIdentifier>{79535210-e47d-4d42-9270-4fd2d714891d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\PlayerTalkLayer">
+      <UniqueIdentifier>{d7b6b49a-9f82-4e2d-9c89-cad2603230a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -172,7 +172,7 @@
       <Filter>src\Sripts</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\PlayerTalkLayer.cpp">
-      <Filter>src\Layers\PlayerTalkLayer</Filter>
+      <Filter>src\Layers\PlayerUILayer\PlayerTalkLayer</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Item.cpp">
       <Filter>src\Item</Filter>
@@ -273,7 +273,7 @@
       <Filter>src\Sripts</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\PlayerTalkLayer.h">
-      <Filter>src\Layers\PlayerTalkLayer</Filter>
+      <Filter>src\Layers\PlayerUILayer\PlayerTalkLayer</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Item.h">
       <Filter>src\Item</Filter>

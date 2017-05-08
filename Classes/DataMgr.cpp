@@ -77,7 +77,6 @@ bool DataMgr::selectUnitDataList(const char* args, Result& _Result)
 	sqlite3_stmt *stmt = nullptr;
 	int rowcount = 0;
 	int check = sqlite3_prepare_v2(db, args, -1, &stmt, nullptr);
-	char msg[255];
 	if (check == SQLITE_OK)
 	{
 		while (sqlite3_step(stmt) == SQLITE_ROW)

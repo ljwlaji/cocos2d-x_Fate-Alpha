@@ -38,6 +38,7 @@ Player::~Player()
 {
 	if (_ActionMgr)
 		delete _ActionMgr;
+	removeAllChildrenWithCleanup(true);
 	_player = nullptr;
 }
 
