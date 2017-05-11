@@ -58,7 +58,6 @@ private:
 	void AutoUpdateExpBar();
 	void SwapCastingBarVisable();
 	void InitSpellDefaultFrame();
-	void CreateVirtualRoker();
 	void InitUI();
 	//重置头像的等级
 	void ResetHeadLevel();
@@ -68,48 +67,43 @@ private:
 	SpellSlot* CheckTouchSpellButton(const Vec2& Loc);
 	//顶层Button
 	void InitButtomMenu();
-	float GetVirtualRokerOrgin(const Vec2& CenterPoint,const Vec2& RokerPoint);
 	virtual void onTouchBegan(const std::vector<Touch*>& touches, Event *_event);
 	virtual void onTouchMoved(const std::vector<Touch*>& touches, Event *_event);
 	virtual void onTouchEnded(const std::vector<Touch*>& touches, Event *_event);
 	bool IsSingleTouch(const std::vector<Touch*>& touches, PlayerUITouchType _type);
-	void ResetVirtualRokerOrgin(const float& Orgin);
 	void SwapButtomMenuType();
 	void ButtonMenuCallBack();
-	Layer* m_VirtualRokerLayer;
-	Sprite* m_VirtualRoker_BackGround;
-	Sprite* m_VirtualRoker_Roker;
-	Vec2 visiablesize;
-	Vec2 RockerLastPostion;
-	Sprite* m_Player_Info_UI;
-	ProgressTimer* m_Player_Info_UI_Hp;
-	ProgressTimer* m_Player_Info_UI_Mp;
-	Sprite* m_Player_Info_UI_Level_Frame;
-	std::vector<Sprite*> m_Player_Info_UI_Level_Sprite;
-	Sprite* m_Player_UI_TopButton_Swap_Button;
 
+	Vec2 visiablesize;
+
+	Sprite* m_Player_Info_UI;
+	Sprite* m_Player_Info_UI_Level_Frame;
+	Sprite* m_Player_UI_TopButton_Swap_Button;
+	Sprite* m_Player_Exp_Bar_Frame;
+	Sprite* m_Player_Info_UI_Level;
 	Sprite* m_Player_Info_Casting_Bar_Frame;
 	Sprite* m_Player_Info_Casting_Bar_Icon;
-	ProgressTimer* m_Player_Info_Casting_Bar;
-
-	Sprite* m_Player_Exp_Bar_Frame;
-	ProgressTimer* m_Player_Exp_Bar_Scroll;
-
-	Sprite* m_Player_Info_UI_Level;
-
-	std::vector<Sprite*> m_Buttom_Menus;
-	PlayerUITouchType m_touchtype;
-	SpellSlot* TouchedSpellSlot;
 	Sprite* m_ButtomMenu;
-	bool CanTouchButton;
 	Sprite* DefaultFrame;
-	LabelTTF* SpellText;
 	Sprite* m_ButtonSpellBar;
 	Sprite* m_ButtonSpellItem[8];
 
+	ProgressTimer* m_Player_Info_Casting_Bar;
+	ProgressTimer* m_Player_Info_UI_Hp;
+	ProgressTimer* m_Player_Info_UI_Mp;
+	ProgressTimer* m_Player_Exp_Bar_Scroll;
+
+	LabelTTF* SpellText;
+
+	SpellSlot* TouchedSpellSlot;
+
 	std::map<TopButtonLabelTTF, LabelTTF*> TopMenuLabel;
+	std::vector<Sprite*> m_Player_Info_UI_Level_Sprite;
+	std::vector<Sprite*> m_Buttom_Menus;
 	EventListenerTouchAllAtOnce* RokerListener;
 	bool m_TopMenuIsVisable;
+	bool CanTouchButton;
+	PlayerUITouchType m_touchtype;
 };
 
 

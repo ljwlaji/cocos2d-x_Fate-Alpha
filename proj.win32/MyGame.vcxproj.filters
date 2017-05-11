@@ -94,6 +94,9 @@
     <Filter Include="src\Quest">
       <UniqueIdentifier>{39a96484-8d8a-4bfb-9d98-9e28d8da71f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\VirtualRocker">
+      <UniqueIdentifier>{f62af04f-ab5c-4747-895f-26445ce4f99e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -204,6 +207,9 @@
     <ClCompile Include="..\Classes\QuestMgr.cpp">
       <Filter>src\Quest</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\VirtualRocker.cpp">
+      <Filter>src\Layers\PlayerUILayer\VirtualRocker</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -310,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\QuestMgr.h">
       <Filter>src\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\VirtualRocker.h">
+      <Filter>src\Layers\PlayerUILayer\VirtualRocker</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,7 @@
 #include "QuestBook.h"
 #include "NotifyMgr.h"
 #include "PlayerEquipWindow.h"
+#include "VirtualRocker.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -345,10 +346,6 @@ PlayerBag* PlayerBag::GetInstance()
 PlayerUILayer::PlayerUILayer()
 {
 	visiablesize = Director::getInstance()->getVisibleSize();
-	m_VirtualRokerLayer = nullptr;
-	m_VirtualRoker_BackGround = nullptr;
-	m_VirtualRoker_Roker = nullptr;
-	RockerLastPostion = Vec2(0, 0);
 	m_touchtype = PlayerUITouch_None;
 	CanTouchButton = true;
 	m_TopMenuIsVisable = true;
@@ -377,16 +374,15 @@ bool PlayerUILayer::init()
 	{
 		CC_BREAK_IF(!Layer::init());
 
-
-//#ifndef WIN32
-		CreateVirtualRoker();
-//#endif
-
 		InitSpellDefaultFrame();
 		InitExpBar();
 		InitUI();
 		InitButtomMenu();
 		InitButtomSpellBar();
+
+		sRocker->setPosition(sRocker->getBoundingBox().size.width / 2, sRocker->getBoundingBox().size.height / 2);
+		addChild(sRocker);
+
 		sPlayerBag->setPosition(visiablesize.x * 0.75, visiablesize.y / 2);
 		addChild(sPlayerBag);
 
@@ -404,6 +400,12 @@ bool PlayerUILayer::init()
 
 		sQuestBook->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sQuestBook);
+
+		RokerListener = EventListenerTouchAllAtOnce::create();
+		RokerListener->onTouchesBegan = CC_CALLBACK_2(PlayerUILayer::onTouchBegan, this);
+		RokerListener->onTouchesMoved = CC_CALLBACK_2(PlayerUILayer::onTouchMoved, this);
+		RokerListener->onTouchesEnded = CC_CALLBACK_2(PlayerUILayer::onTouchEnded, this);
+		_eventDispatcher->addEventListenerWithSceneGraphPriority(RokerListener, this);
 
 		scheduleUpdate();
 		bRef = true;
@@ -699,29 +701,6 @@ void PlayerUILayer::InitUI()
 	addChild(m_Player_Info_Casting_Bar_Icon);
 }
 
-void PlayerUILayer::CreateVirtualRoker()
-{
-	m_VirtualRokerLayer = Layer::create();
-	addChild(m_VirtualRokerLayer);
-
-	m_VirtualRoker_BackGround = Sprite::create("Virtual_Roker_Back.png");
-	m_VirtualRoker_BackGround->SetRealPosition(m_VirtualRoker_BackGround->getBoundingBox().size.width * 0.6f, m_VirtualRoker_BackGround->getBoundingBox().size.height * 0.6f);
-	m_VirtualRokerLayer->addChild(m_VirtualRoker_BackGround);
-	m_VirtualRoker_BackGround->setOpacity(80.0f);
-	m_VirtualRoker_Roker = Sprite::create("Virtual_Roker_Center.png");
-	m_VirtualRoker_Roker->setPosition(m_VirtualRoker_BackGround->getContentSize().width / 2, m_VirtualRoker_BackGround->getContentSize().height / 2);
-	m_VirtualRoker_Roker->setOpacity(80.0f);
-	m_VirtualRoker_BackGround->addChild(m_VirtualRoker_Roker);
-
-	//意见:给确认是摇杆的touch创建唯一标识符
-	RokerListener = EventListenerTouchAllAtOnce::create();
-	RokerListener->onTouchesBegan = CC_CALLBACK_2(PlayerUILayer::onTouchBegan, this);
-	RokerListener->onTouchesMoved = CC_CALLBACK_2(PlayerUILayer::onTouchMoved, this);
-	RokerListener->onTouchesEnded = CC_CALLBACK_2(PlayerUILayer::onTouchEnded, this);
-	//RokerListener->setSwallowTouches(true);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(RokerListener, this);
-}
-
 bool PlayerUILayer::IsSingleTouch(const std::vector<Touch*>& touches, PlayerUITouchType _type)
 {
 	for (int i = 0; i != touches.size(); i++)
@@ -836,13 +815,12 @@ void PlayerUILayer::onTouchBegan(const std::vector<Touch*>& touchesVector, Event
 				touches->SetTouchType(PlayerUITouch_Buttom_Menu);
 			return;
 		}
-		if (m_VirtualRoker_Roker && m_VirtualRoker_Roker->getBoundingBox().containsPoint(touches->getLocation()))
+		if (sRocker && sRocker->getBoundingBox().containsPoint(touches->getLocation()))
 		{
 			if (IsSingleTouch(touchesVector, PlayerUITouch_Roker))
 			{
 				touches->SetTouchType(PlayerUITouch_Roker);
-				RockerLastPostion = touches->getLocation();
-				m_VirtualRoker_Roker->setPosition(touches->getLocation());
+				sRocker->TouchBegin(touches);
 			}
 			return;
 		}
@@ -872,18 +850,8 @@ void PlayerUILayer::onTouchMoved(const std::vector<Touch*>& touchesVector, Event
 				sPlayerBag->onTouchBagMoved(touches);
 				return;
 			case PlayerUITouch_Roker:
-				{
-					Vec2 NowLoc = touches->getLocation();
-					float X_move = NowLoc.x - RockerLastPostion.x;
-					float Y_move = NowLoc.y - RockerLastPostion.y;
-					if (ccpDistance(Vec2(m_VirtualRoker_BackGround->getPositionY() - X_move, m_VirtualRoker_BackGround->getPositionY() - Y_move), m_VirtualRoker_Roker->getPosition()) < 140.0f)
-						m_VirtualRoker_Roker->setPosition(m_VirtualRoker_Roker->getPositionX() + X_move, m_VirtualRoker_Roker->getPositionY() + Y_move);
-
-					float Orgin = GetVirtualRokerOrgin(m_VirtualRoker_BackGround->getPosition(), m_VirtualRoker_Roker->getPosition());
-					RockerLastPostion = touches->getLocation();
-					ResetVirtualRokerOrgin(Orgin);
-					break;
-				}
+				sRocker->TouchMoved(touches);
+				return;
 			case PlayerUITouch_SpellBook:
 				sPlayerSpellBook->onTouchBagMoved(touches);
 				return;
@@ -916,11 +884,8 @@ void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event
 					return;
 				case PlayerUITouch_Roker:
 				{
-					sPlayer->ResetMoveKeyForRoker();
-					if (m_VirtualRoker_Roker)
-						m_VirtualRoker_Roker->setPosition(m_VirtualRoker_BackGround->getContentSize().width / 2, m_VirtualRoker_BackGround->getContentSize().height / 2);
-					RockerLastPostion = Vec2(0, 0);
-					break;
+					sRocker->TouchEnded(touches);
+					return;
 				}
 				case PlayerUITouch_Button_SpellSlot:
 				{
@@ -946,59 +911,6 @@ void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event
 			}
 		}
 	}
-}
-
-void PlayerUILayer::ResetVirtualRokerOrgin(const float& _orgin)
-{
-	if (_orgin > 22.5 && _orgin <= 135)
-	{
-		if (abs(_orgin - 90) < 15)
-			sPlayer->DealVirtualRoker(Roker_Left);
-		else
-			_orgin > 90 ? sPlayer->DealVirtualRoker(Roker_Left_Down) : sPlayer->DealVirtualRoker(Roker_Up_Left);
-	}
-	else if (_orgin > 135 && _orgin < 225)
-	{
-		if (abs(_orgin - 180) < 15)
-			sPlayer->DealVirtualRoker(Roker_Down);
-		else _orgin > 180 ? sPlayer->DealVirtualRoker(Roker_Down_Right) : sPlayer->DealVirtualRoker(Roker_Left_Down);
-	}
-	else if (_orgin > 225 && _orgin < 315)
-	{
-		if (abs(_orgin - 270) < 15)
-			sPlayer->DealVirtualRoker(Roker_Right);
-		else _orgin > 280 ? sPlayer->DealVirtualRoker(Roker_Up_Right) : sPlayer->DealVirtualRoker(Roker_Down_Right);
-	}
-	else
-	{
-		if (_orgin < 15 || _orgin > 345)
-			sPlayer->DealVirtualRoker(Roker_Up);
-		else if (_orgin < 45)
-			sPlayer->DealVirtualRoker(Roker_Up_Left);
-		else
-			sPlayer->DealVirtualRoker(Roker_Up_Right);
-	}
-}
-
-float PlayerUILayer::GetVirtualRokerOrgin(const Vec2& CenterPoint, const Vec2& RokerPoint)
-{
-	float Correct_Orgin = atan(abs(RokerPoint.y - CenterPoint.y) / abs(RokerPoint.x - CenterPoint.x)) * (180.0f / 3.1415926f);
-	if (RokerPoint.x >= CenterPoint.x)
-	{
-		if (RokerPoint.y >= CenterPoint.y)
-			Correct_Orgin += 90.0f;
-		else
-			Correct_Orgin = 90.0f - Correct_Orgin;
-		Correct_Orgin += 180.0f;
-	}
-	else if (RokerPoint.y > CenterPoint.y)
-	{
-		Correct_Orgin = 90.0f - Correct_Orgin;
-	}
-	else
-		Correct_Orgin += 90.0f;
-
-	return Correct_Orgin;
 }
 
 void PlayerUILayer::SwapCastingBarVisable()
