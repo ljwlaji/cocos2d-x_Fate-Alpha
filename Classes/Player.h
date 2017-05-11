@@ -28,10 +28,12 @@ struct PlayerQuestStatus
 {
 	std::vector<SingleQuestRequire>* QuestRequire;
 	std::vector<uint32> FinishCount;
+	bool IsCompleted = false;
 };
 
 #define sPlayer Player::GetInstance()
 
+class Item;
 class ActionMgr;
 class Creature;
 class TalkClass
@@ -39,7 +41,7 @@ class TalkClass
 public:
 	void AddItem(uint8 ImageID, uint32 sender, uint32 action, std::string TalkString)
 	{
-		if (Menus.size() >= 4)
+		if (Menus.size() > 4)
 			return;
 		Menus.push_back(GossipMenu(ImageID, sender, action, TalkString));
 	}
@@ -67,23 +69,31 @@ public:
 	bool UpdatePlayerValues();
 	void SendGossipMenu(std::string MainString, Creature* pCreature);
 	void CloseGossipMenu();
-	ActionType GetDoingAction()									{ return m_Action; }
-	ActionMgr* PlayerActionMgr()								{ return _ActionMgr; }
-	uint32 GetMoney()											{ return m_Money; }
-	uint32 GetExp()												{ return m_Exp; }
-	uint32 GetMapid()											{ return m_Mapid; }
-	PlayerSpells GetSpells()									{ return m_Spells; }
-	Unit* GetPlayerTarget()										{ return m_Player_Target; }
-	std::map<uint32, PlayerQuestStatus>& GetQuests()			{ return m_QuestsStat; }
-	void SetMapid(uint32 _var)									{ m_Mapid = _var; }
-	void SetExp(uint32 _var)									{ m_Exp = _var; }
-	void SetMoveKeyEnable(MoveKeyValue _key, bool enable)		{ MoveKeyStatus[_key] = enable; }
-	void ResetKeyTimer()										{ KeyVectorClearTimer = Base_Clear_Key_Time; }
-	virtual void DestorySelf()									{ removeFromParentAndCleanup(true); }
-	void SetMoney(uint32 _var)									{ m_Money = _var; }
+	void CalcItemValues();
+	int GetEquipItemTotalValusForKey(UnitInt32Value _val);
+	uint32 GetItemTotalAttack();
+	void AcceptQuest(const uint32& QuestId);
+	void SaveQuestStatusInfoToDB();
+	bool CanAcceptQuest(const uint32& QuestId);
+	bool HasQuest(const uint32& QuestID);
+	ActionType GetDoingAction()													{ return m_Action; }
+	ActionMgr* PlayerActionMgr()												{ return _ActionMgr; }
+	uint32 GetMoney()															{ return m_Money; }
+	uint32 GetExp()																{ return m_Exp; }
+	uint32 GetMapid()															{ return m_Mapid; }
+	PlayerSpells GetSpells()													{ return m_Spells; }
+	Unit* GetPlayerTarget()														{ return m_Player_Target; }
+	std::map<uint32, PlayerQuestStatus>& GetQuests()							{ return m_QuestsStat; }
+	void SetMapid(uint32 _var)													{ m_Mapid = _var; }
+	void SetExp(uint32 _var)													{ m_Exp = _var; }
+	void SetMoveKeyEnable(MoveKeyValue _key, bool enable)						{ MoveKeyStatus[_key] = enable; }
+	void ResetKeyTimer()														{ KeyVectorClearTimer = Base_Clear_Key_Time; }
+	virtual void DestorySelf()													{ removeFromParentAndCleanup(true); }
+	void SetMoney(uint32 _var)													{ m_Money = _var; }
 	void SetPlayerTarget(Unit* pUnit);
 	void ReSetPlayerTarget();
 	TalkClass* PlayerTalkClass;
+	bool CanEquipItem(Item* pItem);
 private:
 	void LoadPlayerQuests();
 	ActionType m_Action;
@@ -98,6 +108,8 @@ private:
 	uint32 m_Mapid;
 	Unit* m_Player_Target;
 	std::map<uint32, PlayerQuestStatus> m_QuestsStat;
+	std::map<uint32, PlayerQuestStatus>::iterator m_Questitr;
+	std::map<UnitInt32Value, uint32> m_ItemTotalValues;
 };
 
 #endif

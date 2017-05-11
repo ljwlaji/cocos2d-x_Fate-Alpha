@@ -99,7 +99,7 @@ private:
 	Sprite* m_ButtonSpellItem[8];
 
 	std::map<TopButtonLabelTTF, LabelTTF*> TopMenuLabel;
-
+	EventListenerTouchAllAtOnce* RokerListener;
 	bool m_TopMenuIsVisable;
 };
 

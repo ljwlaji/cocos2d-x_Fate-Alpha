@@ -37,18 +37,20 @@ enum EnterGameButtonTags
 	end_of_button_tag,
 };
 
+#define sEnterGameLayer EnterGameLayer::GetInstance()
 class EnterGameLayer :public Layer
 {
 public:
-	EnterGameLayer();
-	~EnterGameLayer();
-	CREATE_FUNC(EnterGameLayer);
+	static EnterGameLayer* GetInstance();
 	void AddPlayer(Player* player)
 	{
 		player->SetRealPosition(Visablesize.x / 2, 0);
 		addChild(player);
 	}
 private:
+	EnterGameLayer();
+	~EnterGameLayer();
+	CREATE_FUNC(EnterGameLayer);
 	bool RunActionWithButton(int _tag);
 	void onTouchEnded(Touch *touch, Event *unused_event);
 	bool onTouchBegan(Touch *touch, Event *unused_event);

@@ -1,0 +1,32 @@
+数据库:Item_Template:(物品表)
+				列名:
+					Entry 		唯一ID
+					Name  		物品名称
+					SlotType 	物品装备栏位0-7
+						SLOT_WEAPON = 0,
+						SLOT_SECOND_WEAPON,
+						SLOT_LEFT_HAND,
+						SLOT_RIGHT_HAND,
+						SLOT_RING_1,
+						SLOT_RING_2,
+						SLOT_HEAD,
+						SLOT_SHOULDER,
+						SLOT_END = 8,
+					url			物品显示文件路径
+					Quality		物品品质0-6
+					Buy_Price	购买价格
+					Sell_Price	出售价格
+					Require_Class	需求职业
+					Require_Level	需求等级
+					Max_Count		最大堆叠
+					Item_Set		套装ID
+					Min_Damage		最小伤害
+					Max_Damage		最大伤害
+					Stat_Type		物品属性索引	
+						Max_HP = 0 
+						Max_Mana = 2 
+						Defance = 4
+						Str	= 5
+						Dex = 6
+						Int = 7
+					Stat_Value		物品属性值

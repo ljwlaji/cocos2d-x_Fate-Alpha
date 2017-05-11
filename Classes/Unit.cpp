@@ -33,6 +33,7 @@ Unit::~Unit()
 {
 	if (m_Castting_Spell)
 		delete m_Castting_Spell;
+
 	removeAllChildrenWithCleanup(true);
 }
 
@@ -109,6 +110,54 @@ void Unit::DoAction(ActionType _action)
 	}
 }
 
+uint32 Unit::GetBaseAttack()
+{
+	/*
+	Max_HP,
+	Curr_HP,
+	Max_Mana,
+	Curr_Mana,
+	Base_Def,
+	Base_Str,
+	Base_Dex,
+	Base_Int,
+	Faction,
+	UnitValue_Level,
+	Base_Att,
+	UnitInt32_Value_End,
+	*/
+	uint32 _attack = 0;
+	switch (GetClass())
+	{
+	case Saber:
+		_attack = m_UnitInt32Value[Base_Str] + m_UnitInt32Value[Base_Dex] / 4;
+		break;
+	case Archer:
+		_attack = m_UnitInt32Value[Base_Str] / 4 + m_UnitInt32Value[Base_Dex];
+		break;
+	case Caster:
+		_attack = m_UnitInt32Value[Base_Dex] / 4 + m_UnitInt32Value[Base_Int];
+		break;
+	case Lancer:
+		_attack = m_UnitInt32Value[Base_Str] / 2 + m_UnitInt32Value[Base_Dex] / 2;
+		break;
+	case Assasin:
+		_attack = m_UnitInt32Value[Base_Int] / 4 + m_UnitInt32Value[Base_Dex];
+		break;
+	case Rider:
+		_attack = m_UnitInt32Value[Base_Str] / 3 + m_UnitInt32Value[Base_Dex] + m_UnitInt32Value[Base_Int] / 3;
+		break;
+	case Avenger:
+		_attack = m_UnitInt32Value[Base_Dex] / 4 + m_UnitInt32Value[Base_Str] / 4 + m_UnitInt32Value[Base_Dex] / 4 + m_UnitInt32Value[Base_Int] / 4;
+		break;
+	case Berserker:
+		_attack = m_UnitInt32Value[Base_Str] * 2;
+		break;
+	}
+
+	return _attack;
+}
+
 bool Unit::UpdateUnitValues()
 {
 	const ClassInfo& _info = sGame->GetUnitClassInfo(GetClass());
@@ -141,6 +190,7 @@ bool Unit::UpdateUnitValues()
 				SetUnitInt32Value((UnitInt32Value)i, CurrentNumber);
 				break;
 			case Base_Att:
+				CurrentNumber = GetBaseAttack();
 				SetUnitInt32Value((UnitInt32Value)i, CurrentNumber);
 				break;
 			}
@@ -164,7 +214,7 @@ UnitSide Unit::CheckSideForUnit(const Vec2& Loc)
 
 bool Unit::IsInAttackRange(Unit* pTarget)
 {
-	if (abs(getPositionX() - pTarget->getPositionX()) < 100 && abs(getPositionY() - pTarget->getPositionY()) < 100)
+	if (abs(getPositionX() - pTarget->getPositionX()) < 100 && abs(getPositionY() - pTarget->getPositionY()) < sMainMap->GetVisableSize().y * 0.02f)
 		return true;
 	return false;
 }

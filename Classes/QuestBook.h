@@ -7,6 +7,7 @@ USING_NS_CC;
 
 #define sQuestBook QuestBook::GetInstance()
 
+struct QuestTemplate;
 struct PlayerQuestStatus;
 class QuestBook : public Sprite
 {
@@ -16,10 +17,12 @@ public:
 	void OnTouchBegin(Touch* Loc);
 	void OnTouchEnded(Touch* Loc);
 	void SwapVisable();
+	void AddNewQuestToBook(const QuestTemplate* pTemplate);
 private:
 	void SwapQuestDetail(uint32 QuestID);
 	void InitFrame();
 	void SwapPage(bool pageup);
+	Sprite* CreateNewQuestFrame(const QuestTemplate* pTemplate);
 	QuestBook();
 	~QuestBook();
 	enum QuestBookTag

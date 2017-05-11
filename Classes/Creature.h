@@ -25,13 +25,18 @@ public:
 	virtual ~Creature();
 	void OnGossipHello(Player* pPlayer);
 	void OnGossipSelect(Player* pPlayer, uint32 sender, uint32 action);
+	bool IsQuestGiver();
 	void CombatStart(Unit* pUnit);
 	bool HasScript()								{ bool re; m_script_ai ? re = true : re = false; return re; }
 	ScriptAI* CreatureAI()							{ return m_script_ai; }
+	uint32 GetEntry()								{ return m_Entry; }
 	CreatureThreadList GetThreatList()				{ return m_Creature_Threat_List; }
+	void SetEntry(uint32 entry)						{ m_Entry = entry; }
 	void ThreatUpdate();
 	void AddThreat(Unit* pTarget, float Threat);
 	virtual void update(float diff);
+	void UpdateAI(const float& diff);
+	void UpdateMovement(const float& diff);
 	void MoveInLineOfSight(Unit* pUnit);
 	bool CheckDisTanceForMILS(Unit* pUnit);
 private:
@@ -45,6 +50,8 @@ private:
 
 	float m_Creature_Move_CheckTimer;
 	UnitMover* m_UnitMover;
+
+	uint32 m_Entry;
 };
 
 #endif

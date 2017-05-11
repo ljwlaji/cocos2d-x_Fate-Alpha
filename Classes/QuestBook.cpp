@@ -99,6 +99,45 @@ void QuestBook::InitFrame()
 	}
 }
 
+Sprite* QuestBook::CreateNewQuestFrame(const QuestTemplate* pTemplate)
+{
+	Sprite* SingleQuestFrame = Sprite::create(QuestBookSingleQuestFrame);
+	SingleQuestFrame->setAnchorPoint(Vec2(0, 1.0f));
+	SingleQuestFrame->setTag(pTemplate->ID);
+	LabelTTF* QuestTitle = LabelTTF::create(sQuestMgr->GetQuestTemplate(pTemplate->ID)->Title.c_str(), "Arial", 30, Size::ZERO, TextHAlignment::LEFT);
+	QuestTitle->setAnchorPoint(Vec2(0, 0.5f));
+	QuestTitle->setPosition(SingleQuestFrame->getContentSize().width * 0.2f, SingleQuestFrame->getContentSize().height * 0.65f);
+	SingleQuestFrame->addChild(QuestTitle);
+
+	return SingleQuestFrame;
+}
+
+void QuestBook::AddNewQuestToBook(const QuestTemplate* pTemplate)
+{
+	Sprite* TempFrame = CreateNewQuestFrame(pTemplate);
+	bool Added = false;
+	for (std::map<uint32, std::vector<Sprite*>>::iterator itr = m_SingleQuestFrames.begin(); itr != m_SingleQuestFrames.end(); itr++)
+	{
+		if (itr->second.size() != 7)
+		{
+			TempFrame->setPosition(getContentSize().width * 0.015f, QuestBookButtons[Scroll_Bar_Uper_Arrow]->getBoundingBox().origin.y + QuestBookButtons[Scroll_Bar_Uper_Arrow]->getBoundingBox().size.height * 1.5f - itr->second.size() * TempFrame->getBoundingBox().size.height);
+			itr->second.push_back(TempFrame);
+			if (itr->first != CurrentPage)
+				TempFrame->setVisible(false);
+			Added = true;
+			break;
+		}
+	}
+	if (!Added)
+	{
+		std::vector<Sprite*> NewSpriteVector;
+		m_SingleQuestFrames[m_SingleQuestFrames.size()] = NewSpriteVector;
+		TempFrame->setPosition(getContentSize().width * 0.015f, QuestBookButtons[Scroll_Bar_Uper_Arrow]->getBoundingBox().origin.y + QuestBookButtons[Scroll_Bar_Uper_Arrow]->getBoundingBox().size.height * 1.5f - NewSpriteVector.size() * TempFrame->getBoundingBox().size.height);
+		m_SingleQuestFrames[(m_SingleQuestFrames.size() - 1)].push_back(TempFrame);
+	}
+	addChild(TempFrame);
+}
+
 void QuestBook::InitQuestFrame(const std::map<uint32, PlayerQuestStatus>& quests)
 {
 	if (quests.empty())
@@ -188,11 +227,15 @@ void QuestBook::SwapQuestDetail(uint32 QuestID)
 
 void QuestBook::OnTouchBegin(Touch* Loc)
 {
+	if (!isVisible())
+		return;
+
 	m_TouchedSprite = nullptr;
 	for (std::map<uint32, std::vector<Sprite*>>::iterator itr = m_SingleQuestFrames.begin(); itr != m_SingleQuestFrames.end(); itr++)
 	{
-		if (!itr->second.at(0)->isVisible())
+		if (itr->second.empty() || !itr->second.at(0)->isVisible())
 			continue;
+
 		for (int i = 0; i != itr->second.size(); i++)
 		{
 			if (itr->second.at(i)->IsContectPoint(Loc->getLocation()))

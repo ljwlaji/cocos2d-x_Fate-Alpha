@@ -1,5 +1,6 @@
 #include "PlayerEquipWindow.h"
 #include "PlayerUILayer.h"
+#include "Player.h"
 
 static PlayerEquipWindow* _PlayerEquipWindow = nullptr;
 static PlayerEuqipValueWindow* _PlayerEuqipValueWindow = nullptr;
@@ -122,13 +123,12 @@ void PlayerEquipWindow::onTouchBagEnded(Touch* touches)
 		{
 		case SLOT_WEAPON:
 		case SLOT_SECOND_WEAPON:
-		case SLOT_AMMOR:
-		case SLOT_SHOES:
+		case SLOT_LEFT_HAND:
+		case SLOT_RIGHT_HAND:
 		case SLOT_RING_1:
 		case SLOT_RING_2:
-		case SLOT_RING_3:
-		case SLOT_RING_4:
-		case SLOT_END:
+		case SLOT_HEAD:
+		case SLOT_SHOULDER:
 			OnClickedItemSlot(m_TouchedSprite->getTag());
 			break;
 		case ValueButtonTag:
@@ -140,7 +140,7 @@ void PlayerEquipWindow::onTouchBagEnded(Touch* touches)
 	}
 }
 
-void PlayerEquipWindow::OnClickedItemSlot(uint32 _tag)
+void PlayerEquipWindow::OnClickedItemSlot(const uint32& _tag)
 {
 
 }
@@ -177,6 +177,7 @@ PlayerEuqipValueWindow::PlayerEuqipValueWindow()
 	_PlayerEuqipValueWindow = nullptr;
 	initWithFile(PlayerUIEquipValueFrame);
 	autorelease();
+	Init();
 	setVisible(false);
 }
 
@@ -192,4 +193,109 @@ PlayerEuqipValueWindow* PlayerEuqipValueWindow::GetInstance()
 	if (!_PlayerEuqipValueWindow)
 		_PlayerEuqipValueWindow = new PlayerEuqipValueWindow();
 	return _PlayerEuqipValueWindow;
+}
+
+void PlayerEuqipValueWindow::Init()
+{
+	m_TTFs.clear();
+
+	LabelTTF* Title = LabelTTF::create("Character Stats", "Arial", 34, Size::ZERO, TextHAlignment::CENTER);
+	Title->setPosition(getContentSize().width * 0.435f, getContentSize().height * 0.79f);
+	Title->setColor(ccc3(0, 0, 0));
+	addChild(Title);
+
+	for (int i = Attack; i != TTF_END; i++)
+	{
+		LabelTTF* TempTTF = LabelTTF::create("test", "Arial", 29, Size::ZERO, TextHAlignment::LEFT);
+		TempTTF->setAnchorPoint(Vec2(0, 0.5f));
+		TempTTF->setPosition(getContentSize().width * 0.2f, getContentSize().height * 0.573f - (i * TempTTF->getBoundingBox().size.height * 1.02f));
+		TempTTF->setColor(ccc3(0, 0, 0));
+		addChild(TempTTF);
+		m_TTFs[(ValueWindowTTF)i] = TempTTF;
+
+		LabelTTF* Plus = LabelTTF::create("test", "Arial", 29, Size::ZERO, TextHAlignment::LEFT);
+		Plus->setAnchorPoint(Vec2(0, 0.5f));
+		Plus->setPosition(TempTTF->getPositionX() + TempTTF->getBoundingBox().size.width, TempTTF->getPositionY());
+		Plus->setColor(ccc3(100, 255, 100));
+		addChild(Plus);
+		PlusTTF[(ValueWindowTTF)i] = Plus;
+	}
+	ResetValueDefault();
+}
+
+std::string itos(int _int)
+{
+	std::string return_;
+	char msg[255];
+	snprintf(msg, 255, "%d", _int);
+	return_ = msg;
+	return return_;
+}
+
+void PlayerEuqipValueWindow::ResetValueDefault()
+{
+	if (!sPlayer)
+		return;
+
+	std::string str = "";
+	std::string plus = "";
+
+
+	for (std::map<ValueWindowTTF, LabelTTF*>::iterator itr = m_TTFs.begin(); itr != m_TTFs.end(); itr++)
+	{
+		plus = " + ";
+		switch (itr->first)
+		{
+		case Attack:
+			str = "Attack:";
+			str += itos(sPlayer->GetUnitInt32Value(Base_Att));
+
+			if (uint32 val = sPlayer->GetItemTotalAttack())
+				plus += itos(val);
+			else
+				plus = "";
+			break;
+		case Def:
+			str = "Def:";
+			str += itos(sPlayer->GetUnitInt32Value(Base_Def));
+
+			if (uint32 val = sPlayer->GetEquipItemTotalValusForKey(Base_Def))
+				plus += itos(val);
+			else
+				plus = "";
+			break;
+		case Str:
+			str = "Str:";
+			str += itos(sPlayer->GetUnitInt32Value(Base_Str));
+
+			if (uint32 val = sPlayer->GetEquipItemTotalValusForKey(Base_Str))
+				plus += itos(val);
+			else
+				plus = "";
+			break;
+		case Dex:
+			str = "Dex:";
+			str += itos(sPlayer->GetUnitInt32Value(Base_Dex));
+
+			if (uint32 val = sPlayer->GetEquipItemTotalValusForKey(Base_Dex))
+				plus += itos(val);
+			else
+				plus = "";
+			break;
+		case Int:
+			str = "Int:";
+			str += itos(sPlayer->GetUnitInt32Value(Base_Int));
+
+			if (uint32 val = sPlayer->GetEquipItemTotalValusForKey(Base_Int))
+				plus += itos(val);
+			else
+				plus = "";
+
+			break;
+		}
+		itr->second->setString(str.c_str());
+
+		PlusTTF[itr->first]->setString(plus.c_str());
+		PlusTTF[itr->first]->setPosition(itr->second->getPositionX() + itr->second->getBoundingBox().size.width, itr->second->getPositionY());
+	}
 }

@@ -44,9 +44,10 @@ public:
 	bool GetCanPlaySound()							{ return CanPlaySound; }
 	ClassInfo GetUnitClassInfo(UnitClasses _car)	{ ClassInfo _ClassInfo; if (m_UnitClasses_Class_Info.find(_car) != m_UnitClasses_Class_Info.end()) _ClassInfo = m_UnitClasses_Class_Info[_car]; return _ClassInfo; }
 	const SingleMapInfo* GetMapInfo(uint32 _mapid);
-
-
+	bool IsQuestGiver(const uint32& Creatureid);
+	const std::list<uint32>* GetCreatureQuests(uint32 creatureid);
 private: 
+	void LoadQuestGiver();
 	void LoadMapInfo();
 	void LoadUnitClassInfo();
 	void LoadFactionInfo();
@@ -54,8 +55,6 @@ private:
 	bool IsMoveKey(EventKeyboard::KeyCode keyCode);
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
-	LoadingUILayer* LoadingLayer;
-	EnterGameLayer* EnterLayer;
 	Size visibleSize;
 	Vec2 origin;
 	bool CanShowDiffCuteImage;
@@ -67,6 +66,9 @@ private:
 	std::map<uint32, std::map<uint32, bool>> m_Faction_Friendly_Info;
 	std::map<uint32, ItemTemplate> m_ItemTemplate;
 	std::map<uint32, SingleMapInfo> m_MapInfo;
+	std::map<uint32, std::list<uint32>> m_QuestGivers;
+	virtual void update(float diff);
+	float ClearCacheDelayTime;
 protected:
 	GameDiffcute m_Diffcute;
 };

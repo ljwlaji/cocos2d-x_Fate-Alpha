@@ -8,6 +8,10 @@
 #include "DataMgr.h"
 #include "QuestMgr.h"
 #include "QuestBook.h"
+#include "PlayerUILayer.h"
+#include "PlayerEquipWindow.h"
+#include "Item.h"
+#include "NotifyMgr.h"
 
 static Player* _player = nullptr;
 
@@ -40,8 +44,13 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) 
 
 Player::~Player()
 {
+	SaveToDB();
 	if (_ActionMgr)
 		delete _ActionMgr;
+
+	if (PlayerTalkClass)
+		delete PlayerTalkClass;
+	DestoryVision();
 	removeAllChildrenWithCleanup(true);
 	_player = nullptr;
 }
@@ -52,6 +61,149 @@ Player* Player::GetInstance()
 		return nullptr;
 
 	return _player;
+}
+
+bool Player::CanEquipItem(Item* pItem)
+{
+	if (pItem->GetTemplate()->RequireLevel > GetLevel())
+	{
+		sNotifyMgr->ShowNotify("Level Error");
+		return false;
+	}
+
+	if (pItem->GetTemplate()->RequireClass != GetClass())
+	{
+		sNotifyMgr->ShowNotify("Class Error");
+		return false;
+	}
+
+	return true;
+}
+
+bool Player::CanAcceptQuest(const uint32& QuestID)
+{
+	const QuestTemplate* _QuestTemplate = sQuestMgr->GetQuestTemplate(QuestID);
+	if (!_QuestTemplate)
+		return false;
+
+	if (GetLevel() < _QuestTemplate->AcceptNeedLevel)
+		return false;
+
+	if (HasQuest(QuestID))
+		return false;
+	//if (_QuestTemplate->AcceptNeedRepID)
+	//缺少检查阵营声望
+
+	return true;
+}
+
+bool Player::HasQuest(const uint32& questid)
+{
+	if (m_QuestsStat.find(questid) != m_QuestsStat.end())
+		return true;
+	return false;
+}
+
+void Player::AcceptQuest(const uint32& QuestId)
+{
+	const QuestTemplate* _QuestTemplate = sQuestMgr->GetQuestTemplate(QuestId);
+	if (!_QuestTemplate)
+		return;
+
+	if (!CanAcceptQuest(QuestId))
+		return;
+
+	//缺少完成过任务的判断
+	//sQuestBook->AddNewQuestToBook(_QuestTemplate);
+
+	PlayerQuestStatus _PlayerQuestStatus;
+	_PlayerQuestStatus.QuestRequire = sQuestMgr->GetQuestRequire(QuestId);
+	for (int i = 0; i != 4; i++)
+		_PlayerQuestStatus.FinishCount.push_back(0);
+
+	m_QuestsStat[QuestId] = _PlayerQuestStatus;
+	char msg[255];//										0				1			2			3					
+	snprintf(msg, 255, "INSERT INTO player_quest_status(guid,quest_id) VALUES(%d,%d);", GetGuid(), QuestId);
+	sDataMgr->PExcute(msg);
+	sQuestBook->AddNewQuestToBook(_QuestTemplate);
+}
+
+void Player::SaveQuestStatusInfoToDB()
+{
+	for (m_Questitr = m_QuestsStat.begin(); m_Questitr != m_QuestsStat.end(); m_Questitr++)
+	{
+		if (m_Questitr->second.IsCompleted)
+			continue;
+
+		char msg[255];//										0				1			2			3					
+		snprintf(msg, 255, "UPDATE player_quest_status SET count_1 = %d,count_2 = %d, count_3 = %d, count_4 = %d WHERE quest_id = %d AND guid = %d", m_Questitr->second.FinishCount.at(0), m_Questitr->second.FinishCount.at(1), m_Questitr->second.FinishCount.at(2), m_Questitr->second.FinishCount.at(3), m_Questitr->first, sPlayer->GetGuid());
+		sDataMgr->PExcute(msg);
+	}
+}
+
+void Player::CalcItemValues()
+{
+	m_ItemTotalValues.clear();
+	//InitLizs
+	for (int i = SLOT_WEAPON; i != SLOT_END; i++)
+		m_ItemTotalValues[(UnitInt32Value)i] = 0;
+
+	for (int i = SLOT_WEAPON; i != SLOT_END; i++)
+	{
+		Slot* pSlot = (Slot*)sPlayerEquip->getChildByTag(i);
+		if (pSlot && pSlot->GetItem())
+		{
+			const std::map<uint32, uint32> ItemValue = pSlot->GetItem()->GetTemplate()->Values;
+			{
+				for (std::map<uint32, uint32>::const_iterator itr = ItemValue.begin(); itr != ItemValue.end(); itr++)
+				{
+					m_ItemTotalValues[(UnitInt32Value)itr->first] += itr->second;
+				}
+			}
+			//暂缺物品Min/Max Damage计算
+		}
+	}
+}
+
+int Player::GetEquipItemTotalValusForKey(UnitInt32Value _val)						
+{
+	if (m_ItemTotalValues.find(_val) != m_ItemTotalValues.end())
+		return m_ItemTotalValues[_val];
+	return 0;
+}
+
+uint32 Player::GetItemTotalAttack()
+{
+	uint32 _attack = GetEquipItemTotalValusForKey(Base_Att);
+	switch (GetClass())
+	{
+	case Saber:
+		_attack += GetEquipItemTotalValusForKey(Base_Str) + GetEquipItemTotalValusForKey(Base_Dex) / 4;
+		break;
+	case Archer:
+		_attack += GetEquipItemTotalValusForKey(Base_Str) / 4 + GetEquipItemTotalValusForKey(Base_Dex);
+		break;
+	case Caster:
+		_attack += GetEquipItemTotalValusForKey(Base_Dex) / 4 + GetEquipItemTotalValusForKey(Base_Int);
+		break;
+	case Lancer:
+		_attack += GetEquipItemTotalValusForKey(Base_Str) / 2 + GetEquipItemTotalValusForKey(Base_Dex) / 2;
+		break;
+	case Assasin:
+		_attack += GetEquipItemTotalValusForKey(Base_Int) / 4 + GetEquipItemTotalValusForKey(Base_Dex);
+		break;
+	case Rider:
+		_attack += GetEquipItemTotalValusForKey(Base_Str) / 3 + GetEquipItemTotalValusForKey(Base_Dex) + GetEquipItemTotalValusForKey(Base_Int) / 3;
+		break;
+	case Avenger:
+		_attack += GetEquipItemTotalValusForKey(Base_Dex) / 4 + GetEquipItemTotalValusForKey(Base_Str) / 4 + GetEquipItemTotalValusForKey(Base_Dex) / 4 + GetEquipItemTotalValusForKey(Base_Int) / 4;
+		break;
+	case Berserker:
+		_attack += GetEquipItemTotalValusForKey(Base_Str) * 2;
+		break;
+	}
+
+	return _attack;
 }
 
 void Player::SetPlayerTarget(Unit* pUnit)
@@ -99,7 +251,7 @@ void Player::LoadPlayerQuests()
 {
 	m_QuestsStat.clear();
 	char msg[255];
-	snprintf(msg, 255, "SELECT quest_id,count_1,count_2,count_3,count_4 FROM player_quest_status WHERE guid = %u", GetGuid());
+	snprintf(msg, 255, "SELECT quest_id,is_completed,count_1,count_2,count_3,count_4 FROM player_quest_status WHERE guid = %u", GetGuid());
 	Result _Result;
 	if (sDataMgr->selectUnitDataList(msg, _Result))
 	{
@@ -113,7 +265,10 @@ void Player::LoadPlayerQuests()
 				_PlayerQuestStatus.QuestRequire = sQuestMgr->GetQuestRequire(itr->second.at(0).GetInt());
 				if (!_PlayerQuestStatus.QuestRequire)
 					continue;
-				for (int i = 1; i != itr->second.size(); i++)
+
+				_PlayerQuestStatus.IsCompleted = itr->second.at(1).GetBool();
+
+				for (int i = 2; i != itr->second.size(); i++)
 					_PlayerQuestStatus.FinishCount.push_back(itr->second.at(i).GetInt());
 				m_QuestsStat[itr->second.at(0).GetInt()] = _PlayerQuestStatus;
 			}
@@ -350,5 +505,5 @@ bool Player::LoadFromDB()
 
 void Player::SaveToDB()
 {
-
+	SaveQuestStatusInfoToDB();
 }

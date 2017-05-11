@@ -4,6 +4,8 @@
 #include "Player.h"
 #include "MovementMgr.h"
 #include "HelloWorldScene.h"
+#include "PlayerTalkLayer.h"
+
 Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid) : Unit(_SkeletonAnimation, entry, guid)
 {
 	m_script_ai = nullptr;
@@ -12,6 +14,8 @@ Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 g
 	SetLevel(_template.Level);
 	SetFaction(_template.faction);
 	SetClass((UnitClasses)_template.Class);
+	SetEntry(entry);
+	SetGuid(guid);
 	m_Creature_Threat_List.clear();
 	if (_template.guid == guid)
 		m_script_ai = sScriptMgr->GetScripts(_template.ScriptName, this);
@@ -33,6 +37,7 @@ Creature::~Creature()
 
 	if (m_UnitMover)
 		delete m_UnitMover;
+
 	removeAllChildrenWithCleanup(true);
 	removeFromParentAndCleanup(true);
 }
@@ -65,13 +70,33 @@ void Creature::OnGossipHello(Player* pPlayer)
 	if (!HasScript() || !ToNpc() || !IsAlive() || !IsFrendlyTo(pPlayer))
 		return;
 
+	if (IsQuestGiver())
+	{
+		const std::list<uint32>* TempList = sGame->GetCreatureQuests(GetEntry());
+		for (std::list<uint32>::const_iterator itr = TempList->begin(); itr != TempList->end(); itr++)
+		{
+			if (sPlayer->HasQuest(*itr))
+				continue;
+			//Send Quest
+			sPlayerTalkLayer->SendQuestMenuToPlayer(GetEntry());
+			sPlayerTalkLayer->SetQuestTalking(true);
+			return;
+		}
+	}
+	sPlayerTalkLayer->SetQuestTalking(false);
 	CreatureAI()->OnGossipHello(pPlayer, this);
+}
+
+bool Creature::IsQuestGiver()
+{
+	return sGame->IsQuestGiver(GetEntry());
 }
 
 void Creature::OnGossipSelect(Player* pPlayer, uint32 sender, uint32 action)
 {
 	if (!HasScript() || !ToNpc() || !IsAlive() || !IsFrendlyTo(pPlayer))
 		return;
+
 	CreatureAI()->OnGossipSelect(pPlayer, this, sender, action);
 }
 
@@ -80,6 +105,61 @@ bool Creature::CheckDisTanceForMILS(Unit* pUnit)
 	if (abs(getPositionX() - pUnit->getPositionX()) < 350.0f)
 		return true;
 	return false;
+}
+
+void Creature::UpdateAI(const float& diff)
+{
+	if (HasScript())
+	{
+		CreatureAI()->UpdateAI((uint32)(diff * 1000));
+	}
+	else
+	{
+		//Normal AI
+	}
+}
+
+void Creature::UpdateMovement(const float& diff)
+{
+	if (!IsInAttackRange(UpdateVictim()))
+	{
+		if (!m_UnitMover)
+		{
+			if (m_Creature_Move_CheckTimer <= diff)
+			{
+				UpdateMove();
+				m_Creature_Move_CheckTimer = 1.0f;
+			}
+			else m_Creature_Move_CheckTimer -= diff;
+		}
+		else
+		{
+			if (m_UnitMover->MoveDelay > diff)
+			{
+				float X_Modify = 0;
+				m_UnitMover->Side ? X_Modify = Base_X_MovePoint : X_Modify = 0 - Base_X_MovePoint;
+				m_UnitMover->Side ? SetFacing(Facing_Right) : SetFacing(Facing_Left);
+				if (sMoveMgr->CanMoveTo(this, X_Modify < 0 ? Move_To_Left : Move_To_Right, X_Modify))
+					setPositionX(getPositionX() + X_Modify);
+
+				float CheckPoint = abs(UpdateVictim()->getPositionY() - getPositionY());
+				if (CheckPoint > sMainMap->GetVisableSize().y * 0.02f)
+				{
+					float Mov_Y = 0;
+					UpdateVictim()->getPositionY() > getPositionY() ? Mov_Y += Base_Y_MovePoint : Mov_Y -= Base_Y_MovePoint;
+					if (sMoveMgr->CanMoveTo(this, Mov_Y < 0 ? Move_To_Down : Move_To_Up, Mov_Y))
+						setPositionY(getPositionY() + Mov_Y);
+				}
+				m_UnitMover->MoveDelay -= diff;
+			}
+			else
+			{
+				m_UnitMover = nullptr;
+				delete m_UnitMover;
+				m_Creature_Move_CheckTimer = 0.2f;
+			}
+		}
+	}
 }
 
 void Creature::update(float diff)
@@ -96,43 +176,10 @@ void Creature::update(float diff)
 		else
 		{
 			ThreatUpdate();
-			if (UpdateVictim() && !IsInAttackRange(UpdateVictim()))
+			if (UpdateVictim())
 			{
-				if (m_Creature_Move_CheckTimer <= diff)
-				{
-					UpdateMove();
-					m_Creature_Move_CheckTimer = 1.0f;
-				}
-				else if (m_UnitMover)
-				{
-					if (m_UnitMover->MoveDelay > diff)
-					{
-						float X_Modify = 0;
-						m_UnitMover->Side ? X_Modify = Base_X_MovePoint : X_Modify = 0 - Base_X_MovePoint;
-						m_UnitMover->Side ? SetFacing(Facing_Right) : SetFacing(Facing_Left);
-						if (sMoveMgr->CanMoveTo(this, X_Modify < 0 ? Move_To_Left : Move_To_Right, X_Modify))
-							setPositionX(getPositionX() + X_Modify);
-						m_UnitMover->MoveDelay -= diff;
-					}
-					else
-					{
-						m_UnitMover = nullptr;
-						delete m_UnitMover;
-						m_Creature_Move_CheckTimer = 0.2f;
-					}
-				}
-				else m_Creature_Move_CheckTimer -= diff;
-			}
-			else
-			{
-				if (HasScript())
-				{
-					CreatureAI()->UpdateAI((uint32)(diff * 1000));
-				}
-				else
-				{
-					//Normal AI
-				}
+				UpdateAI(diff);
+				UpdateMovement(diff);
 			}
 		}
 	}

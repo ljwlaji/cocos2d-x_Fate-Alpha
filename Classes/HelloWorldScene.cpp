@@ -31,6 +31,11 @@ MainScene::MainScene()
 	CombatSign = false;
 	CanPlaySound = true;
 	_MainScene = this;
+	scheduleUpdate();
+	ClearCacheDelayTime = 10.0f;
+	KeyBoardListener = nullptr;
+	//网页跳转
+	//Application::getInstance()->openURL("https://www.baidu.com/");
 }
 MainScene::~MainScene()
 {
@@ -55,22 +60,25 @@ bool MainScene::init()
 		CC_BREAK_IF(!Scene::init());
 
 #ifdef WIN32 //Create KeyBoard Listner On Win32
-		KeyBoardListener = EventListenerKeyboard::create();
-		KeyBoardListener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
-		KeyBoardListener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
-		_eventDispatcher->addEventListenerWithSceneGraphPriority(KeyBoardListener, this);
+		if (!KeyBoardListener)
+		{
+			KeyBoardListener = EventListenerKeyboard::create();
+			KeyBoardListener->onKeyPressed = CC_CALLBACK_2(MainScene::onKeyPressed, this);
+			KeyBoardListener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
+			_eventDispatcher->addEventListenerWithSceneGraphPriority(KeyBoardListener, this);
+		}
 #else
 #endif
 		sSpellMgr->Init();
 		sScriptMgr->InitScripts();
-
-		sQuestMgr;
 		LoadUnitClassInfo();
 		LoadMapInfo();
 		LoadFactionInfo();
 		LoadItemTemplate();
-		EnterLayer = EnterGameLayer::create();
-		addChild(EnterLayer);
+		LoadQuestGiver();
+
+		sQuestMgr;
+		addChild(sEnterGameLayer);
 
 		addChild(sPlayerTalkLayer);
 
@@ -94,6 +102,44 @@ const SingleMapInfo* MainScene::GetMapInfo(uint32 _mapid)
 	if (m_MapInfo.find(_mapid) != m_MapInfo.end())
 		return &m_MapInfo[_mapid];
 	return nullptr;
+}
+
+void MainScene::LoadQuestGiver()
+{
+	m_QuestGivers.clear();
+	Result _result;
+	if (sDataMgr->selectUnitDataList("SELECT creature_id,quest_id FROM quest_giver_template", _result))
+	{
+		int CurrentCreature = 0;
+		for (Result::iterator itr = _result.begin(); itr != _result.end(); itr++)
+		{
+			if (m_QuestGivers.empty() || m_QuestGivers.find(CurrentCreature) == m_QuestGivers.end())
+			{
+				std::list<uint32> TempList;
+				m_QuestGivers[itr->second.at(0).GetInt()] = TempList;
+				CurrentCreature = itr->second.at(0).GetInt();
+			}
+			m_QuestGivers[CurrentCreature].push_back(itr->second.at(1).GetInt());
+		}
+	}
+	else
+	{
+		//Do Sth;
+	}
+}
+
+const std::list<uint32>* MainScene::GetCreatureQuests(uint32 creatureid)
+{
+	if (m_QuestGivers.find(creatureid) != m_QuestGivers.end())
+		return &m_QuestGivers[creatureid];
+	return nullptr;
+}
+
+bool MainScene::IsQuestGiver(const uint32& _entey)
+{
+	if (m_QuestGivers.find(_entey) == m_QuestGivers.end())
+		return false;
+	return true;
 }
 
 void MainScene::LoadMapInfo()
@@ -170,9 +216,23 @@ void MainScene::LoadItemTemplate()
 				_template.ItemSet		= info.at(10).GetInt();
 				_template.MinDamage		= info.at(11).GetInt();
 				_template.MaxDamage		= info.at(12).GetInt();
-				for (int i = 13, k = 0; i != 23; i++, k++)
+				for (int i = 13; i != 23; i++)
 				{
-					_template.Values[k] = info.at(++i).GetInt();
+					switch (info.at(i).GetInt())
+					{
+					case Max_HP:
+					case Max_Mana:
+					case Base_Def:
+					case Base_Str:
+					case Base_Dex:
+					case Base_Int:
+						_template.Values[info.at(i).GetInt()] = info.at(++i).GetInt();
+						break;
+					default:
+						log("Unknow Item Value Type %d , Ingore...", info.at(i).GetInt());
+						++i;
+						break;
+					}
 				}
 				m_ItemTemplate[_template.Entry] = _template;
 			}
@@ -309,8 +369,8 @@ void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 		{
 			case EnterGame_Layer_Tag:
 			{
-				NewLayer = EnterGameLayer::create();
-				addChild(NewLayer);
+				sPlayerTalkLayer->removeFromParentAndCleanup(true);
+				addChild(sEnterGameLayer);
 				break;
 			}
 			case Loading_Layer_Tag:
@@ -320,8 +380,8 @@ void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 			}
 			case Typing_Layer_Tag:
 			{
-				NewLayer = TypingLayer::create();
-				addChild(NewLayer);
+				//NewLayer = TypingLayer::create();
+				//addChild(NewLayer);
 				break;
 			}
 			case Chose_Character_Layer_Tag:
@@ -342,6 +402,7 @@ void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 			}
 		}
 	}
+	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 }
 
@@ -493,4 +554,15 @@ std::vector<Sprite*> MainScene::GetNumberSpriteByInt(int number)
 		i++;
 	}
 	return SpriteVector;
+}
+
+void MainScene::update(float diff)
+{
+	if (ClearCacheDelayTime <= diff)
+	{
+		SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
+		Director::getInstance()->getTextureCache()->removeUnusedTextures();
+		ClearCacheDelayTime = 10.0f;
+	}
+	else ClearCacheDelayTime -= diff;
 }

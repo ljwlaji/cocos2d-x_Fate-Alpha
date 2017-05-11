@@ -28,6 +28,10 @@ private:
 
 struct Script
 {
+	~Script()
+	{
+
+	}
 	std::string name = "";
 	ScriptAI* (*GetAI)(Creature*);
 	void RegisterSelf();

@@ -21,6 +21,7 @@ Create_Character_Layer::~Create_Character_Layer()
 	removeAllChildrenWithCleanup(true);
 	_Create_Character_Layer = nullptr;
 	_eventDispatcher->removeEventListener(listener);
+	listener = nullptr;
 }
 
 bool Create_Character_Layer::init()
@@ -39,7 +40,7 @@ bool Create_Character_Layer::init()
 
 void Create_Character_Layer::InitFrame()
 {
-	Sprite* BackGround = Sprite::create("White_Back_Ground.png");
+	Sprite* BackGround = Sprite::create("BackGround.png");
 	BackGround->SetRealPosition(VisableSize.x / 2, VisableSize.y / 2);
 	BackGround->setLocalZOrder(-2);
 	addChild(BackGround);

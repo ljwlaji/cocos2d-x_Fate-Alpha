@@ -21,7 +21,7 @@ private:
 	void InitWindow();
 	PlayerEquipWindow();
 	~PlayerEquipWindow();
-	void OnClickedItemSlot(uint32 _tag);
+	void OnClickedItemSlot(const uint32& _tag);
 
 private:
 	Sprite* m_Character_ValueButton;
@@ -38,9 +38,23 @@ class PlayerEuqipValueWindow : public Sprite
 public:
 	static PlayerEuqipValueWindow* GetInstance();
 	void SwapVisable()	{ isVisible() ? setVisible(false) : setVisible(true); }
+	void Init();
+	void ResetValueDefault();
 private:
+	enum ValueWindowTTF
+	{
+		Attack,
+		Def,
+		Str,
+		Dex,
+		Int,
+		TTF_END,
+	};
 	PlayerEuqipValueWindow();
 	~PlayerEuqipValueWindow();
+
+	std::map<ValueWindowTTF, LabelTTF*> m_TTFs;
+	std::map<ValueWindowTTF, LabelTTF*> PlusTTF;
 };
 
 #endif

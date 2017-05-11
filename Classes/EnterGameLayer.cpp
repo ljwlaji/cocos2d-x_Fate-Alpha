@@ -4,6 +4,9 @@
 #include "MainMapLayer.h"
 #include "Player.h"
 #include "ChoseCharacterLayer.h"
+
+static EnterGameLayer* _EnterGameLayer = nullptr;
+
 EnterGameLayer::EnterGameLayer()
 {
 	Visablesize = Director::getInstance()->getVisibleSize();
@@ -16,8 +19,17 @@ EnterGameLayer::EnterGameLayer()
 
 EnterGameLayer::~EnterGameLayer()
 {
+	_EnterGameLayer = nullptr;
 	removeAllChildrenWithCleanup(true);
 	_eventDispatcher->removeEventListener(listener);
+	listener = nullptr;
+}
+
+EnterGameLayer* EnterGameLayer::GetInstance()
+{
+	if (!_EnterGameLayer)
+		_EnterGameLayer = EnterGameLayer::create();
+	return _EnterGameLayer;
 }
 
 bool EnterGameLayer::init()
@@ -41,7 +53,6 @@ bool EnterGameLayer::init()
 		CopyRight->SetRealPosition(Visablesize.x / 2, CopyRight->getBoundingBox().size.height * 0.35f);
 		addChild(CopyRight);
 
-		float SingleSize = Visablesize.y * 0.1f;
 		for (int i = button_entergame; i != menu_settings; i++)
 		{
 			char url[255];

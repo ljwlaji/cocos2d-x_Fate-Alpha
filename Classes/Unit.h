@@ -70,6 +70,7 @@ public:
 	float GetPositionY();
 	void SetFacing(Facing _var);
 	bool IsFrendlyTo(Unit* pUnit);
+	uint32 GetBaseAttack();
 	UnitDeathStatus IsAlive()								{ return m_DeathStatus; }
 	int32 GetLevel()										{ return GetUnitInt32Value(UnitValue_Level); }
 	UnitClasses GetClass()									{ return m_Class; }
@@ -87,6 +88,7 @@ public:
 	Unit* UpdateVictim()									{ return m_Target; }
 	Sprite* GetPlayerTargetSign()							{ return m_PlayerTarget_Sign; }
 	Spell* GetCastingSpell()								{ return m_Castting_Spell; }
+	void DestoryVision()									{ if (m_UnitVision) m_UnitVision->removeFromParentAndCleanup(true); m_UnitVision = nullptr; }
 	void ResetPlayerTargetSign()							{ m_PlayerTarget_Sign = nullptr; }
 	void SetPlayerTargetSign(Sprite* sign)					{ m_PlayerTarget_Sign = sign; }
 	void SetCastingSpell(Spell* pSpell)						{ m_Castting_Spell = pSpell; }

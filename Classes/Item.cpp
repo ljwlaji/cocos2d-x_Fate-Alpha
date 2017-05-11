@@ -1,6 +1,7 @@
 #include "Item.h"
 #include "HelloWorldScene.h"
 #include "NotifyMgr.h"
+#include "PlayerUILayer.h"
 
 Item* Item::CreateItem(const uint32& ItemEntry)
 {
@@ -23,4 +24,11 @@ Item::Item(const ItemTemplate* pTemplate)
 
 Item::~Item()
 {
+}
+
+bool Item::CanEquipToSlot(const Slot* pSlot)
+{
+	if (pSlot->getTag() == m_Template->SlotType)
+		return true;
+	return false;
 }

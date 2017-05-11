@@ -24,6 +24,7 @@ Chose_Character_Layer::~Chose_Character_Layer()
 	_Chose_Character_Layer = nullptr;
 	_eventDispatcher->removeEventListener(listener);
 	removeAllChildrenWithCleanup(true);
+	listener = nullptr;
 }
 
 bool Chose_Character_Layer::init()
@@ -213,7 +214,6 @@ void Chose_Character_Layer::InitFrames()
 		TempFrame->setPosition(ChoseCharacterTitle->getPositionX() - TempFrame->getBoundingBox().size.width * 0.06f, ChoseCharacterTitle->getPositionY() - TempFrame->getBoundingBox().size.height * 0.7f - (k * TempFrame->getBoundingBox().size.height));
 		ChoseCharacterFrame->addChild(TempFrame);
 		TempFrame->setTag(itr->first);
-		PosY = TempFrame->getPositionY();
 		k++;
 		CharacterEnumFrame.push_back(TempFrame);
 

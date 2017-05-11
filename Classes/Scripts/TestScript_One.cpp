@@ -20,12 +20,15 @@ struct TestAI_One : public ScriptAI
 		pPlayer->ADD_GOSSIP_ITEM(1, 2, 3, "444");
 		pPlayer->ADD_GOSSIP_ITEM(1, 2, 3, "555");
 
-		pPlayer->SEND_GOSSIP_MENU("123", pCreature);
+		pPlayer->SEND_GOSSIP_MENU("Hello Stanger!\nThis is A Test Title.", pCreature);
 	}
 
 	void OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 sender, uint32 action) 
 	{
-		pPlayer->CLOSE_GOSSIP_MENU();
+		pPlayer->PlayerTalkClass->ClearMenu();
+		pPlayer->ADD_GOSSIP_ITEM(1, 2, 3, "97");
+		pPlayer->ADD_GOSSIP_ITEM(1, 2, 3, "98");
+		pPlayer->SEND_GOSSIP_MENU("This is Page 2", pCreature);
 	}
 
 	void UpdateAI(const uint32& diff)

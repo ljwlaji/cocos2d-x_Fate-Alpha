@@ -1,12 +1,5 @@
 ﻿#include "LoadingUILayer.h"
 #include "Player.h"
-#ifdef __APPLE__
-#include "spine/spine.h"
-#include "cocos/editor-support/spine/SkeletonAnimation.h"
-#else
-#include "spine\spine.h"
-#include "cocos\editor-support\spine\SkeletonAnimation.h"
-#endif
 
 using namespace spine;
 

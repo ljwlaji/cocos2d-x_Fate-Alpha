@@ -6,7 +6,8 @@
 #include "SimpleAudioEngine.h"
 using namespace CocosDenshion;
 
-#define sMusic									SimpleAudioEngine::getInstance()->sharedEngine()
+
+#define sMusic									SimpleAudioEngine::getInstance()
 #define	int8				signed char				
 #define	int16				short
 #define	int32				int
@@ -86,12 +87,12 @@ enum PlayerEquipSlots
 {
 	SLOT_WEAPON,
 	SLOT_SECOND_WEAPON,
-	SLOT_AMMOR,
-	SLOT_SHOES,
+	SLOT_LEFT_HAND,
+	SLOT_RIGHT_HAND,
 	SLOT_RING_1,
 	SLOT_RING_2,
-	SLOT_RING_3,
-	SLOT_RING_4,
+	SLOT_HEAD,
+	SLOT_SHOULDER,
 	SLOT_END,
 };
 

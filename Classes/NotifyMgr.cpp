@@ -36,7 +36,7 @@ NotifyMgr* NotifyMgr::GetInstance()
 
 void NotifyMgr::ShowNotify(const char* args)
 {
-	LabelTTF* Temp = LabelTTF::create(args, "Arial", 20);
+	LabelTTF* Temp = LabelTTF::create(args, "Arial", 38);
 	Temp->setColor(ccc3(255, 0, 0));
 	CCDelayTime* pdelay = CCDelayTime::create(2.0f);
 	CCFadeOut* pFadeOut = CCFadeOut::create(1.0f);

@@ -8,6 +8,8 @@
 #include "Spell.h"
 #include "PlayerUISettingSprite.h"
 #include "QuestBook.h"
+#include "NotifyMgr.h"
+#include "PlayerEquipWindow.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -28,6 +30,8 @@ Slot::Slot(const std::string& url)
 
 Slot::~Slot()
 {
+	if (GetItem())
+		delete m_Item;
 	removeAllChildrenWithCleanup(true);
 }
 
@@ -60,18 +64,33 @@ void Slot::SetItem(Item* pItem)
 
 void Slot::SwapItem(Slot* Instead)
 {
-	if (!GetItem() || !Instead || Instead == this)
+	if (!GetItem() || !Instead || Instead == this || !Instead->isVisible())
 	{
 		if (m_DisPlaySprite)
 			m_DisPlaySprite->setPosition(getContentSize().width / 2, getContentSize().height / 2);
 		return;
 	}
+
+	//Equip
+	if (Instead->getParent() == sPlayerEquip)
+	{
+		if (!GetItem()->CanEquipToSlot(Instead) || !sPlayer->CanEquipItem(GetItem()))
+		{
+			sNotifyMgr->ShowNotify("You Can't Equip This!");
+			m_DisPlaySprite->setPosition(getContentSize().width / 2, getContentSize().height / 2);
+			return;
+		}
+	}
+
 	Item* NewSlotItem = Instead->GetItem();
 	Item* OldSlotItem = GetItem();
 	if (NewSlotItem)
 		SetItem(NewSlotItem);
 	else SetItem(nullptr);
 	Instead->SetItem(OldSlotItem);
+
+	sPlayer->CalcItemValues();
+	sPlayerValueWindow->ResetValueDefault();
 }
 
 PlayerBag::PlayerBag()
@@ -228,7 +247,7 @@ void PlayerBag::onTouchBagEnded(Touch* touches)
 	case Bag_Type_SeleItem:
 		Slot* OldSlot = ((Slot*)TouchedSprite);
 		Slot* NewSlot = GetSlotByTouch(touches);
-		if (!NewSlot)	
+		if (!NewSlot)
 			NewSlot = sPlayerEquip->GetSlotByTouch(touches);
 		OldSlot->SwapItem(NewSlot);
 		break;
@@ -338,6 +357,8 @@ PlayerUILayer::~PlayerUILayer()
 {
 	removeAllChildrenWithCleanup(true);
 	_PlayerUILayer = nullptr;
+	_eventDispatcher->removeEventListener(RokerListener);
+	RokerListener = nullptr;
 }
 
 PlayerUILayer* PlayerUILayer::GetInstance()
@@ -660,7 +681,7 @@ void PlayerUILayer::CreateVirtualRoker()
 	m_VirtualRoker_BackGround->addChild(m_VirtualRoker_Roker);
 
 	//意见:给确认是摇杆的touch创建唯一标识符
-	auto RokerListener = EventListenerTouchAllAtOnce::create();
+	RokerListener = EventListenerTouchAllAtOnce::create();
 	RokerListener->onTouchesBegan = CC_CALLBACK_2(PlayerUILayer::onTouchBegan, this);
 	RokerListener->onTouchesMoved = CC_CALLBACK_2(PlayerUILayer::onTouchMoved, this);
 	RokerListener->onTouchesEnded = CC_CALLBACK_2(PlayerUILayer::onTouchEnded, this);

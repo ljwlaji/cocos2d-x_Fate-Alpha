@@ -42,6 +42,7 @@ Main_Map_Layer::~Main_Map_Layer()
 	removeAllChildrenWithCleanup(true);
 	_Main_Map_Layer = nullptr;
 	_eventDispatcher->removeEventListener(listener);
+	listener = nullptr;
 }
 
 Main_Map_Layer* Main_Map_Layer::GetInstance()
@@ -143,11 +144,11 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 	}
 	ClearVectors();
 	FillLoadVectors(insteadid);
-	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 	scheduleUpdate();
 	setTouchEnabled(true);
+	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
 	Director::getInstance()->getTextureCache()->removeUnusedTextures();
-
+	
 	if (const SingleMapInfo* _info = sGame->GetMapInfo(insteadid))
 	{
 		if (!_info->BackGroundMusicUrl.empty())

@@ -63,6 +63,7 @@ public:
 	Sprite* GetCurrentGroundSprite(int id)		{ int size = m_MapGroundSpriteVector.size(); if (size + 1 <= id) return m_MapGroundSpriteVector.at(id); return nullptr; }
 	std::vector<Sprite*> GetGroundSprites()		{ return m_MapGroundSpriteVector; }
 	float GetMapMaxWidth()						{ return m_MaxSize; }
+	Vec2 GetVisableSize()						{ return Visablesize; }
 	Unit* GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget = true, bool CheckAlive = true);
 private:
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
