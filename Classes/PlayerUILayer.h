@@ -24,6 +24,7 @@ public:
 	void ReSetSpellFrameText(uint32 SpellID);
 	SpellSlot* GetContactButtonSlot(const Vec2& Loc);
 	void ResetUpButtonString();
+	void ResetAllUIValuesNumber();
 private:
 	enum PlayerUITouchType
 	{
@@ -52,22 +53,27 @@ private:
 	~PlayerUILayer();
 	virtual void update(float diff);
 	virtual bool init();
+	void AutoUpdateHeadBar();
 	void AutoUpdateCastingBar();
+	void AutoUpdateExpBar();
 	void SwapCastingBarVisable();
 	void InitSpellDefaultFrame();
 	void CreateVirtualRoker();
 	void InitUI();
+	//重置头像的等级
+	void ResetHeadLevel();
 	void InitButtomSpellBar();
+	void InitExpBar();
 	// Return A SpellSlot If Touched Button
 	SpellSlot* CheckTouchSpellButton(const Vec2& Loc);
 	//顶层Button
 	void InitButtomMenu();
-	float GetVirtualRokerOrgin(Vec2 CenterPoint,Vec2 RokerPoint);
+	float GetVirtualRokerOrgin(const Vec2& CenterPoint,const Vec2& RokerPoint);
 	virtual void onTouchBegan(const std::vector<Touch*>& touches, Event *_event);
 	virtual void onTouchMoved(const std::vector<Touch*>& touches, Event *_event);
 	virtual void onTouchEnded(const std::vector<Touch*>& touches, Event *_event);
 	bool IsSingleTouch(const std::vector<Touch*>& touches, PlayerUITouchType _type);
-	void ResetVirtualRokerOrgin(float Orgin);
+	void ResetVirtualRokerOrgin(const float& Orgin);
 	void SwapButtomMenuType();
 	void ButtonMenuCallBack();
 	Layer* m_VirtualRokerLayer;
@@ -85,6 +91,9 @@ private:
 	Sprite* m_Player_Info_Casting_Bar_Frame;
 	Sprite* m_Player_Info_Casting_Bar_Icon;
 	ProgressTimer* m_Player_Info_Casting_Bar;
+
+	Sprite* m_Player_Exp_Bar_Frame;
+	ProgressTimer* m_Player_Exp_Bar_Scroll;
 
 	Sprite* m_Player_Info_UI_Level;
 

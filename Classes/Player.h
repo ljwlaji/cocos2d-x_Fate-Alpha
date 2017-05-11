@@ -58,6 +58,7 @@ public:
 
 	static Player* GetInstance();
 	bool CreatePlayer();
+	void SetCurrentValues();
 	bool HasSpell(uint32 spellid);
 	bool LoadPlayerSpells();
 	void CheckPlayerSpellActive();
@@ -76,6 +77,10 @@ public:
 	void SaveQuestStatusInfoToDB();
 	bool CanAcceptQuest(const uint32& QuestId);
 	bool HasQuest(const uint32& QuestID);
+	void AddExp(uint32& Exp);
+	void LevelUp();
+	uint32 GetPlayerTotalInt32Value(UnitInt32Value _val);
+	void SendUpdateValueRequire()												{ m_NeedUpdateValueNumber = true; }
 	ActionType GetDoingAction()													{ return m_Action; }
 	ActionMgr* PlayerActionMgr()												{ return _ActionMgr; }
 	uint32 GetMoney()															{ return m_Money; }
@@ -84,6 +89,8 @@ public:
 	PlayerSpells GetSpells()													{ return m_Spells; }
 	Unit* GetPlayerTarget()														{ return m_Player_Target; }
 	std::map<uint32, PlayerQuestStatus>& GetQuests()							{ return m_QuestsStat; }
+	uint32 GetNextLevelRequireExp()												{ return NextLevelRequireExp; }
+	void SetNextLevelRequireExp(uint32 _val)									{ NextLevelRequireExp = _val; }
 	void SetMapid(uint32 _var)													{ m_Mapid = _var; }
 	void SetExp(uint32 _var)													{ m_Exp = _var; }
 	void SetMoveKeyEnable(MoveKeyValue _key, bool enable)						{ MoveKeyStatus[_key] = enable; }
@@ -95,7 +102,9 @@ public:
 	TalkClass* PlayerTalkClass;
 	bool CanEquipItem(Item* pItem);
 private:
+	bool m_NeedUpdateValueNumber;
 	void LoadPlayerQuests();
+	uint32 NextLevelRequireExp;
 	ActionType m_Action;
 	virtual void update(float diff);
 	ActionMgr* _ActionMgr;

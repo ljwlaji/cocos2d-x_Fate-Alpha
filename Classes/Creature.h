@@ -33,12 +33,15 @@ public:
 	CreatureThreadList GetThreatList()				{ return m_Creature_Threat_List; }
 	void SetEntry(uint32 entry)						{ m_Entry = entry; }
 	void ThreatUpdate();
+	void ResetThreatList()							{ m_Creature_Threat_List.clear(); }
 	void AddThreat(Unit* pTarget, float Threat);
 	virtual void update(float diff);
 	void UpdateAI(const float& diff);
 	void UpdateMovement(const float& diff);
 	void MoveInLineOfSight(Unit* pUnit);
 	bool CheckDisTanceForMILS(Unit* pUnit);
+	void Reset();
+	void EnterEvadeMode();
 private:
 	void FindScript();
 	virtual void UpdateMove();

@@ -284,6 +284,7 @@ void Chose_Character_Layer::_SwapLayer(FadeType _FadeType)
 		if (sMainMap && sPlayer)
 		{
 			sMainMap->addChild(sPlayer);
+			sPlayer->SetCurrentValues();
 		}
 		return;
 	}

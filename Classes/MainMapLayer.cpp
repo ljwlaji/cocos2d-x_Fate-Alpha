@@ -53,7 +53,6 @@ Main_Map_Layer* Main_Map_Layer::GetInstance()
 	return _Main_Map_Layer;
 }
 
-
 bool Main_Map_Layer::onTouchBegan(Touch *touch, Event *unused_event)
 {
 	m_TouchedType = Touch_None;
@@ -296,6 +295,7 @@ void Main_Map_Layer::CreateObjects()
 		SkeletonAnimation* sk = spine::SkeletonAnimation::createWithJsonFile(_template.json, _template.atlas, _template.Scale);
 		Npc* Temp = new Npc(sk, _template.entry, _template.guid);
 		Temp->SetRealPosition(_template.pos_x, _template.pos_y);
+		Temp->Reset();
 		sk->setAnimation(0, "idle", true);
 		m_WaitForLoadingNpcs.pop_back();
 		m_NpcVector.push_back(Temp);
@@ -308,6 +308,7 @@ void Main_Map_Layer::CreateObjects()
 		SkeletonAnimation* sk = spine::SkeletonAnimation::createWithJsonFile(_template.json, _template.atlas, _template.Scale);
 		Monster* Temp = new Monster(sk, _template.entry, _template.guid);
 		Temp->SetRealPosition(Visablesize.x * _template.pos_x / 100, Visablesize.y * _template.pos_y / 100);
+		Temp->Reset();
 		sk->setAnimation(0, "idle", true);
 		m_WaitForLoadingMonsters.pop_back();
 		m_MonsterVector.push_back(Temp);
@@ -434,4 +435,50 @@ Unit* Main_Map_Layer::GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget, b
 	}
 
 	return NearestUnit;
+}
+
+void Main_Map_Layer::GetUnitAtRange(std::list<Unit*>& pTargetList, Unit* pSercher, float Range, bool GetTarget, bool SearchAlive, bool IncludeSelf)
+{
+	if (!pSercher)
+		return;
+
+	for (int i = 0; i != m_MonsterVector.size(); i++)
+	{
+		Unit* pMonster = m_MonsterVector.at(i);
+		if (SearchAlive && !pMonster->IsAlive())
+			continue;
+		if (GetTarget && pSercher->IsFrendlyTo(pMonster))
+			continue;
+
+		if (pSercher == pMonster && !IncludeSelf)
+			continue;
+
+		if (pSercher->getPosition().getDistance(pMonster->getPosition()) < Range)
+		pTargetList.push_back(pMonster);
+	}
+
+	for (int i = 0; i != m_NpcVector.size(); i++)
+	{
+		Unit* pMonster = m_NpcVector.at(i);
+		if (SearchAlive && !pMonster->IsAlive())
+			continue;
+		if (GetTarget && pSercher->IsFrendlyTo(pMonster))
+			continue;
+
+		if (pSercher == pMonster && !IncludeSelf)
+			continue;
+
+		if (pSercher->getPosition().getDistance(pMonster->getPosition()) < Range)
+			pTargetList.push_back(pMonster);
+	}
+
+	if (SearchAlive && !sPlayer->IsAlive())
+		return;
+	if (GetTarget && pSercher->IsFrendlyTo(sPlayer))
+		return;
+	if (pSercher == sPlayer && !IncludeSelf)
+		return;
+
+	if (sPlayer->getPosition().getDistance(pSercher->getPosition()) < Range)
+		pTargetList.push_back(sPlayer);
 }

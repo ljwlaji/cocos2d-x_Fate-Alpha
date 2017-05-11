@@ -59,6 +59,7 @@ void Slot::SetItem(Item* pItem)
 	{
 		setTexture(pItem->GetIconUrl().c_str());
 	}
+	sPlayer->SendUpdateValueRequire();
 	return;
 }
 
@@ -381,6 +382,8 @@ bool PlayerUILayer::init()
 		CreateVirtualRoker();
 //#endif
 
+		InitSpellDefaultFrame();
+		InitExpBar();
 		InitUI();
 		InitButtomMenu();
 		InitButtomSpellBar();
@@ -402,8 +405,6 @@ bool PlayerUILayer::init()
 		sQuestBook->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sQuestBook);
 
-		InitSpellDefaultFrame();
-
 		scheduleUpdate();
 		bRef = true;
 	} while (0);
@@ -416,10 +417,25 @@ SpellSlot* PlayerUILayer::CheckTouchSpellButton(const Vec2& Loc)
 	return GetContactButtonSlot(Loc);
 }
 
+void PlayerUILayer::InitExpBar()
+{
+	m_Player_Exp_Bar_Frame = Sprite::create(PlayerUIExpBarFrame);
+	m_Player_Exp_Bar_Frame->SetRealPosition(visiablesize.x / 2, m_Player_Exp_Bar_Frame->getBoundingBox().size.height / 2);
+	addChild(m_Player_Exp_Bar_Frame);
+
+	m_Player_Exp_Bar_Scroll = ProgressTimer::create(Sprite::create(PlayerUIExpBarScroll));
+	m_Player_Exp_Bar_Scroll->setPercentage(0);
+	m_Player_Exp_Bar_Scroll->setBarChangeRate(Vec2(1, 0));
+	m_Player_Exp_Bar_Scroll->setMidpoint(Vec2(0, 0));
+	m_Player_Exp_Bar_Scroll->setType(ProgressTimer::Type::BAR);
+	m_Player_Exp_Bar_Scroll->setPosition(m_Player_Exp_Bar_Frame->getContentSize().width / 2, m_Player_Exp_Bar_Frame->getContentSize().height * 0.4f);
+	m_Player_Exp_Bar_Frame->addChild(m_Player_Exp_Bar_Scroll);
+}
+
 void PlayerUILayer::InitButtomSpellBar()
 {
 	m_ButtonSpellBar = Sprite::create(PlayerUIButtonSpellBarImage);
-	m_ButtonSpellBar->SetRealPosition(visiablesize.x / 2, m_ButtonSpellBar->getBoundingBox().size.height * 0.7f);
+	m_ButtonSpellBar->SetRealPosition(visiablesize.x / 2, m_ButtonSpellBar->getBoundingBox().size.height * 0.9f);
 	addChild(m_ButtonSpellBar);
 
 	for (int i = 0; i != MaxButtomSpellBarSlot; i++)
@@ -430,7 +446,7 @@ void PlayerUILayer::InitButtomSpellBar()
 	}
 
 	m_ButtonSpellItem[0] = new SpellSlot("Player_UI_Button_Big.png");
-	m_ButtonSpellItem[0]->setPosition(visiablesize.x - m_ButtonSpellItem[0]->getBoundingBox().size.width / 2, m_ButtonSpellItem[0]->getBoundingBox().size.height / 2);
+	m_ButtonSpellItem[0]->setPosition(visiablesize.x - m_ButtonSpellItem[0]->getBoundingBox().size.width * 0.5f, m_ButtonSpellItem[0]->getBoundingBox().size.height * 0.7f);
 	addChild(m_ButtonSpellItem[0]);
 
 	float PosX, PosY;
@@ -598,6 +614,34 @@ void PlayerUILayer::ResetUpButtonString()
 	}
 }
 
+void PlayerUILayer::ResetHeadLevel()
+{
+	for (int i = 0; i < m_Player_Info_UI_Level_Sprite.size(); i++)
+		m_Player_Info_UI_Level_Sprite.at(i)->removeFromParentAndCleanup(true);
+	m_Player_Info_UI_Level_Sprite.clear();
+
+
+	m_Player_Info_UI_Level_Sprite = sGame->GetNumberSpriteByInt(sPlayer->GetLevel());
+	float FirstPosX = 0;
+	float SingleWidth = m_Player_Info_UI_Level_Sprite.at(0)->getBoundingBox().size.width;
+	float TotalWidth = SingleWidth + ((m_Player_Info_UI_Level_Sprite.size() - 1) * (SingleWidth / 2));
+
+	for (int i = 0; i != m_Player_Info_UI_Level_Sprite.size(); i++)
+	{
+		float posx = m_Player_Info_UI_Level_Frame->getContentSize().width / 2 - (TotalWidth / 2) + (i * SingleWidth / 2);
+		m_Player_Info_UI_Level_Sprite.at(i)->setAnchorPoint(Vec2(0, 0.5f));
+		m_Player_Info_UI_Level_Sprite.at(i)->setPosition(posx, m_Player_Info_UI_Level_Frame->getContentSize().height / 2);
+		m_Player_Info_UI_Level_Frame->addChild(m_Player_Info_UI_Level_Sprite.at(i));
+	}
+}
+
+void PlayerUILayer::ResetAllUIValuesNumber()
+{
+	ResetHeadLevel();
+	sPlayerValueWindow->ResetValueDefault();
+	ResetUpButtonString();
+}
+
 void PlayerUILayer::InitUI()
 {
 	//Character Head
@@ -631,18 +675,7 @@ void PlayerUILayer::InitUI()
 	m_Player_Info_UI->addChild(m_Player_Info_UI_Level_Frame);
 
 	//Character Level Set Position
-	m_Player_Info_UI_Level_Sprite = sGame->GetNumberSpriteByInt(sPlayer->GetLevel());
-	float FirstPosX = 0;
-	float SingleWidth = m_Player_Info_UI_Level_Sprite.at(0)->getBoundingBox().size.width;
-	float TotalWidth = SingleWidth + ((m_Player_Info_UI_Level_Sprite.size() - 1) * (SingleWidth / 2));
-
-	for (int i = 0; i != m_Player_Info_UI_Level_Sprite.size(); i++)
-	{
-		float posx = m_Player_Info_UI_Level_Frame->getContentSize().width / 2 - (TotalWidth / 2) + (i * SingleWidth / 2);
-		m_Player_Info_UI_Level_Sprite.at(i)->setAnchorPoint(Vec2(0, 0.5f));
-		m_Player_Info_UI_Level_Sprite.at(i)->setPosition(posx, m_Player_Info_UI_Level_Frame->getContentSize().height / 2);
-		m_Player_Info_UI_Level_Frame->addChild(m_Player_Info_UI_Level_Sprite.at(i));
-	}
+	ResetHeadLevel();
 
 	addChild(m_Player_Info_UI);
 
@@ -915,7 +948,7 @@ void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event
 	}
 }
 
-void PlayerUILayer::ResetVirtualRokerOrgin(float _orgin)
+void PlayerUILayer::ResetVirtualRokerOrgin(const float& _orgin)
 {
 	if (_orgin > 22.5 && _orgin <= 135)
 	{
@@ -947,7 +980,7 @@ void PlayerUILayer::ResetVirtualRokerOrgin(float _orgin)
 	}
 }
 
-float PlayerUILayer::GetVirtualRokerOrgin(Vec2 CenterPoint, Vec2 RokerPoint)
+float PlayerUILayer::GetVirtualRokerOrgin(const Vec2& CenterPoint, const Vec2& RokerPoint)
 {
 	float Correct_Orgin = atan(abs(RokerPoint.y - CenterPoint.y) / abs(RokerPoint.x - CenterPoint.x)) * (180.0f / 3.1415926f);
 	if (RokerPoint.x >= CenterPoint.x)
@@ -984,6 +1017,16 @@ void PlayerUILayer::SwapCastingBarVisable()
 	}
 }
 
+void PlayerUILayer::AutoUpdateExpBar()
+{
+	float CurrentExp = sPlayer->GetExp();
+	float NextLevelExp = sPlayer->GetNextLevelRequireExp();
+	float Proccess = (CurrentExp / NextLevelExp) * 100.0f;
+	float ProccessNow = m_Player_Exp_Bar_Scroll->getPercentage();
+	if (abs(Proccess - ProccessNow) > 1)
+		Proccess > ProccessNow ? m_Player_Exp_Bar_Scroll->setPercentage(++ProccessNow) : m_Player_Exp_Bar_Scroll->setPercentage(--ProccessNow);
+}
+
 void PlayerUILayer::AutoUpdateCastingBar()
 {
 	if (Spell* pSpell = sPlayer->GetCastingSpell())
@@ -999,19 +1042,26 @@ void PlayerUILayer::AutoUpdateCastingBar()
 		SwapCastingBarVisable();
 }
 
+void PlayerUILayer::AutoUpdateHeadBar()
+{
+	float HpNow = m_Player_Info_UI_Hp->getPercentage();
+	float HpCurrent = sPlayer->GetUnitInt32Value(Curr_HP);
+	float HpMax = sPlayer->GetUnitInt32Value(Max_HP) + sPlayer->GetEquipItemTotalValusForKey(Max_HP);
+	float ProccessHP = (HpCurrent / HpMax) * 100.0f;
+	if (abs(ProccessHP - HpNow) > 1)
+		ProccessHP > HpNow ? m_Player_Info_UI_Hp->setPercentage(++HpNow) : m_Player_Info_UI_Hp->setPercentage(--HpNow);
+
+	float ManaNow = m_Player_Info_UI_Mp->getPercentage();
+	float ManaCurrent = sPlayer->GetUnitInt32Value(Curr_Mana);
+	float ManaMax = sPlayer->GetUnitInt32Value(Max_Mana) + sPlayer->GetEquipItemTotalValusForKey(Max_Mana);
+	float ProccessMana = (ManaCurrent / ManaNow) * 100.0f;
+	if (abs(ProccessMana - ManaNow) > 1)
+		ProccessMana > ManaNow ? m_Player_Info_UI_Mp->setPercentage(++ManaNow) : m_Player_Info_UI_Mp->setPercentage(--ManaNow);
+}
+
 void PlayerUILayer::update(float diff)
 {
-	if (!sPlayer)
-		return;
 	AutoUpdateCastingBar();
-	if (m_Player_Info_UI_Hp->getPercentage() != 100.0f)
-	{
-		float posnow = m_Player_Info_UI_Hp->getPercentage();
-		m_Player_Info_UI_Hp->setPercentage(posnow + 1);
-	}
-	if (m_Player_Info_UI_Mp->getPercentage() != 100.0f)
-	{
-		float posnow = m_Player_Info_UI_Mp->getPercentage();
-		m_Player_Info_UI_Mp->setPercentage(posnow + 1);
-	}
+	AutoUpdateExpBar();
+	AutoUpdateHeadBar();
 }

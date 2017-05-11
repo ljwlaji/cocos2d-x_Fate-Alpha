@@ -65,6 +65,7 @@ public:
 	float GetMapMaxWidth()						{ return m_MaxSize; }
 	Vec2 GetVisableSize()						{ return Visablesize; }
 	Unit* GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget = true, bool CheckAlive = true);
+	void GetUnitAtRange(std::list<Unit*>& pTargetList, Unit* pSearcher, float Range, bool GetTarget = true, bool SearchAlive = true, bool IncludeSelf = false);
 private:
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
 	virtual void onTouchEnded(Touch *touch, Event *unused_event);

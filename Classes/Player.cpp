@@ -26,6 +26,7 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) 
 	SetMoney(_info.Money);
 	SetExp(_info.Exp);
 	SetLevel(_info.Level);
+	NextLevelRequireExp = sGame->GetCurrentExpPerLevel(GetLevel() + 1);
 	SetMapid(_info.Mapid);
 	SetFaction(_info.Faction);
 	SetSpeed(100);
@@ -61,6 +62,35 @@ Player* Player::GetInstance()
 		return nullptr;
 
 	return _player;
+}
+
+void Player::LevelUp()
+{
+	SetUnitInt32Value(UnitValue_Level, GetLevel() + 1);
+	m_Exp = 0;
+	UpdateUnitValues();
+	SetUnitInt32Value(Curr_HP, GetPlayerTotalInt32Value(Max_HP));
+	SendUpdateValueRequire();
+	SetNextLevelRequireExp(sGame->GetCurrentExpPerLevel(GetLevel() + 1));
+	SaveToDB();
+}
+
+uint32 Player::GetPlayerTotalInt32Value(UnitInt32Value _val)
+{
+	return GetUnitInt32Value(_val) + GetEquipItemTotalValusForKey(_val);
+}
+
+void Player::AddExp(uint32& _exp)
+{
+	if (m_Exp + _exp > GetNextLevelRequireExp())
+	{
+		_exp -= (GetNextLevelRequireExp() - m_Exp);
+		LevelUp();
+		AddExp(_exp);
+		return;
+	}
+
+	m_Exp += _exp;
 }
 
 bool Player::CanEquipItem(Item* pItem)
@@ -412,6 +442,13 @@ void Player::update(float diff)
 		KeyVectorClearTimer = Base_Clear_Key_Time;
 	}
 	else KeyVectorClearTimer -= diff;
+
+
+	if (m_NeedUpdateValueNumber)
+	{
+		sPlayerUi->ResetAllUIValuesNumber();
+		m_NeedUpdateValueNumber = false;
+	}
 }
 
 bool Player::CanCancelActionForMove()
@@ -470,6 +507,11 @@ bool Player::CreatePlayer()
 	_player = nullptr;
 	removeFromParentAndCleanup(true);
 	return false;
+}
+
+void Player::SetCurrentValues()
+{
+	SetUnitInt32Value(Curr_HP, GetPlayerTotalInt32Value(Max_HP));
 }
 
 bool Player::HasSpell(uint32 spellid)

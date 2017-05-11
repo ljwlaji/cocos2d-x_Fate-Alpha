@@ -15,6 +15,7 @@ Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 	m_DeathStatus = Alive;
 	for (int i = Max_HP; i != UnitInt32_Value_End; i++)
 		m_UnitInt32Value[(UnitInt32Value)i] = 0;
+
 	setAnchorPoint(Vec2(0.5f, 0));
 	if (entry) m_Entry = entry;
 	if (guid) m_Guid = guid;
@@ -75,6 +76,34 @@ std::string Unit::GetUnitActionStringForAction(ActionType _Typeid)
 		break;
 	}
 	return returnstring;
+}
+
+void Unit::JustDead(Unit* pKiller)
+{
+	m_DeathStatus = Dead;
+	if (ToCreature())
+	{
+		if (Player* pPlayer = pKiller->ToPlayer())
+		{
+			uint32 exp = GetLevel() * 10;
+			pPlayer->AddExp(exp);
+		}
+	}
+}
+
+void Unit::DealSpellDamage(Unit* pTarget, SpellEffectType type, int32& damage)
+{
+	damage += ToPlayer() ? ToPlayer()->GetPlayerTotalInt32Value(Base_Att) + ToPlayer()->GetItemTotalAttack() : GetUnitInt32Value(Base_Att);
+	damage -= pTarget->GetUnitInt32Value(Base_Def);
+
+	if (damage < 0)
+		damage = 0;
+
+	if (damage >= pTarget->GetUnitInt32Value(Curr_HP))
+	{
+		pTarget->JustDead(this);
+	}
+	pTarget->SetUnitInt32Value(Curr_HP, GetUnitInt32Value(Curr_HP) - damage);
 }
 
 void Unit::DoAction(ActionType _action)

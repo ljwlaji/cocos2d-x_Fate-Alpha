@@ -1,6 +1,7 @@
 #include "Spell.h"
 #include "Unit.h"
 #include "NotifyMgr.h"
+#include "MainMapLayer.h"
 Spell::Spell(Unit* caster, Unit* pTarget, const SpellInfo& _info)
 {
 	caster->SetCastingSpell(this);
@@ -27,7 +28,7 @@ void Spell::cast()
 	case SpellType_Melee:
 		for (std::list<Unit*>::iterator itr = m_SpellTargets.begin(); itr != m_SpellTargets.end(); itr++)
 		{
-			m_caster->DealSpellDamage(m_caster, *itr, m_SpellInfo.EffectType, m_SpellInfo.SpellValue);
+			m_caster->DealSpellDamage(*itr, m_SpellInfo.EffectType, m_SpellInfo.SpellValue);
 		}
 		finish();
 		break;
@@ -44,7 +45,7 @@ void Spell::cast()
 
 void Spell::FillTargetMap()
 {
-
+	sMainMap->GetUnitAtRange(m_SpellTargets, m_caster, m_SpellInfo.SpellCastRange);
 }
 
 void Spell::cancel()

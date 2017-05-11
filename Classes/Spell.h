@@ -13,6 +13,7 @@ public:
 	float GetSpellTotalCastTime()	{ return m_Spell_Total_Casting_Time; }
 	float GetSpellCurrentTimeLeft()	{ return m_SpellInfo.SpellCastTime; }
 	void update(const float& diff);
+	void cancel();
 private:
 	enum SpellStatus
 	{
@@ -23,7 +24,6 @@ private:
 	void cast();
 	void FillTargetMap();
 	SpellInfo m_SpellInfo;
-	void cancel();
 	void finish();
 	std::list<Unit*> m_SpellTargets;
 	Unit* m_Target;

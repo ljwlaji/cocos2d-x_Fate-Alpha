@@ -23,6 +23,7 @@ class MainScene : public Scene
 public:
 	MainScene();
 	~MainScene();
+	uint32 GetCurrentExpPerLevel(uint8 PlayerLevel);
     virtual bool init();
 	static MainScene* GetInstance();
 	Sprite* ShowDiffcuteImage();
@@ -47,6 +48,7 @@ public:
 	bool IsQuestGiver(const uint32& Creatureid);
 	const std::list<uint32>* GetCreatureQuests(uint32 creatureid);
 private: 
+	void LoadExpPerLevelTemplate();
 	void LoadQuestGiver();
 	void LoadMapInfo();
 	void LoadUnitClassInfo();
@@ -63,6 +65,7 @@ private:
 	EventListenerKeyboard* KeyBoardListener;
 	LabelTTF* Temp;
 	std::map<UnitClasses, ClassInfo> m_UnitClasses_Class_Info;
+	std::map<uint32, uint32> m_Exp_Per_Level;
 	std::map<uint32, std::map<uint32, bool>> m_Faction_Friendly_Info;
 	std::map<uint32, ItemTemplate> m_ItemTemplate;
 	std::map<uint32, SingleMapInfo> m_MapInfo;

@@ -76,7 +76,7 @@ bool MainScene::init()
 		LoadFactionInfo();
 		LoadItemTemplate();
 		LoadQuestGiver();
-
+		LoadExpPerLevelTemplate();
 		sQuestMgr;
 		addChild(sEnterGameLayer);
 
@@ -126,6 +126,13 @@ void MainScene::LoadQuestGiver()
 	{
 		//Do Sth;
 	}
+}
+
+uint32 MainScene::GetCurrentExpPerLevel(uint8 playerlevel)
+{
+	if (m_Exp_Per_Level.find(playerlevel) != m_Exp_Per_Level.end())
+		return m_Exp_Per_Level[playerlevel];
+	return 2100000000;
 }
 
 const std::list<uint32>* MainScene::GetCreatureQuests(uint32 creatureid)
@@ -245,6 +252,28 @@ const ItemTemplate* MainScene::GetItemTemplate(const uint32& entry)
 	if (m_ItemTemplate.find(entry) != m_ItemTemplate.end())
 		return &m_ItemTemplate[entry];
 	return nullptr;
+}
+
+void MainScene::LoadExpPerLevelTemplate()
+{
+	m_Exp_Per_Level.clear();
+	Result _Result;
+	if (sDataMgr->selectUnitDataList("SELECT level,exp FROM level_exp", _Result))
+	{
+		if (_Result.empty())
+		{
+			char msg[255];
+			snprintf(msg, 255, "ErrDB: LoadMapInfo: Empty Template For Loading Map 'level_exp'");
+			sNotifyMgr->ShowNotify(msg);
+			return;
+		}
+		else
+		{
+			int tempexp = 0;
+			for (Result::iterator ito = _Result.begin(); ito != _Result.end(); ito++)
+				m_Exp_Per_Level[ito->second.at(0).GetInt()] = ito->second.at(1).GetInt();
+		}
+	}
 }
 
 void MainScene::LoadFactionInfo()

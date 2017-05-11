@@ -72,6 +72,7 @@ public:
 	bool IsFrendlyTo(Unit* pUnit);
 	uint32 GetBaseAttack();
 	UnitDeathStatus IsAlive()								{ return m_DeathStatus; }
+	void SetDeathStatus(UnitDeathStatus _status)			{ m_DeathStatus = _status; }
 	int32 GetLevel()										{ return GetUnitInt32Value(UnitValue_Level); }
 	UnitClasses GetClass()									{ return m_Class; }
 	MoveType GetMoveType()									{ return m_MoveType; }
@@ -107,7 +108,8 @@ public:
 	bool IsInAttackRange(Unit* pTarget);
 	UnitSide CheckSideForUnit(const Vec2& Loc);
 	virtual void DestorySelf() = 0;
-	void DealSpellDamage(Unit* pCaster, Unit* pTarget, SpellEffectType type, int32& damage) {};
+	void DealSpellDamage(Unit* pTarget, SpellEffectType type, int32& damage);
+	void JustDead(Unit* pKiller);
 private:
 	SkeletonAnimation* m_UnitVision;
 	Facing m_Facing;

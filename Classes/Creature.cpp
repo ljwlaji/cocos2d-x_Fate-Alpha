@@ -5,6 +5,7 @@
 #include "MovementMgr.h"
 #include "HelloWorldScene.h"
 #include "PlayerTalkLayer.h"
+#include "Spell.h"
 
 Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid) : Unit(_SkeletonAnimation, entry, guid)
 {
@@ -42,6 +43,24 @@ Creature::~Creature()
 	removeFromParentAndCleanup(true);
 }
 
+void Creature::EnterEvadeMode()
+{
+	delete m_UnitMover;
+	ResetThreatList();
+	SetTarget(nullptr);
+	if (GetCastingSpell())
+		GetCastingSpell()->cancel();
+}
+
+void Creature::Reset()
+{
+	if (HasScript())
+		CreatureAI()->ReSet();
+
+	SetDeathStatus(Alive);
+	SetUnitInt32Value(Curr_HP, GetUnitInt32Value(Max_HP));
+	EnterEvadeMode();
+}
 
 void Creature::UpdateMove()
 {

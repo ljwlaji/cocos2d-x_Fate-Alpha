@@ -322,7 +322,8 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define QuestBookSingleCheckFrameLittle			"QuestBook_SrcollBar_Check_Frame_Little.png"
 #define QuestBookButton							"QuestBook_Button_%d.png"
 
-
+#define PlayerUIExpBarFrame						"Player_UI_Exp_Bar_Frame.png"
+#define PlayerUIExpBarScroll					"Player_UI_Exp_Bar_Scroll.png"
 enum SettingButtonTag
 {
 	TAG_RESUME_GAME = 1,
