@@ -1,6 +1,7 @@
 #include "PlayerEquipWindow.h"
 #include "PlayerUILayer.h"
 #include "Player.h"
+#include "NotifyMgr.h"
 
 static PlayerEquipWindow* _PlayerEquipWindow = nullptr;
 static PlayerEuqipValueWindow* _PlayerEuqipValueWindow = nullptr;
@@ -294,8 +295,10 @@ void PlayerEuqipValueWindow::ResetValueDefault()
 			break;
 		}
 		itr->second->setString(str.c_str());
-
-		PlusTTF[itr->first]->setString(plus.c_str());
-		PlusTTF[itr->first]->setPosition(itr->second->getPositionX() + itr->second->getBoundingBox().size.width, itr->second->getPositionY());
+		if (LabelTTF* TempPlus = PlusTTF[itr->first])
+		{
+			TempPlus->setString(plus.c_str());
+			TempPlus->setPosition(itr->second->getPositionX() + itr->second->getBoundingBox().size.width, itr->second->getPositionY());
+		}
 	}
 }

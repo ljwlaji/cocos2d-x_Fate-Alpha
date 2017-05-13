@@ -26,8 +26,8 @@ Player_Talk_Layer::~Player_Talk_Layer()
 {
 	_Player_Talk_Layer = nullptr;
 	removeAllChildrenWithCleanup(true);
-	listener = nullptr;
 	_eventDispatcher->removeEventListener(listener);
+	listener = nullptr;
 }
 
 bool Player_Talk_Layer::init()

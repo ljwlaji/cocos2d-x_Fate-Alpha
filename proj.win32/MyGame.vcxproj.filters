@@ -97,6 +97,9 @@
     <Filter Include="src\Layers\PlayerUILayer\VirtualRocker">
       <UniqueIdentifier>{f62af04f-ab5c-4747-895f-26445ce4f99e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\DeadTalkClass">
+      <UniqueIdentifier>{4a372b95-8416-4528-b8df-ebba592e4bc1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -210,6 +213,9 @@
     <ClCompile Include="..\Classes\VirtualRocker.cpp">
       <Filter>src\Layers\PlayerUILayer\VirtualRocker</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\DeadTalkClass.cpp">
+      <Filter>src\Layers\PlayerUILayer\DeadTalkClass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -319,6 +325,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\VirtualRocker.h">
       <Filter>src\Layers\PlayerUILayer\VirtualRocker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\DeadTalkClass.h">
+      <Filter>src\Layers\PlayerUILayer\DeadTalkClass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

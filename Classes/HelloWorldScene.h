@@ -36,18 +36,18 @@ public:
 	std::vector<Sprite*> GetNumberSpriteByInt(int _var);
 	bool GetFactionFriendly(uint32 factionA, uint32 FactionB);
 	const ItemTemplate* GetItemTemplate(const uint32& ItemEntry);
+	const SingleMapInfo* GetMapInfo(uint32 _mapid);
+	bool IsQuestGiver(const uint32& Creatureid);
+	const std::list<uint32>* GetCreatureQuests(uint32 creatureid);
+	uint32 FindNearestReviveMap(uint32 CurrentMapid);
+	ClassInfo GetUnitClassInfo(UnitClasses _car)	{ ClassInfo _ClassInfo; if (m_UnitClasses_Class_Info.find(_car) != m_UnitClasses_Class_Info.end()) _ClassInfo = m_UnitClasses_Class_Info[_car]; return _ClassInfo; }
 	void SetCanPlaySound(bool var)					{ CanPlaySound = var; }
 	void SetKeyBoardEnable(bool _var)				{ KeyBoardListener->setEnabled(_var); }
 	void SetDiffCute(uint8 _diff)					{ m_Diffcute = (GameDiffcute)_diff; }
 	void SetCombatSign(bool var)					{ CombatSign = var; }
 	bool GetCombatSign()							{ return CombatSign; }
 	GameDiffcute GetDiffCute()						{ return m_Diffcute; }
-	bool GetCanPlaySound()							{ return CanPlaySound; }
-	ClassInfo GetUnitClassInfo(UnitClasses _car)	{ ClassInfo _ClassInfo; if (m_UnitClasses_Class_Info.find(_car) != m_UnitClasses_Class_Info.end()) _ClassInfo = m_UnitClasses_Class_Info[_car]; return _ClassInfo; }
-	const SingleMapInfo* GetMapInfo(uint32 _mapid);
-	bool IsQuestGiver(const uint32& Creatureid);
-	const std::list<uint32>* GetCreatureQuests(uint32 creatureid);
-private: 
+	bool GetCanPlaySound()							{ return CanPlaySound; }private: 
 	void LoadExpPerLevelTemplate();
 	void LoadQuestGiver();
 	void LoadMapInfo();

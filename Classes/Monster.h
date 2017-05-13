@@ -14,6 +14,10 @@ private:
 	virtual void update(float diff);
 	virtual bool InitWithLoadedData();
 	virtual void UpdateMoveStatus(){};
+	void InitProccessBar();
+	void UpdatePorccessBar();
+	ProgressTimer* HpProccessBar;
+	ProgressTimer* CastingProccessBar;
 };
 
 

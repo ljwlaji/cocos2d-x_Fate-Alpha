@@ -64,6 +64,7 @@ public:
 	std::vector<Sprite*> GetGroundSprites()		{ return m_MapGroundSpriteVector; }
 	float GetMapMaxWidth()						{ return m_MaxSize; }
 	Vec2 GetVisableSize()						{ return Visablesize; }
+	uint32 GetMapID()							{ return m_Mapid; }
 	Unit* GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget = true, bool CheckAlive = true);
 	void GetUnitAtRange(std::list<Unit*>& pTargetList, Unit* pSearcher, float Range, bool GetTarget = true, bool SearchAlive = true, bool IncludeSelf = false);
 private:

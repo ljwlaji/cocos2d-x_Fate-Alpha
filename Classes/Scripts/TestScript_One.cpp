@@ -38,6 +38,7 @@ struct TestAI_One : public ScriptAI
 
 		if (testtimer <= diff)
 		{
+			me()->CastSpell(10, me()->UpdateVictim());
 			testtimer = 6000;
 		}
 		else

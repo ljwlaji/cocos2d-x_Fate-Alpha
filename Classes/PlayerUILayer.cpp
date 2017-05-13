@@ -11,6 +11,8 @@
 #include "NotifyMgr.h"
 #include "PlayerEquipWindow.h"
 #include "VirtualRocker.h"
+#include "DeadTalkClass.h"
+
 
 #pragma execution_character_set("utf-8")
 
@@ -401,6 +403,9 @@ bool PlayerUILayer::init()
 		sQuestBook->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sQuestBook);
 
+		sDeadTalkClass->setPosition(visiablesize.x / 2, visiablesize.y * 0.75f);
+		addChild(sDeadTalkClass);
+
 		RokerListener = EventListenerTouchAllAtOnce::create();
 		RokerListener->onTouchesBegan = CC_CALLBACK_2(PlayerUILayer::onTouchBegan, this);
 		RokerListener->onTouchesMoved = CC_CALLBACK_2(PlayerUILayer::onTouchMoved, this);
@@ -764,6 +769,7 @@ void PlayerUILayer::onTouchBegan(const std::vector<Touch*>& touchesVector, Event
 			}
 		}
 
+		
 		if (m_Player_UI_TopButton_Swap_Button->getPositionY() < visiablesize.y && m_Player_UI_TopButton_Swap_Button->IsContectPoint(touches->getLocation()))
 		{
 			if (IsSingleTouch(touchesVector, PlayerUITouch_SwapTopButton))
@@ -772,6 +778,17 @@ void PlayerUILayer::onTouchBegan(const std::vector<Touch*>& touchesVector, Event
 			}
 			return;
 		}
+
+		if (sDeadTalkClass->isVisible() && sDeadTalkClass->IsContectPoint(touches->getLocation()))
+		{
+			if (IsSingleTouch(touchesVector, PlayerUITouch_DeathTalkClass))
+			{
+				sDeadTalkClass->OnTouchBegin(touches);
+				touches->SetTouchType(PlayerUITouch_DeathTalkClass);
+			}
+			return;
+		}
+
 		if (sSettingMenu->isVisible() && sSettingMenu->IsContectPoint(touches->getLocation()))
 		{
 			if (IsSingleTouch(touchesVector, PlayerUITouch_SettingMenu))
@@ -907,6 +924,9 @@ void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event
 					break;
 				case PlayerUITouch_QuestBook:
 					sQuestBook->OnTouchEnded(touches);
+					break;
+				case PlayerUITouch_DeathTalkClass:
+					sDeadTalkClass->OnTouchEnded(touches);
 					break;
 			}
 		}

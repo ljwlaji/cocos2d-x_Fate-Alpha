@@ -215,7 +215,6 @@ bool EnterGameLayer::onTouchBegan(Touch *touch, Event *unused_event)
 		{
 			if (Temp->isVisible() && Temp->IsContectPoint(touch->getLocation()))
 			{
-				log("%d", Temp->getTag());
 				Temp->setScale(0.8f);
 				m_TouchedButton = i;
 				return true;

@@ -187,7 +187,6 @@ void SpellBook::onTouchBagEnded(Touch* touches)
 			{
 				TempTouchedSlot->SetSlotSpell(pInfo);
 			}
-			log("touched");
 		}
 		((SpellSlot*)TouchedSprite)->GetSpellFrame()->setPosition(TouchedSprite->getContentSize().width / 2, TouchedSprite->getContentSize().height / 2);
 		break;

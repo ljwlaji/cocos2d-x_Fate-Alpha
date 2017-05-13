@@ -45,11 +45,15 @@ Creature::~Creature()
 
 void Creature::EnterEvadeMode()
 {
-	delete m_UnitMover;
-	ResetThreatList();
-	SetTarget(nullptr);
+	if (m_UnitMover)
+	{
+		delete m_UnitMover;
+		m_UnitMover = nullptr;
+	}
 	if (GetCastingSpell())
 		GetCastingSpell()->cancel();
+	ResetThreatList();
+	SetTarget(nullptr);
 }
 
 void Creature::Reset()
@@ -186,6 +190,8 @@ void Creature::update(float diff)
 	if (IsAlive())
 	{
 		CheckMoveFall();
+		if (GetCastingSpell())
+			GetCastingSpell()->update(diff);
 		if (!IsInCombat())
 		{
 			if (Unit* pUnit = SelectNearestUnit(true, true))
@@ -214,15 +220,19 @@ void Creature::AddThreat(Unit* pTarget, float Threat)
 
 void Creature::ThreatUpdate()
 {
-	if (m_Creature_Threat_List.empty() || !IsInCombat())
+	if (m_Creature_Threat_List.empty())
+	{
+		if (IsInCombat())
+			EnterEvadeMode();
 		return;
+	}
 
 	std::vector<Unit*> WaitForDeleteList;
 	float HighestThreat = 0;
 	Unit* Target = nullptr;
 	for (CreatureThreadList::iterator itr = m_Creature_Threat_List.begin(); itr != m_Creature_Threat_List.end(); itr++)
 	{
-		if (itr->second <= 0)
+		if (itr->second <= 0 || !itr->first->IsAlive())
 		{
 			WaitForDeleteList.push_back(itr->first);
 			continue;

@@ -5,6 +5,7 @@
 #include "SpellMgr.h"
 #include "NotifyMgr.h"
 #include "Spell.h"
+#include "Creature.h"
 
 Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 {
@@ -81,29 +82,89 @@ std::string Unit::GetUnitActionStringForAction(ActionType _Typeid)
 void Unit::JustDead(Unit* pKiller)
 {
 	m_DeathStatus = Dead;
-	if (ToCreature())
+	GetVision()->addAnimation(0, "just_dead", false);
+	SetUnitInt32Value(Curr_HP, 0);
+
+	if (ToPlayer())
+		ToPlayer()->JustDead();
+
+	if (ToCreature() && pKiller->ToPlayer())
 	{
-		if (Player* pPlayer = pKiller->ToPlayer())
-		{
-			uint32 exp = GetLevel() * 10;
-			pPlayer->AddExp(exp);
-		}
+		Player* pPlayer = pKiller->ToPlayer();
+		uint32 exp = GetLevel() * 10;
+		pPlayer->AddExp(exp);
 	}
 }
 
 void Unit::DealSpellDamage(Unit* pTarget, SpellEffectType type, int32& damage)
 {
+	if (pTarget->ToCreature())
+		pTarget->ToCreature()->CombatStart(this);
 	damage += ToPlayer() ? ToPlayer()->GetPlayerTotalInt32Value(Base_Att) + ToPlayer()->GetItemTotalAttack() : GetUnitInt32Value(Base_Att);
 	damage -= pTarget->GetUnitInt32Value(Base_Def);
 
 	if (damage < 0)
 		damage = 0;
 
+	pTarget->ShowDamageImage(damage);
 	if (damage >= pTarget->GetUnitInt32Value(Curr_HP))
 	{
 		pTarget->JustDead(this);
+		return;
 	}
-	pTarget->SetUnitInt32Value(Curr_HP, GetUnitInt32Value(Curr_HP) - damage);
+	pTarget->SetUnitInt32Value(Curr_HP, pTarget->GetUnitInt32Value(Curr_HP) - damage);
+}
+
+void Unit::ShowDamageImage(int32 DamageNumber ,bool IsDamage)
+{
+	std::list<int> numberVector;
+	std::list<Sprite*> SpriteVector;
+	if (!DamageNumber)
+	{
+		Sprite* TempSprite = Sprite::create("number_0.png");
+		SpriteVector.push_back(TempSprite);
+	}
+	while (DamageNumber)
+	{
+		int temp = DamageNumber % 10;
+		numberVector.push_back(temp);
+		DamageNumber = DamageNumber / 10;
+	}
+
+	while (numberVector.size())
+	{
+		std::list<int>::iterator itr = numberVector.begin();
+		char msg[255];
+		snprintf(msg, 255, IsDamage ? DamageTextUrl : HealingTextUrl, *itr);
+		Sprite* TempSprite = Sprite::create(msg);
+		SpriteVector.push_back(TempSprite);
+		numberVector.pop_front();
+	}
+	_ShowDamage(SpriteVector);
+}
+
+void Unit::_ShowDamage(std::list<Sprite*>& SpriteList)
+{
+	float FirstPosX = 0;
+	float SingleWidth = (*SpriteList.begin())->getBoundingBox().size.width;
+	float TotalWidth = SingleWidth + ((SpriteList.size() - 1) * (SingleWidth / 2));
+
+	int k = 0;
+	for (std::list<Sprite*>::iterator itr = SpriteList.begin(); itr != SpriteList.end(); itr++, k++)
+	{
+		float posx = getContentSize().width / 2 - (TotalWidth / 2) + (k * SingleWidth / 2);
+		(*itr)->setAnchorPoint(Vec2(0, 0.5f));
+		(*itr)->setPosition(posx, getContentSize().height / 2);
+		addChild(*itr);
+		(*itr)->runAction(MoveTo::create(1.0f, Vec2((*itr)->getPositionX(), (*itr)->getPositionY() + (*itr)->getBoundingBox().size.height * 5)));
+		Sequence* Sq = Sequence::create(FadeOut::create(1.0f), DelayTime::create(1.0f), CallFunc::create(CC_CALLBACK_0(Unit::DestoryNumberCallBack, this, (*itr))), NULL);
+		(*itr)->runAction(Sq);
+	}
+}
+
+void Unit::DestoryNumberCallBack(Sprite* pSprite)
+{
+	pSprite->removeFromParentAndCleanup(true);
 }
 
 void Unit::DoAction(ActionType _action)

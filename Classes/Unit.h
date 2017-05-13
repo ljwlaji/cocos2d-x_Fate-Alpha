@@ -49,7 +49,7 @@ public:
 	~Unit();
 
 	Player* ToPlayer()										{ if (GetTypeId() == TYPEID_PLAYER) return reinterpret_cast<Player*>(this); else return nullptr; }
-	Creature* ToCreature()									{ if (GetTypeId() == TYPEID_PLAYER || GetTypeId() == TYPEID_NPC || GetTypeId() == TYPEID_MONSTER) return reinterpret_cast<Creature*>(this); else return nullptr; }
+	Creature* ToCreature()									{ if (GetTypeId() == TYPEID_NPC || GetTypeId() == TYPEID_MONSTER) return reinterpret_cast<Creature*>(this); else return nullptr; }
 	Monster* ToMonster()									{ if (GetTypeId() == TYPEID_MONSTER) return reinterpret_cast<Monster*>(this); else return nullptr; }
 	Npc* ToNpc()											{ if (GetTypeId() == TYPEID_NPC) return reinterpret_cast<Npc*>(this); else return nullptr; }
 	float GetPositionX()									{ return getBoundingBox().origin.x + (getBoundingBox().size.width / 2); }
@@ -62,6 +62,9 @@ public:
 private:
 	std::string GetUnitActionStringForAction(ActionType _Typeid);
 	void DoAction(ActionType _action);
+	void ShowDamageImage(int32 DamageNumber, bool IsDamage = true);
+	void _ShowDamage(std::list<Sprite*>& SpriteList);
+	void DestoryNumberCallBack(Sprite* pSprite);
 	//End Of Combat
 
 public:

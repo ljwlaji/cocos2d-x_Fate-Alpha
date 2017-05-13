@@ -57,6 +57,8 @@ public:
 	~Player();
 
 	static Player* GetInstance();
+	void JustDead();
+	void Revive();
 	bool CreatePlayer();
 	void SetCurrentValues();
 	bool HasSpell(uint32 spellid);
@@ -71,7 +73,7 @@ public:
 	void SendGossipMenu(std::string MainString, Creature* pCreature);
 	void CloseGossipMenu();
 	void CalcItemValues();
-	int GetEquipItemTotalValusForKey(UnitInt32Value _val);
+	uint32 GetEquipItemTotalValusForKey(UnitInt32Value _val);
 	uint32 GetItemTotalAttack();
 	void AcceptQuest(const uint32& QuestId);
 	void SaveQuestStatusInfoToDB();

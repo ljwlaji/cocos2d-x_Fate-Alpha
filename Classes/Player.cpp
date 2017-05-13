@@ -12,6 +12,7 @@
 #include "PlayerEquipWindow.h"
 #include "Item.h"
 #include "NotifyMgr.h"
+#include "DeadTalkClass.h"
 
 static Player* _player = nullptr;
 
@@ -64,6 +65,17 @@ Player* Player::GetInstance()
 	return _player;
 }
 
+void Player::Revive()
+{
+	SetUnitInt32Value(Curr_HP, GetUnitInt32Value(Max_HP) / 2);
+	SetDeathStatus(Alive);
+}
+
+void Player::JustDead()
+{
+	sDeadTalkClass->Show();
+}
+
 void Player::LevelUp()
 {
 	SetUnitInt32Value(UnitValue_Level, GetLevel() + 1);
@@ -77,7 +89,7 @@ void Player::LevelUp()
 
 uint32 Player::GetPlayerTotalInt32Value(UnitInt32Value _val)
 {
-	return GetUnitInt32Value(_val) + GetEquipItemTotalValusForKey(_val);
+	return GetEquipItemTotalValusForKey(_val) + GetUnitInt32Value(_val);;
 }
 
 void Player::AddExp(uint32& _exp)
@@ -186,16 +198,14 @@ void Player::CalcItemValues()
 			const std::map<uint32, uint32> ItemValue = pSlot->GetItem()->GetTemplate()->Values;
 			{
 				for (std::map<uint32, uint32>::const_iterator itr = ItemValue.begin(); itr != ItemValue.end(); itr++)
-				{
 					m_ItemTotalValues[(UnitInt32Value)itr->first] += itr->second;
-				}
 			}
 			//暂缺物品Min/Max Damage计算
 		}
 	}
 }
 
-int Player::GetEquipItemTotalValusForKey(UnitInt32Value _val)						
+uint32 Player::GetEquipItemTotalValusForKey(UnitInt32Value _val)						
 {
 	if (m_ItemTotalValues.find(_val) != m_ItemTotalValues.end())
 		return m_ItemTotalValues[_val];

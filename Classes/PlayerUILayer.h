@@ -39,6 +39,7 @@ private:
 		PlayerUITouch_SettingMenu,
 		PlayerUITouch_SwapTopButton,
 		PlayerUITouch_QuestBook,
+		PlayerUITouch_DeathTalkClass,
 	};
 	enum TopButtonLabelTTF
 	{

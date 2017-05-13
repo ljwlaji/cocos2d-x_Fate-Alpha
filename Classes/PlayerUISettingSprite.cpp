@@ -1,6 +1,7 @@
 #include "PlayerUISettingSprite.h"
 #include "PlayerUILayer.h"
 #include "HelloWorldScene.h"
+#include "MainMapLayer.h"
 
 static SettingMenu* _SettingMenu = nullptr;
 
@@ -58,7 +59,6 @@ void SettingMenu::OnTouchBegin(Touch* pTouch)
 		if (Sprite* Button = (Sprite*)this->getChildByTag(i))
 		{
 			Vec2 loc = pTouch->getLocation();
-			log("%f,%f", loc.x, loc.y);
 			if (Button->IsContectPoint(pTouch->getLocation()))
 			{
 				m_TouchedButton = Button;
@@ -87,6 +87,8 @@ void SettingMenu::OnTouchEnded(Touch* pTouch)
 		case TAG_LOG_OUT:
 			Director::getInstance()->resume();
 			sPlayer->removeFromParentAndCleanup(true);
+			if (sPlayer)
+				sPlayer->release();
 			sPlayerUi->removeFromParentAndCleanup(true);
 			sGame->SwapLayer(EnterGame_Layer_Tag, Main_Map_Layer_Tag);
 			break;

@@ -153,7 +153,7 @@ void MainScene::LoadMapInfo()
 {
 	m_MapInfo.clear();
 	Result _result;
-	if (sDataMgr->selectUnitDataList("SELECT id,background_music_url FROM map_template", _result))
+	if (sDataMgr->selectUnitDataList("SELECT id,background_music_url,can_revive_player,revive_pos_x,revive_pos_y FROM map_template", _result))
 	{
 		std::vector<RowInfo> row;
 		for (Result::iterator itr = _result.begin(); itr != _result.end(); itr++)
@@ -162,7 +162,9 @@ void MainScene::LoadMapInfo()
 			SingleMapInfo _SingleMapInfo;
 
 			_SingleMapInfo.BackGroundMusicUrl = row.at(1).GetString();
-
+			_SingleMapInfo.CanRevive = row.at(2).GetBool();
+			_SingleMapInfo.RevivePosX = row.at(3).GetFloat();
+			_SingleMapInfo.RevivePosY = row.at(4).GetFloat();
 			m_MapInfo[row.at(0).GetInt()] = _SingleMapInfo;
 		}
 	}
@@ -170,7 +172,44 @@ void MainScene::LoadMapInfo()
 	{
 		//Do Sth;
 	}
+}
 
+uint32 MainScene::FindNearestReviveMap(uint32 CurrentMapid)
+{
+	if (m_MapInfo[CurrentMapid].CanRevive)
+		return CurrentMapid;
+	uint32 Front = CurrentMapid - 1;
+	uint32 Back = CurrentMapid + 1;
+	bool CanCheckFront = true;
+	bool CanCheckBack = true;
+	while (true)
+	{
+		if (CanCheckFront)
+		{
+			if (m_MapInfo.find(Front) != m_MapInfo.end() && m_MapInfo[Front].CanRevive)
+			{
+				if (m_MapInfo[Front].CanRevive)
+					return Front;
+			}
+			else CanCheckFront = false;
+		}
+
+		if (CanCheckBack)
+		{
+			if (m_MapInfo.find(Back) != m_MapInfo.end())
+			{
+				if (m_MapInfo[Back].CanRevive)
+					return Back;
+			}
+			else CanCheckBack = false;
+		}
+
+		if (!CanCheckFront && !CanCheckBack)
+			break;
+
+		++Front; ++Back;
+	}
+	log("Error To Check Map Revive CurrentMapID = %d", CurrentMapid);
 }
 
 bool MainScene::GetFactionFriendly(uint32 factionA, uint32 FactionB)
@@ -233,8 +272,13 @@ void MainScene::LoadItemTemplate()
 					case Base_Str:
 					case Base_Dex:
 					case Base_Int:
-						_template.Values[info.at(i).GetInt()] = info.at(++i).GetInt();
+					{
+						uint32 Type = info.at(i).GetInt();
+						uint32 Value = info.at(++i).GetInt();
+						log("%d,%d", Type, Value);
+						_template.Values[Type] = Value;
 						break;
+					}
 					default:
 						log("Unknow Item Value Type %d , Ingore...", info.at(i).GetInt());
 						++i;
@@ -392,6 +436,7 @@ void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 {
 	if (Layer* OldLayer = (Layer*)getChildByTag(removetag))
 	{
+		OldLayer->removeAllChildrenWithCleanup(true);
 		OldLayer->removeFromParentAndCleanup(true);
 		Layer* NewLayer = nullptr;
 		switch (_instead)
@@ -432,7 +477,7 @@ void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 		}
 	}
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-	Director::getInstance()->getTextureCache()->removeUnusedTextures();
+	//Director::getInstance()->getTextureCache()->removeUnusedTextures();
 }
 
 Sprite* MainScene::ShowDiffcuteImage()
@@ -587,11 +632,5 @@ std::vector<Sprite*> MainScene::GetNumberSpriteByInt(int number)
 
 void MainScene::update(float diff)
 {
-	if (ClearCacheDelayTime <= diff)
-	{
-		SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-		Director::getInstance()->getTextureCache()->removeUnusedTextures();
-		ClearCacheDelayTime = 10.0f;
-	}
-	else ClearCacheDelayTime -= diff;
+
 }

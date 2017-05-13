@@ -5,6 +5,7 @@
 #include "Result.h"
 #include "SimpleAudioEngine.h"
 using namespace CocosDenshion;
+USING_NS_CC;
 
 
 #define sMusic									SimpleAudioEngine::getInstance()
@@ -37,6 +38,9 @@ typedef std::map<uint32, uint32> ItemValueInfo;
 struct SingleMapInfo
 {
 	std::string BackGroundMusicUrl;
+	bool CanRevive;
+	float RevivePosX;
+	float RevivePosY;
 };
 
 enum QuestRequireType
@@ -324,6 +328,20 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 
 #define PlayerUIExpBarFrame						"Player_UI_Exp_Bar_Frame.png"
 #define PlayerUIExpBarScroll					"Player_UI_Exp_Bar_Scroll.png"
+
+#define MonsterHpProccessBar					"Monster_Hp_Proccess.png"
+#define MonsterCastingProccessBar				"Monster_Casting_Proccess.png"
+
+#define DamageTextUrl							"number_%d.png"
+#define HealingTextUrl							"number_%d,png"
+
+
+#define DeadTalkClassFrame						"Player_UI_Dead_Frame.png"
+#define DeadTalkClassButtonFrame				"Player_UI_Dead_Frame_Button.png"
+#define DeadTalkClassOkButton					"Player_UI_Dead_Button_Yes.png"
+#define DeadTalkClassCancelButton				"Player_UI_Dead_Button_No.png"
+
+
 enum SettingButtonTag
 {
 	TAG_RESUME_GAME = 1,
