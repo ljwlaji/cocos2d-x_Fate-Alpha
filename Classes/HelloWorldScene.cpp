@@ -477,7 +477,7 @@ void MainScene::SwapLayer(int _instead, int removetag,int mapid)
 		}
 	}
 	SpriteFrameCache::getInstance()->removeUnusedSpriteFrames();
-	//Director::getInstance()->getTextureCache()->removeUnusedTextures();
+	Director::getInstance()->getTextureCache()->removeUnusedTextures();
 }
 
 Sprite* MainScene::ShowDiffcuteImage()

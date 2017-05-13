@@ -156,6 +156,8 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 			sMusic->playBackgroundMusic(_info->BackGroundMusicUrl.c_str());
 		}
 	}
+	if (sPlayer->getReferenceCount() == 2)
+		sPlayer->release();
 	return true;
 }
 

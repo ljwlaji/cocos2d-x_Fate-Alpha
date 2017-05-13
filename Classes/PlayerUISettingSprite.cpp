@@ -87,8 +87,6 @@ void SettingMenu::OnTouchEnded(Touch* pTouch)
 		case TAG_LOG_OUT:
 			Director::getInstance()->resume();
 			sPlayer->removeFromParentAndCleanup(true);
-			if (sPlayer)
-				sPlayer->release();
 			sPlayerUi->removeFromParentAndCleanup(true);
 			sGame->SwapLayer(EnterGame_Layer_Tag, Main_Map_Layer_Tag);
 			break;
