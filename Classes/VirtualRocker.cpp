@@ -12,6 +12,7 @@ VirtualRocker::VirtualRocker()
 	addChild(RockerController);
 	CurrentPosition = RockerController->getPosition();
 	NeedUpdate = false;
+	SetTouchType(PlayerUITouch_Roker);
 	scheduleUpdate();
 }
 
@@ -28,12 +29,17 @@ VirtualRocker* VirtualRocker::GetInstance()
 	return _VirtualRocker;
 }
 
-void VirtualRocker::TouchBegin(Touch* loc)
+bool VirtualRocker::OnUITouchBegin(Touch* loc)
 {
-	TouchLastPosition = loc->getLocation();
+	if (IsContectPoint(loc->getLocation()))
+	{
+		TouchLastPosition = loc->getLocation();
+		return true;
+	}
+	return false;
 }
 
-void VirtualRocker::TouchMoved(Touch* loc)
+void VirtualRocker::OnUITouchMoved(Touch* loc)
 {
 	if (!NeedUpdate)
 	{
@@ -43,7 +49,7 @@ void VirtualRocker::TouchMoved(Touch* loc)
 	TouchLastPosition = loc->getLocation();
 }
 
-void VirtualRocker::TouchEnded(Touch* /*loc*/)
+void VirtualRocker::OnUITouchEnded(Touch* /*loc*/)
 {
 	sPlayer->ResetMoveKeyForRoker();
 	RockerController->setPosition(getContentSize().width / 2, getContentSize().height / 2);

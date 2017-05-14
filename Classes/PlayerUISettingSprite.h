@@ -1,17 +1,16 @@
 #ifndef __PLAYER_UI_SETTING_SPRITE_H__
 #define __PLAYER_UI_SETTING_SPRITE_H__
-#include "cocos2d.h"
 #include "Types.h"
-USING_NS_CC;
+#include "UISprite.h"
 
 #define sSettingMenu  SettingMenu::GetInstance()
 
-class SettingMenu : public Sprite
+class SettingMenu : public UISprite
 {
 public:
 	static SettingMenu* GetInstance();
-	void OnTouchBegin(Touch* pTouch);
-	void OnTouchEnded(Touch* pTouch);
+	virtual bool OnUITouchBegin(Touch* pTouch);
+	virtual void OnUITouchEnded(Touch* pTouch);
 	void OnClickSettingButton();
 private:
 	void Init();

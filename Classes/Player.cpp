@@ -367,6 +367,8 @@ void Player::DealVirtualRoker(VirtualRockerOrginType _VirtualRockerOrginType)
 
 void Player::UpdateMoveStatus()
 {
+	if (!IsAlive())
+		return;
 	if (GetCastingSpell())
 		return;
 	bool NeedResetMoveStatus = true;

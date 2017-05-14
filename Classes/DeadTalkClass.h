@@ -2,15 +2,16 @@
 #define __DEAD_TALK_CLASS_H__
 
 #include "Types.h"
+#include "UISprite.h"
 
 #define sDeadTalkClass	DeadTalkClass::GetInstance()
 
-class DeadTalkClass : public Sprite
+class DeadTalkClass : public UISprite
 {
 public:
 	static DeadTalkClass* GetInstance();
-	void OnTouchBegin(Touch* pTouch);
-	void OnTouchEnded(Touch* pTouch);
+	virtual bool OnUITouchBegin(Touch* pTouch);
+	virtual void OnUITouchEnded(Touch* pTouch);
 	void Show();
 	void Disappear();
 private:

@@ -1,9 +1,7 @@
 #ifndef __PLAYER_TALK_LAYER_H__
 #define __PLAYER_TALK_LAYER_H__
 
-#include "cocos2d.h"
 #include "Types.h"
-USING_NS_CC;
 
 struct ShowingTalkClass
 {

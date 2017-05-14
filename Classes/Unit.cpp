@@ -113,6 +113,7 @@ void Unit::DealSpellDamage(Unit* pTarget, SpellEffectType type, int32& damage)
 		return;
 	}
 	pTarget->SetUnitInt32Value(Curr_HP, pTarget->GetUnitInt32Value(Curr_HP) - damage);
+	pTarget->GetVision()->setAnimation(0, "take_damage", false);
 }
 
 void Unit::ShowDamageImage(int32 DamageNumber ,bool IsDamage)

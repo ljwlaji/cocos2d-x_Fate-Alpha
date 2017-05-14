@@ -161,6 +161,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\NotifyMgr.cpp" />
     <ClCompile Include="..\Classes\Npc.cpp" />
     <ClCompile Include="..\Classes\Player.cpp" />
+    <ClCompile Include="..\Classes\PlayerBag.cpp" />
     <ClCompile Include="..\Classes\PlayerEquipWindow.cpp" />
     <ClCompile Include="..\Classes\PlayerTalkLayer.cpp" />
     <ClCompile Include="..\Classes\PlayerUILayer.cpp" />
@@ -178,7 +179,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\SpellMgr.cpp" />
     <ClCompile Include="..\Classes\sqlite\shell.c" />
     <ClCompile Include="..\Classes\sqlite\sqlite3.c" />
+    <ClCompile Include="..\Classes\TopBar.cpp" />
     <ClCompile Include="..\Classes\TypingLayer.cpp" />
+    <ClCompile Include="..\Classes\UISprite.cpp" />
     <ClCompile Include="..\Classes\Unit.cpp" />
     <ClCompile Include="..\Classes\VirtualRocker.cpp" />
     <ClCompile Include="main.cpp" />
@@ -201,6 +204,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\NotifyMgr.h" />
     <ClInclude Include="..\Classes\Npc.h" />
     <ClInclude Include="..\Classes\Player.h" />
+    <ClInclude Include="..\Classes\PlayerBag.h" />
     <ClInclude Include="..\Classes\PlayerEquipWindow.h" />
     <ClInclude Include="..\Classes\PlayerTalkLayer.h" />
     <ClInclude Include="..\Classes\PlayerUILayer.h" />
@@ -216,8 +220,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\SpellMgr.h" />
     <ClInclude Include="..\Classes\sqlite\sqlite3.h" />
     <ClInclude Include="..\Classes\sqlite\sqlite3ext.h" />
+    <ClInclude Include="..\Classes\TopBar.h" />
     <ClInclude Include="..\Classes\Types.h" />
     <ClInclude Include="..\Classes\TypingLayer.h" />
+    <ClInclude Include="..\Classes\UISprite.h" />
     <ClInclude Include="..\Classes\Unit.h" />
     <ClInclude Include="..\Classes\VirtualRocker.h" />
     <ClInclude Include="main.h" />

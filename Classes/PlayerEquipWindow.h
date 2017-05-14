@@ -2,20 +2,21 @@
 #define __PLAYER_EQUIP_WINDOW_H__
 #include "cocos2d.h"
 #include "Types.h"
+#include "UISprite.h"
 USING_NS_CC;
 
 #define sPlayerEquip		PlayerEquipWindow::GetInstance()
 #define sPlayerValueWindow	PlayerEuqipValueWindow::GetInstance()
 class Slot;
-class PlayerEquipWindow : public Sprite
+class PlayerEquipWindow : public UISprite
 {
 public:
 	Slot* GetSlotByTouch(Touch* toouch);
 	static PlayerEquipWindow* GetInstance();
 	void SwapVisiable();
-	void onTouchBagBegan(Touch* touches);
-	void onTouchBagMoved(Touch* touches);
-	void onTouchBagEnded(Touch* touches);
+	virtual bool OnUITouchBegin(Touch* pTouch);
+	virtual void OnUITouchMoved(Touch* pTouch);
+	virtual void OnUITouchEnded(Touch* pTouch);
 private:
 	bool IsTouchedDisPlaySprite;
 	void InitWindow();

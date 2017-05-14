@@ -14,6 +14,7 @@ QuestBook::QuestBook()
 	CurrentPage = 0;
 
 	setVisible(false);
+	SetTouchType(PlayerUITouch_QuestBook);
 }
 
 QuestBook::~QuestBook()
@@ -225,10 +226,10 @@ void QuestBook::SwapQuestDetail(uint32 QuestID)
 	}
 }
 
-void QuestBook::OnTouchBegin(Touch* Loc)
+bool QuestBook::OnUITouchBegin(Touch* Loc)
 {
 	if (!isVisible())
-		return;
+		return false;
 
 	m_TouchedSprite = nullptr;
 	for (std::map<uint32, std::vector<Sprite*>>::iterator itr = m_SingleQuestFrames.begin(); itr != m_SingleQuestFrames.end(); itr++)
@@ -241,7 +242,7 @@ void QuestBook::OnTouchBegin(Touch* Loc)
 			if (itr->second.at(i)->IsContectPoint(Loc->getLocation()))
 			{
 				m_TouchedSprite = itr->second.at(i);
-				return;
+				return true;
 			}
 		}
 	}
@@ -251,12 +252,12 @@ void QuestBook::OnTouchBegin(Touch* Loc)
 		if (QuestBookButtons[(QuestBookTag)i]->IsContectPoint(Loc->getLocation()))
 		{
 			m_TouchedSprite = QuestBookButtons[(QuestBookTag)i];
-			return;
+			return true;
 		}
 	}
 }
 
-void QuestBook::OnTouchEnded(Touch* Loc)
+void QuestBook::OnUITouchEnded(Touch* Loc)
 {
 	if (!m_TouchedSprite || !m_TouchedSprite->IsContectPoint(Loc->getLocation()))
 		return;

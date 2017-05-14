@@ -48,6 +48,7 @@ SpellBook::SpellBook()
 	TouchedSprite = nullptr;
 	LoadPlayerSpells();
 	m_TouchType = SpellBookTouchType_None;
+	SetTouchType(PlayerUITouch_SpellBook);
 }
 
 SpellBook::~SpellBook()
@@ -108,7 +109,7 @@ void SpellBook::InitSlot()
 	}
 }
 
-bool SpellBook::onTouchBagBegan(Touch* touches)
+bool SpellBook::OnUITouchBegin(Touch* touches)
 {
 	TouchedSprite = nullptr;
 	m_TouchType = SpellBookTouchType_None;
@@ -141,7 +142,7 @@ bool SpellBook::onTouchBagBegan(Touch* touches)
 	return true;
 }
 
-void SpellBook::onTouchBagMoved(Touch* touches)
+void SpellBook::OnUITouchMoved(Touch* touches)
 {
 	if (TouchedSprite == this)
 	{
@@ -161,7 +162,7 @@ void SpellBook::onTouchBagMoved(Touch* touches)
 	}
 }
 
-void SpellBook::onTouchBagEnded(Touch* touches)
+void SpellBook::OnUITouchEnded(Touch* touches)
 {
 	if (!isVisible())
 		return;

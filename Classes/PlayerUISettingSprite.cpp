@@ -11,6 +11,7 @@ SettingMenu::SettingMenu()
 	autorelease();
 	setVisible(false);
 	Init();
+	SetTouchType(PlayerUITouch_SettingMenu);
 }
 
 SettingMenu::~SettingMenu()
@@ -51,7 +52,7 @@ void SettingMenu::OnClickSettingButton()
 	}
 }
 
-void SettingMenu::OnTouchBegin(Touch* pTouch)
+bool SettingMenu::OnUITouchBegin(Touch* pTouch)
 {
 	m_TouchedButton = nullptr;
 	for (int i = TAG_RESUME_GAME; i != MaxSettingButton; i++)
@@ -62,13 +63,14 @@ void SettingMenu::OnTouchBegin(Touch* pTouch)
 			if (Button->IsContectPoint(pTouch->getLocation()))
 			{
 				m_TouchedButton = Button;
-				break;
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
-void SettingMenu::OnTouchEnded(Touch* pTouch)
+void SettingMenu::OnUITouchEnded(Touch* pTouch)
 {
 	if (!m_TouchedButton)
 		return;

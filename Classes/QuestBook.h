@@ -1,21 +1,20 @@
 #ifndef __QUEST_BOOK_H__
 #define __QUEST_BOOK_H__
 
-#include "cocos2d.h"
 #include "Types.h"
-USING_NS_CC;
+#include "UISprite.h"
 
 #define sQuestBook QuestBook::GetInstance()
 
 struct QuestTemplate;
 struct PlayerQuestStatus;
-class QuestBook : public Sprite
+class QuestBook : public UISprite
 {
 public:
 	static QuestBook* GetInstance();
+	virtual bool OnUITouchBegin(Touch* pTouch);
+	virtual void OnUITouchEnded(Touch* pTouch);
 	void InitQuestFrame(const std::map<uint32, PlayerQuestStatus>& quests);
-	void OnTouchBegin(Touch* Loc);
-	void OnTouchEnded(Touch* Loc);
 	void SwapVisable();
 	void AddNewQuestToBook(const QuestTemplate* pTemplate);
 private:

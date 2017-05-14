@@ -1,8 +1,8 @@
 ﻿#ifndef __SPELL_BOOK_H__
 #define __SPELL_BOOK_H__
 
-#include "cocos2d.h"
 #include "Types.h"
+#include "UISprite.h"
 #include "SpellMgr.h"
 
 USING_NS_CC;
@@ -23,14 +23,14 @@ private:
 	uint32 m_spellid;
 };
 
-class SpellBook : public Sprite
+class SpellBook : public UISprite
 {
 public:
 	static SpellBook* GetInstance();
 	void SwapVisiable();
-	bool onTouchBagBegan(Touch* touches);
-	void onTouchBagMoved(Touch* touches);
-	void onTouchBagEnded(Touch* touches);
+	virtual bool OnUITouchBegin(Touch* pTouch);
+	virtual void OnUITouchMoved(Touch* pTouch);
+	virtual void OnUITouchEnded(Touch* pTouch);
 private:
 	enum SpellBookButtonTag
 	{

@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "MainMapLayer.h"
 #include "HelloWorldScene.h"
+#include "PlayerUILayer.h"
 
 static DeadTalkClass* _DeadTalkClass = nullptr;
 
@@ -27,24 +28,27 @@ DeadTalkClass::DeadTalkClass()
 	ButtonFrame->addChild(ButtonNo);
 
 	Disappear();
+
+	SetTouchType(PlayerUITouch_DeathTalkClass);
 }
 
 DeadTalkClass::~DeadTalkClass()
 {
+	removeAllChildrenWithCleanup(true);
 	_DeadTalkClass = nullptr;
 }
 
 void DeadTalkClass::Show()
 {
-	runAction(MoveTo::create(1.0f, Vec2(sMainMap->GetVisableSize().x / 2, sMainMap->GetVisableSize().y * 0.75f)));
+	runAction(MoveTo::create(0.5f, Vec2(sMainMap->GetVisableSize().x / 2, sMainMap->GetVisableSize().y * 0.75f)));
 }
 
 void DeadTalkClass::Disappear()
 {
-	runAction(MoveTo::create(1.0f, Vec2(sMainMap->GetVisableSize().x / 2, sMainMap->GetVisableSize().y + getBoundingBox().size.height / 2)));
+	runAction(MoveTo::create(0.5f, Vec2(sMainMap->GetVisableSize().x / 2, sMainMap->GetVisableSize().y + getBoundingBox().size.height / 2)));
 }
 
-void DeadTalkClass::OnTouchBegin(Touch* pTouch)
+bool DeadTalkClass::OnUITouchBegin(Touch* pTouch)
 {
 	TouchedSprite = nullptr;
 	ButtonYes->setScale(1.0f);
@@ -53,18 +57,19 @@ void DeadTalkClass::OnTouchBegin(Touch* pTouch)
 	{
 		TouchedSprite = ButtonYes;
 		ButtonYes->setScale(0.8f);
-		return;
+		return true;
 	}
 
 	if (ButtonNo->IsContectPoint(pTouch->getLocation()))
 	{
 		TouchedSprite = ButtonNo;
 		ButtonNo->setScale(0.8f);
-		return;
+		return true;
 	}
+	return false;
 }
 
-void DeadTalkClass::OnTouchEnded(Touch* pTouch)
+void DeadTalkClass::OnUITouchEnded(Touch* pTouch)
 {
 	if (!TouchedSprite || !TouchedSprite->IsContectPoint(pTouch->getLocation()))
 		return;
@@ -73,6 +78,7 @@ void DeadTalkClass::OnTouchEnded(Touch* pTouch)
 	if (TouchedSprite == ButtonNo)
 	{
 		Disappear();
+		sPlayerUi->ShowDeadSign();
 	}
 	else
 	{
@@ -81,6 +87,7 @@ void DeadTalkClass::OnTouchEnded(Touch* pTouch)
 			sPlayer->Revive();
 			sMainMap->SwapMap(mapid, false);
 			Disappear();
+			sPlayerUi->UnShowDeadSign();
 		}
 	}
 }

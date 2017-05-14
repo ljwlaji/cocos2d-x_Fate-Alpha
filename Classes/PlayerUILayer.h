@@ -10,6 +10,7 @@ USING_NS_CC;
 class Item;
 class PlayerBag;
 class SpellSlot;
+class UISprite;
 struct ButtonMenuInfo
 {
 	Sprite* _sprite;
@@ -23,38 +24,20 @@ public:
 	void SwapSpellFrameVisable();
 	void ReSetSpellFrameText(uint32 SpellID);
 	SpellSlot* GetContactButtonSlot(const Vec2& Loc);
-	void ResetUpButtonString();
 	void ResetAllUIValuesNumber();
+	void ShowDeadSign()	{ DeadSign->setVisible(true); }
+	void UnShowDeadSign(){ DeadSign->setVisible(false); }
+	void PushSprite(UISprite* pUIsprite);
 private:
-	enum PlayerUITouchType
-	{
-		PlayerUITouch_None,
-		PlayerUITouch_UperButton,
-		PlayerUITouch_Bag,
-		PlayerUITouch_SpellBook,
-		PlayerUITouch_Roker,
-		PlayerUITouch_Buttom_Menu,
-		PlayerUITouch_Button_SpellSlot,
-		PlayerUITouch_Equip_Window,
-		PlayerUITouch_SettingMenu,
-		PlayerUITouch_SwapTopButton,
-		PlayerUITouch_QuestBook,
-		PlayerUITouch_DeathTalkClass,
-	};
-	enum TopButtonLabelTTF
-	{
-		MoneyTTF,
-		AttackTTF,
-		CashTTF,
-		NameTTF,
-		EndOfTopTTF,
-	};
 	CREATE_FUNC(PlayerUILayer);
 	PlayerUILayer();
 	~PlayerUILayer();
+	uint32 GetTypeByUISprite(UISprite* pUISprite);
+	void InitButtomMenu();
 	virtual void update(float diff);
 	virtual bool init();
 	void AutoUpdateHeadBar();
+	void AutoUpdateListZorder();
 	void AutoUpdateCastingBar();
 	void AutoUpdateExpBar();
 	void SwapCastingBarVisable();
@@ -67,7 +50,6 @@ private:
 	// Return A SpellSlot If Touched Button
 	SpellSlot* CheckTouchSpellButton(const Vec2& Loc);
 	//∂•≤„Button
-	void InitButtomMenu();
 	virtual void onTouchBegan(const std::vector<Touch*>& touches, Event *_event);
 	virtual void onTouchMoved(const std::vector<Touch*>& touches, Event *_event);
 	virtual void onTouchEnded(const std::vector<Touch*>& touches, Event *_event);
@@ -84,10 +66,10 @@ private:
 	Sprite* m_Player_Info_UI_Level;
 	Sprite* m_Player_Info_Casting_Bar_Frame;
 	Sprite* m_Player_Info_Casting_Bar_Icon;
-	Sprite* m_ButtomMenu;
 	Sprite* DefaultFrame;
 	Sprite* m_ButtonSpellBar;
 	Sprite* m_ButtonSpellItem[8];
+	Sprite* DeadSign;
 
 	ProgressTimer* m_Player_Info_Casting_Bar;
 	ProgressTimer* m_Player_Info_UI_Hp;
@@ -98,13 +80,14 @@ private:
 
 	SpellSlot* TouchedSpellSlot;
 
-	std::map<TopButtonLabelTTF, LabelTTF*> TopMenuLabel;
 	std::vector<Sprite*> m_Player_Info_UI_Level_Sprite;
-	std::vector<Sprite*> m_Buttom_Menus;
 	EventListenerTouchAllAtOnce* RokerListener;
 	bool m_TopMenuIsVisable;
+	bool m_NeedUpdateListZorder;
 	bool CanTouchButton;
 	PlayerUITouchType m_touchtype;
+
+	std::list<UISprite*> UISpriteList;
 };
 
 
@@ -120,42 +103,6 @@ public:
 private:
 	Item* m_Item;
 	Sprite* m_DisPlaySprite;
-};
-
-class PlayerBag : public Sprite
-{
-public:
-	static PlayerBag* GetInstance();
-	bool SwapItem(Slot* slot_one, Slot* slot_two);
-	void SwapPage(PlayerBagPage PageEnable, PlayerBagPage PageDisable = Page_None);
-	bool onTouchBagBegan(Touch* touches);
-	void onTouchBagMoved(Touch* touches);
-	void onTouchBagEnded(Touch* touches);
-	void SwapVisiable()			{ isVisible() ? setVisible(false) : setVisible(true); }
-	Slot* GetSlotByTouch(Touch* touches);
-	Slot* GetSlotByPageTag(const uint8& Page, const uint8& SlotTag);
-private:
-	enum BagTouchType
-	{
-		Bag_Type_None,
-		Bag_Type_SwapPage,
-		Bag_Type_SeleItem,
-	};
-	PlayerBag();
-	~PlayerBag();
-	void LoadInventory();
-	Slot* GetSlot(uint8 _Page, uint8 _Slot);
-	void InitPage();
-	void InitEmptySlots(Sprite* SinglePageSprite);
-	std::string url;
-	std::map<PlayerBagPage, SlotMap> m_PlayerBagTemplate;
-	std::vector<Sprite*> m_PlayerBagPageSprites;
-
-	Sprite* TouchedSprite;
-	Vec2 m_Start_Move_Position;
-	BagTouchType m_BagTouchType;
-
-	PlayerBagPage m_CurrentPage;
 };
 
 #endif

@@ -100,6 +100,15 @@
     <Filter Include="src\Layers\PlayerUILayer\DeadTalkClass">
       <UniqueIdentifier>{4a372b95-8416-4528-b8df-ebba592e4bc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\PlayerBag">
+      <UniqueIdentifier>{e298e7c5-684c-4fb4-a01d-babc2d12a732}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\UISprite">
+      <UniqueIdentifier>{06104323-95ba-4383-9ce3-264f190b1605}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\TopBar">
+      <UniqueIdentifier>{6ecb93f2-8a7d-479d-9d03-bddfad7078b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -216,6 +225,15 @@
     <ClCompile Include="..\Classes\DeadTalkClass.cpp">
       <Filter>src\Layers\PlayerUILayer\DeadTalkClass</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\PlayerBag.cpp">
+      <Filter>src\Layers\PlayerUILayer\PlayerBag</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\UISprite.cpp">
+      <Filter>src\Layers\PlayerUILayer\UISprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TopBar.cpp">
+      <Filter>src\Layers\PlayerUILayer\TopBar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -328,6 +346,15 @@
     </ClInclude>
     <ClInclude Include="..\Classes\DeadTalkClass.h">
       <Filter>src\Layers\PlayerUILayer\DeadTalkClass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PlayerBag.h">
+      <Filter>src\Layers\PlayerUILayer\PlayerBag</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\UISprite.h">
+      <Filter>src\Layers\PlayerUILayer\UISprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TopBar.h">
+      <Filter>src\Layers\PlayerUILayer\TopBar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

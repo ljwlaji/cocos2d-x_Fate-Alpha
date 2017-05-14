@@ -2,16 +2,17 @@
 #define __VIRTUAL_ROCKER_H__
 
 #include "cocos2d.h"
+#include "UISprite.h"
 USING_NS_CC;
 
 #define sRocker VirtualRocker::GetInstance()
-class VirtualRocker : public Sprite
+class VirtualRocker : public UISprite
 {
 public:
 	static VirtualRocker* GetInstance();
-	void TouchBegin(Touch* loc);
-	void TouchMoved(Touch* loc);
-	void TouchEnded(Touch* loc);
+	virtual bool OnUITouchBegin(Touch* pTouch);
+	virtual void OnUITouchMoved(Touch* pTouch);
+	virtual void OnUITouchEnded(Touch* pTouch);
 private:
 	Vec2 MoveVec;
 	bool NeedUpdate;

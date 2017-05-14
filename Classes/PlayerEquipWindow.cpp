@@ -2,6 +2,7 @@
 #include "PlayerUILayer.h"
 #include "Player.h"
 #include "NotifyMgr.h"
+#include "PlayerBag.h"
 
 static PlayerEquipWindow* _PlayerEquipWindow = nullptr;
 static PlayerEuqipValueWindow* _PlayerEuqipValueWindow = nullptr;
@@ -15,6 +16,7 @@ PlayerEquipWindow::PlayerEquipWindow()
 	InitWindow();
 	IsTouchedDisPlaySprite = false;
 	setVisible(false);
+	SetTouchType(PlayerUITouch_Equip_Window);
 }
 
 Slot* PlayerEquipWindow::GetSlotByTouch(Touch* toouch)
@@ -56,7 +58,7 @@ void PlayerEquipWindow::InitWindow()
 }
 
 
-void PlayerEquipWindow::onTouchBagBegan(Touch* touches)
+bool PlayerEquipWindow::OnUITouchBegin(Touch* touches)
 {
 	m_TouchedSprite = nullptr;
 	IsTouchedDisPlaySprite = false;
@@ -68,7 +70,7 @@ void PlayerEquipWindow::onTouchBagBegan(Touch* touches)
 			m_TouchedSprite = (Sprite*)(*itr);
 			if (m_TouchedSprite->getTag() >= SLOT_WEAPON && m_TouchedSprite->getTag() < SLOT_END)
 				m_Start_Move_Position = touches->getLocation();
-			return;
+			return true;
 		}
 	}
 
@@ -76,7 +78,7 @@ void PlayerEquipWindow::onTouchBagBegan(Touch* touches)
 	m_Start_Move_Position = touches->getLocation();
 }
 
-void PlayerEquipWindow::onTouchBagMoved(Touch* touches)
+void PlayerEquipWindow::OnUITouchMoved(Touch* touches)
 {
 	if (m_TouchedSprite == this)
 	{
@@ -102,7 +104,7 @@ void PlayerEquipWindow::onTouchBagMoved(Touch* touches)
 	}
 }
 
-void PlayerEquipWindow::onTouchBagEnded(Touch* touches)
+void PlayerEquipWindow::OnUITouchEnded(Touch* touches)
 {
 	if (!m_TouchedSprite)
 		return;

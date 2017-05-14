@@ -12,11 +12,11 @@
 #include "PlayerEquipWindow.h"
 #include "VirtualRocker.h"
 #include "DeadTalkClass.h"
-
+#include "PlayerBag.h"
+#include "TopBar.h"
 
 #pragma execution_character_set("utf-8")
 
-static PlayerBag* _PlayerBag = nullptr;
 static PlayerUILayer* _PlayerUILayer = nullptr;
 
 Slot::Slot(const std::string& url)
@@ -97,251 +97,6 @@ void Slot::SwapItem(Slot* Instead)
 	sPlayerValueWindow->ResetValueDefault();
 }
 
-PlayerBag::PlayerBag()
-{
-	//_PlayerBag = this;
-	initWithFile(PlayerBagImage);
-	autorelease();
-	InitPage();
-	SwapPage(Page_One);
-	TouchedSprite = nullptr;
-	LoadInventory();
-	setVisible(false);
-}
-
-PlayerBag::~PlayerBag()
-{
-	removeAllChildrenWithCleanup(true);
-	removeFromParentAndCleanup(true);
-	_PlayerBag = nullptr;
-}
-
-void PlayerBag::LoadInventory()
-{
-	if (!sPlayer)
-		return;
-	char msg[255];//				0		1		2		3
-	snprintf(msg, 255, "SELECT item_entry,bag_page,bag_slot,count FROM player_inventory WHERE guid = %u", sPlayer->GetGuid());
-	Result result;
-	if (sDataMgr->selectUnitDataList(msg, result))
-	{
-		if (result.empty()) return;
-		else
-		{
-			for (Result::iterator itr = result.begin(); itr != result.end(); itr++)
-			{
-				std::vector<RowInfo> info = itr->second;
-				if (Slot* TempSlot = GetSlotByPageTag(info.at(1).GetInt(), info.at(2).GetInt()))
-				{
-					Item* pItem = Item::CreateItem(info.at(0).GetInt());
-					if (!pItem)
-						continue;
-					pItem->SetCount(info.at(3).GetInt());
-					TempSlot->SetItem(pItem);
-				}
-			}
-		}
-	}
-	
-}
-
-Slot* PlayerBag::GetSlotByPageTag(const uint8& Page, const uint8& SlotTag)
-{
-	Slot* TempSlot = nullptr;
-
-	if (Page < m_PlayerBagPageSprites.size() && SlotTag < SingleSlotTagEnded)
-	{
-		TempSlot = (Slot*)m_PlayerBagPageSprites.at(Page)->getChildByTag(SlotTag);
-	}
-	return TempSlot;
-}
-
-Slot* PlayerBag::GetSlotByTouch(Touch* touches)
-{
-	if (!m_PlayerBagPageSprites.at(m_CurrentPage)->isVisible())
-		return nullptr;
-	Sprite* TempPage = m_PlayerBagPageSprites.at(m_CurrentPage);
-	for (int i = 0; i != SingleSlotTagEnded; i++)
-	{
-		if (Slot* TempSlot = (Slot*)TempPage->getChildByTag(i))
-		{
-			if (!TempSlot->IsContectPoint(touches->getLocation()))
-				continue;
-			return TempSlot;
-		}
-	}
-	return nullptr;
-}
-
-bool PlayerBag::onTouchBagBegan(Touch* touches)
-{
-	TouchedSprite = nullptr;
-	m_BagTouchType = Bag_Type_None;
-	for (int i = Page_One; i != End_Of_Player_Bag_Page; i++)
-	{
-		if (Sprite* TempPagTag = (Sprite*)getChildByTag(i))
-		{
-			if (TempPagTag->IsContectPoint(touches->getLocation()))
-			{
-				m_BagTouchType = Bag_Type_SwapPage;
-				TouchedSprite = TempPagTag;
-				return true;
-			}
-		}
-	}
-
-	for (int i = 0; i != m_PlayerBagPageSprites.size(); i++)
-	{
-		if (!m_PlayerBagPageSprites.at(i)->isVisible())
-			continue;
-		Sprite* TempPage = m_PlayerBagPageSprites.at(i);
-		for (int j = SingleSlotTagStart; j != SingleSlotTagEnded; j++)
-		{
-			if (Slot* TempSlot = (Slot*)TempPage->getChildByTag(j))
-			{
-				if (TempSlot->IsContectPoint(touches->getLocation()))
-				{
-					m_BagTouchType = Bag_Type_SeleItem;
-					m_Start_Move_Position = touches->getLocation();
-					TouchedSprite = TempSlot;
-					return true;
-				}
-			}
-		}
-	}
-	m_Start_Move_Position = touches->getLocation();
-	TouchedSprite = this;
-	return true;
-}
-
-void PlayerBag::onTouchBagMoved(Touch* touches)
-{
-	if (m_BagTouchType == Bag_Type_SeleItem)
-	{
-		Sprite* DisplaySprite = ((Slot*)TouchedSprite)->GetDisPlaySprite();
-		if (DisplaySprite)
-		{
-			float X_Modify = touches->getLocation().x - m_Start_Move_Position.x;
-			float Y_Modify = touches->getLocation().y - m_Start_Move_Position.y;
-			DisplaySprite->setPosition(DisplaySprite->getPositionX() + X_Modify, DisplaySprite->getPositionY() + Y_Modify);
-			m_Start_Move_Position = touches->getLocation();
-			return;
-		}
-	}
-	if (TouchedSprite == this)
-	{
-		float X_Modify = touches->getLocation().x - m_Start_Move_Position.x;
-		float Y_Modify = touches->getLocation().y -  m_Start_Move_Position.y;
-		setPosition(getPositionX() + X_Modify, getPositionY() + Y_Modify);
-		m_Start_Move_Position = touches->getLocation();
-	}
-}
-
-void PlayerBag::onTouchBagEnded(Touch* touches)
-{
-	if (!TouchedSprite)
-		return;
-	switch (m_BagTouchType)
-	{
-	case Bag_Type_SwapPage:
-		if (!TouchedSprite->IsContectPoint(touches->getLocation()))
-			return;
-		SwapPage((PlayerBagPage)TouchedSprite->getTag(), m_CurrentPage);
-		break;
-	case Bag_Type_SeleItem:
-		Slot* OldSlot = ((Slot*)TouchedSprite);
-		Slot* NewSlot = GetSlotByTouch(touches);
-		if (!NewSlot)
-			NewSlot = sPlayerEquip->GetSlotByTouch(touches);
-		OldSlot->SwapItem(NewSlot);
-		break;
-	}
-}
-
-bool PlayerBag::SwapItem(Slot* slot_one, Slot* slot_two)
-{
-	return true;
-}
-
-void PlayerBag::InitPage()
-{
-	m_PlayerBagPageSprites.clear();
-	for (int i = Page_One; i != End_Of_Player_Bag_Page; i++)
-	{
-		//首先创建页面
-		Sprite* _TempPageSprite = Sprite::create(PlayerBagPageImage);
-		_TempPageSprite->setPosition(getContentSize().width * 0.53f, getContentSize().height * 0.1f + _TempPageSprite->getBoundingBox().size.height / 2);
-		addChild(_TempPageSprite);
-		InitEmptySlots(_TempPageSprite);
-		m_PlayerBagPageSprites.push_back(_TempPageSprite);
-		_TempPageSprite->setVisible(false);
-
-		Sprite* BagPageSelector = Sprite::create(PlayerBagPageSelectorImage);
-		BagPageSelector->setPositionX(getContentSize().width * 0.15f + BagPageSelector->getBoundingBox().size.width + (i * BagPageSelector->getBoundingBox().size.width * 1.6f));
-		BagPageSelector->setPositionY(getContentSize().height * 0.915f);
-		BagPageSelector->setTag(i);
-		addChild(BagPageSelector);
-		BagPageSelector->setOpacity(120.0f);
-	}
-}
-
-void PlayerBag::SwapPage(PlayerBagPage enable, PlayerBagPage disable)
-{
-	if (disable != Page_None)
-	{
-		if (Sprite* Temp = (Sprite*)getChildByTag(disable))
-		{
-			Temp->setOpacity(120.0f);
-			m_PlayerBagPageSprites.at(disable)->setVisible(false);
-		}
-	}
-	if (Sprite* Show = (Sprite*)getChildByTag(enable))
-	{
-		Show->setOpacity(255.0f);
-		m_PlayerBagPageSprites.at(enable)->setVisible(true);
-	}
-
-	m_CurrentPage = enable;
-}
-
-Slot* PlayerBag::GetSlot(uint8 _Page, uint8 _Slot)
-{
-	if (_Page > Page_Nine)
-		return nullptr;
-
-	Sprite* Page = nullptr;
-
-	Page = m_PlayerBagPageSprites.at(_Page);
-
-	if (Slot* pSlot = (Slot*)Page->getChildByTag(_Slot))
-		return pSlot;
-
-	return nullptr;
-}
-
-void PlayerBag::InitEmptySlots(Sprite* SinglePageSprite)
-{
-	int tag = 1;
-	for (int i = 0; i != SlotRowCount; i++)
-	for (int k = 0; k != SlotFieldCount; k++)
-	{
-		Slot* SingleSlot = new Slot();
-		SingleSlot->setPositionX(getBoundingBox().size.width * 0.005f + SingleSlot->getBoundingBox().size.width / 2 + (i * SingleSlot->getBoundingBox().size.width * 1.05f));
-		SingleSlot->setPositionY(getBoundingBox().size.height * 0.01f + SingleSlot->getBoundingBox().size.height / 2 + (k * SingleSlot->getBoundingBox().size.height * 1.05f));
-		SingleSlot->setTag(tag);
-		SinglePageSprite->addChild(SingleSlot);
-		tag++;
-	}
-}
-
-PlayerBag* PlayerBag::GetInstance()
-{
-	if (!_PlayerBag)
-		_PlayerBag = new PlayerBag();
-
-	return _PlayerBag;
-}
-
 								/////////////////
 								//PlayerUILayer//
 								/////////////////
@@ -351,6 +106,7 @@ PlayerUILayer::PlayerUILayer()
 	m_touchtype = PlayerUITouch_None;
 	CanTouchButton = true;
 	m_TopMenuIsVisable = true;
+	m_NeedUpdateListZorder = false;
 }
 
 PlayerUILayer::~PlayerUILayer()
@@ -384,27 +140,41 @@ bool PlayerUILayer::init()
 
 		sRocker->setPosition(sRocker->getBoundingBox().size.width / 2, sRocker->getBoundingBox().size.height / 2);
 		addChild(sRocker);
+		UISpriteList.push_back(sRocker);
 
 		sPlayerBag->setPosition(visiablesize.x * 0.75, visiablesize.y / 2);
 		addChild(sPlayerBag);
+		UISpriteList.push_back(sPlayerBag);
 
 		sPlayerEquip->setPosition(visiablesize.x * 0.25, visiablesize.y * 0.75);
 		addChild(sPlayerEquip);
+		UISpriteList.push_back(sPlayerEquip);
 
 		sPlayerValueWindow->setPosition(sPlayerEquip->getPositionX() * 1.032f, sPlayerEquip->getBoundingBox().origin.y * 1.04f - sPlayerValueWindow->getBoundingBox().size.height / 2);
 		addChild(sPlayerValueWindow);
 
 		sPlayerSpellBook->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sPlayerSpellBook);
+		UISpriteList.push_back(sPlayerSpellBook);
 
 		sSettingMenu->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sSettingMenu);
+		UISpriteList.push_back(sSettingMenu);
 
 		sQuestBook->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sQuestBook);
+		UISpriteList.push_back(sQuestBook);
 
 		sDeadTalkClass->setPosition(visiablesize.x / 2, visiablesize.y * 0.75f);
 		addChild(sDeadTalkClass);
+		UISpriteList.push_back(sDeadTalkClass);
+
+		addChild(sTopBar);
+
+		DeadSign = Sprite::create("Dead_Sign.png");
+		DeadSign->SetRealPosition(visiablesize.x - DeadSign->getBoundingBox().size.width / 2, visiablesize.y * 0.7f);
+		DeadSign->setVisible(false);
+		addChild(DeadSign);
 
 		RokerListener = EventListenerTouchAllAtOnce::create();
 		RokerListener->onTouchesBegan = CC_CALLBACK_2(PlayerUILayer::onTouchBegan, this);
@@ -526,16 +296,16 @@ void PlayerUILayer::SwapButtomMenuType()
 		m_TopMenuIsVisable = false;
 		m_Player_UI_TopButton_Swap_Button->runAction(MoveTo::create(1.0f, Vec2(m_Player_UI_TopButton_Swap_Button->getPositionX(), visiablesize.y - m_Player_UI_TopButton_Swap_Button->getBoundingBox().size.height / 2)));
 		m_Player_Info_UI->runAction(MoveTo::create(1.0f, Vec2(m_Player_Info_UI->getPositionX(), visiablesize.y - m_Player_Info_UI->getBoundingBox().size.height * 0.45f)));
-		sq = Sequence::create(MoveTo::create(1.0f, Vec2(m_ButtomMenu->getPositionX(), m_ButtomMenu->getPositionY() + m_ButtomMenu->getBoundingBox().size.height)), CallFunc::create(CC_CALLBACK_0(PlayerUILayer::ButtonMenuCallBack, this)), NULL);
+		sq = Sequence::create(MoveTo::create(1.0f, Vec2(sTopBar->getPositionX(), sTopBar->getPositionY() + sTopBar->getBoundingBox().size.height)), CallFunc::create(CC_CALLBACK_0(PlayerUILayer::ButtonMenuCallBack, this)), NULL);
 	}
 	else
 	{
 		m_TopMenuIsVisable = true;
 		m_Player_UI_TopButton_Swap_Button->runAction(MoveTo::create(1.0f, Vec2(m_Player_UI_TopButton_Swap_Button->getPositionX(), visiablesize.y + m_Player_UI_TopButton_Swap_Button->getBoundingBox().size.height / 2)));
 		m_Player_Info_UI->runAction(MoveTo::create(1.0f, Vec2(m_Player_Info_UI->getPositionX(), visiablesize.y * 0.9f - m_Player_Info_UI->getBoundingBox().size.height / 2)));
-		sq = Sequence::create(MoveTo::create(1.0f, Vec2(m_ButtomMenu->getPositionX(), visiablesize.y - m_ButtomMenu->getBoundingBox().size.height / 2)), CallFunc::create(CC_CALLBACK_0(PlayerUILayer::ButtonMenuCallBack, this)), NULL);
+		sq = Sequence::create(MoveTo::create(1.0f, Vec2(sTopBar->getPositionX(), visiablesize.y - sTopBar->getBoundingBox().size.height / 2)), CallFunc::create(CC_CALLBACK_0(PlayerUILayer::ButtonMenuCallBack, this)), NULL);
 	}
-	m_ButtomMenu->runAction(sq);
+	sTopBar->runAction(sq);
 }
 
 void PlayerUILayer::ButtonMenuCallBack()
@@ -545,80 +315,9 @@ void PlayerUILayer::ButtonMenuCallBack()
 
 void PlayerUILayer::InitButtomMenu()
 {
-	m_ButtomMenu = Sprite::create(PlayerUIButtomMenuImage);
-	m_ButtomMenu->SetRealPosition(visiablesize.x / 2, visiablesize.y - m_ButtomMenu->getBoundingBox().size.height / 2);
-	addChild(m_ButtomMenu);
-
-	//character equip bag quest spell setting
-	char msg[255];
-	float PosX = 0;
-	for (int i = Button_Menu_Setting; i != Button_Menu_End; i++)
-	{
-		snprintf(msg, 255, "%s%d.png", PlayerUIButtonMenuListImage, i);
-		Sprite* TempSprite = Sprite::create(msg);
-		TempSprite->setPosition(m_ButtomMenu->getContentSize().width * 0.882f - TempSprite->getBoundingBox().size.width / 2 - (i * TempSprite->getBoundingBox().size.width * 0.9f), m_ButtomMenu->getContentSize().height * 0.65f);
-		m_ButtomMenu->addChild(TempSprite);
-		m_Buttom_Menus.push_back(TempSprite);
-		PosX = TempSprite->getPositionX();
-	}
-	Sprite* MapButton = Sprite::create("Player_UI_Buttom_Menu_6.png");
-	MapButton->setPosition(PosX - MapButton->getBoundingBox().size.width * 0.52f, m_ButtomMenu->getContentSize().height * 0.55f);
-	m_ButtomMenu->addChild(MapButton);
-	m_Buttom_Menus.push_back(MapButton);
-
-	Sprite* NameFrame = Sprite::create("Player_UI_Buttom_Menu_7.png");
-	Sprite* ValueFrame = Sprite::create("Player_UI_Buttom_Menu_8.png");
-	Sprite* HeadFrame = Sprite::create("Player_UI_Buttom_Menu_9.png");
-
-	NameFrame->setPosition(MapButton->getBoundingBox().origin.x - NameFrame->getBoundingBox().size.width * 0.4f, m_ButtomMenu->getContentSize().height * 0.55f + NameFrame->getBoundingBox().size.height / 2);
-	m_ButtomMenu->addChild(NameFrame);
-
-	ValueFrame->setPosition(NameFrame->getPositionX(), m_ButtomMenu->getContentSize().height * 0.5f);
-	m_ButtomMenu->addChild(ValueFrame);
-
-	HeadFrame->setPosition(ValueFrame->getBoundingBox().origin.x - HeadFrame->getBoundingBox().size.width * 0.35f, m_ButtomMenu->getContentSize().height * 0.62f);
-	m_ButtomMenu->addChild(HeadFrame);
-
-	float FirstPoint = ValueFrame->getBoundingBox().size.width / 9;
-	float SinglePoint = ValueFrame->getBoundingBox().size.width / 3;
-	for (int i = MoneyTTF; i != EndOfTopTTF; i++)
-	{
-		LabelTTF* TempTTF = LabelTTF::create("1234", "Arial", 20, Size::ZERO, i == NameTTF ? TextHAlignment::CENTER : TextHAlignment::LEFT);
-		i == NameTTF ? TempTTF->setAnchorPoint(Vec2(0.5f,0.5f)) : TempTTF->setAnchorPoint(Vec2(0, 0.5f));
-		i == NameTTF ? TempTTF->setPosition(NameFrame->getContentSize().width / 2, NameFrame->getContentSize().height) : TempTTF->setPosition(FirstPoint + (i * SinglePoint), ValueFrame->getContentSize().height / 2);
-		ValueFrame->addChild(TempTTF);
-		TopMenuLabel[(TopButtonLabelTTF)i] = TempTTF;
-	}
-	ResetUpButtonString();
-
 	m_Player_UI_TopButton_Swap_Button = Sprite::create(PlayerUIButtonMenuSwapButton);
 	m_Player_UI_TopButton_Swap_Button->setPosition(visiablesize.x / 2, visiablesize.y + m_Player_UI_TopButton_Swap_Button->getBoundingBox().size.height / 2);
 	addChild(m_Player_UI_TopButton_Swap_Button);
-}
-
-void PlayerUILayer::ResetUpButtonString()
-{
-	for (std::map<TopButtonLabelTTF, LabelTTF*>::iterator itr = TopMenuLabel.begin(); itr != TopMenuLabel.end(); itr++)
-	{
-		LabelTTF* TempTTF = itr->second;
-		char msg[255];
-		switch (itr->first)
-		{
-		case PlayerUILayer::MoneyTTF:
-			snprintf(msg, 255, "%d", sPlayer->GetMoney());
-			break;
-		case PlayerUILayer::AttackTTF:
-			snprintf(msg, 255, "%d", sPlayer->GetUnitInt32Value(Base_Att));
-			break;
-		case PlayerUILayer::CashTTF:
-			snprintf(msg, 255, "%d", 99999);
-			break;
-		case PlayerUILayer::NameTTF:
-			snprintf(msg, 255, "%s", sPlayer->GetName().c_str());
-			break;
-		}
-		TempTTF->setString(msg);
-	}
 }
 
 void PlayerUILayer::ResetHeadLevel()
@@ -646,7 +345,7 @@ void PlayerUILayer::ResetAllUIValuesNumber()
 {
 	ResetHeadLevel();
 	sPlayerValueWindow->ResetValueDefault();
-	ResetUpButtonString();
+	sTopBar->ReSetTopBarString();
 }
 
 void PlayerUILayer::InitUI()
@@ -716,6 +415,20 @@ bool PlayerUILayer::IsSingleTouch(const std::vector<Touch*>& touches, PlayerUITo
 	return true;
 }
 
+void PlayerUILayer::PushSprite(UISprite* pUIsprite)
+{
+	for (std::list<UISprite*>::iterator itr = UISpriteList.begin(); itr != UISpriteList.end(); itr++)
+	{
+		if (*itr == pUIsprite)
+		{
+			UISpriteList.erase(itr);
+			UISpriteList.push_front(pUIsprite);
+			m_NeedUpdateListZorder = true;
+			break;
+		}
+	}
+}
+
 void PlayerUILayer::onTouchBegan(const std::vector<Touch*>& touchesVector, Event *event)
 {
 	TouchedSpellSlot = nullptr;
@@ -726,47 +439,45 @@ void PlayerUILayer::onTouchBegan(const std::vector<Touch*>& touchesVector, Event
 	for (int i = 0; i != touchesVector.size(); i++)
 	{
 		Touch* touches = touchesVector.at(i);
+
+		if (DeadSign->IsContectPoint(touches->getLocation()) && DeadSign->isVisible())
+		{
+			if (IsSingleTouch(touchesVector, PlayerUITouch_DeathSign))
+				touches->SetTouchType(PlayerUITouch_DeathSign);
+			return;
+		}
+
+		for (std::list<UISprite*>::iterator itr = UISpriteList.begin(); itr != UISpriteList.end(); itr++)
+		{
+			if (!sPlayer->IsAlive() && (*itr) != sDeadTalkClass)
+				continue;
+			if (!(*itr)->isVisible())
+				continue;
+			if (UISprite* TempSprite = *itr)
+			if (TempSprite && TempSprite->IsContectPoint(touches->getLocation()))
+			{
+				if (TempSprite->OnUITouchBegin(touches) && IsSingleTouch(touchesVector, TempSprite->GetTouchType()))
+				{
+					touches->SetTouchType(TempSprite->GetTouchType());
+					UISpriteList.erase(itr);
+					UISpriteList.push_front(TempSprite);
+					m_NeedUpdateListZorder = true;
+					return;
+				}
+			}
+		}
+
+		if (!sPlayer->IsAlive())
+		{
+			sNotifyMgr->ShowNotify("You Are Dead");
+			return;
+		}
+
 		if (TouchedSpellSlot = CheckTouchSpellButton(touches->getLocation()))
 		{
 			if (IsSingleTouch(touchesVector,PlayerUITouch_Button_SpellSlot))
 				touches->SetTouchType(PlayerUITouch_Button_SpellSlot);
 			return;
-		}
-		for (int i = 0; i != m_Buttom_Menus.size(); i++)
-		{
-			if (Sprite* TempButton = m_Buttom_Menus.at(i))
-			{
-				if (TempButton->getOpacity() < 245.0f)
-					break;
-				if (!IsSingleTouch(touchesVector, PlayerUITouch_UperButton))
-					break;
-				if (TempButton->IsContectPoint(touches->getLocation()))
-				{
-					switch (i)
-					{
-					case Button_Menu_Setting:
-						sSettingMenu->OnClickSettingButton();
-						break;
-					case Button_Menu_Spell:
-						sPlayerSpellBook->SwapVisiable();
-						break;
-					case Button_Menu_Quest:
-						sQuestBook->SwapVisable();
-						break;
-					case Button_Menu_Bag:
-						sPlayerBag->SwapVisiable();
-						break;
-					case Button_Menu_Equip:
-						sPlayerEquip->SwapVisiable();
-						break;
-					case Button_Menu_Character:
-						sPlayerValueWindow->SwapVisable();
-						break;
-					}
-					touches->SetTouchType(PlayerUITouch_UperButton);
-					return;
-				}
-			}
 		}
 
 		
@@ -779,75 +490,10 @@ void PlayerUILayer::onTouchBegan(const std::vector<Touch*>& touchesVector, Event
 			return;
 		}
 
-		if (sDeadTalkClass->isVisible() && sDeadTalkClass->IsContectPoint(touches->getLocation()))
-		{
-			if (IsSingleTouch(touchesVector, PlayerUITouch_DeathTalkClass))
-			{
-				sDeadTalkClass->OnTouchBegin(touches);
-				touches->SetTouchType(PlayerUITouch_DeathTalkClass);
-			}
-			return;
-		}
-
-		if (sSettingMenu->isVisible() && sSettingMenu->IsContectPoint(touches->getLocation()))
-		{
-			if (IsSingleTouch(touchesVector, PlayerUITouch_SettingMenu))
-			{
-				sSettingMenu->OnTouchBegin(touches);
-				touches->SetTouchType(PlayerUITouch_SettingMenu);
-			}
-			return;
-		}
-		if (sPlayerEquip->isVisible() && sPlayerEquip->IsContectPoint(touches->getLocation()))
-		{
-			if (IsSingleTouch(touchesVector, PlayerUITouch_Equip_Window))
-			{
-				sPlayerEquip->onTouchBagBegan(touches);
-				touches->SetTouchType(PlayerUITouch_Equip_Window);
-			}
-			return;
-		}
-		if (sPlayerBag->isVisible() && sPlayerBag->IsContectPoint(touches->getLocation()))
-		{
-			if (IsSingleTouch(touchesVector, PlayerUITouch_Bag))
-			{
-				sPlayerBag->onTouchBagBegan(touches);
-				touches->SetTouchType(PlayerUITouch_Bag);
-			}
-			return;
-		}
-
-		if (sPlayerSpellBook->isVisible() && sPlayerSpellBook->IsContectPoint(touches->getLocation()))
-		{
-			if (IsSingleTouch(touchesVector, PlayerUITouch_SpellBook))
-			{
-				sPlayerSpellBook->onTouchBagBegan(touches);
-				touches->SetTouchType(PlayerUITouch_SpellBook);
-			}
-			return;
-		}
-		if (m_ButtomMenu->IsContectPoint(touches->getLocation()))
+		if (sTopBar->IsContectPoint(touches->getLocation()) && !sTopBar->OnUITouchBegin(touches))
 		{
 			if (IsSingleTouch(touchesVector, PlayerUITouch_Buttom_Menu))
 				touches->SetTouchType(PlayerUITouch_Buttom_Menu);
-			return;
-		}
-		if (sRocker && sRocker->getBoundingBox().containsPoint(touches->getLocation()))
-		{
-			if (IsSingleTouch(touchesVector, PlayerUITouch_Roker))
-			{
-				touches->SetTouchType(PlayerUITouch_Roker);
-				sRocker->TouchBegin(touches);
-			}
-			return;
-		}
-		if (sQuestBook->isVisible() && sQuestBook->IsContectPoint(touches->getLocation()))
-		{
-			if (IsSingleTouch(touchesVector, PlayerUITouch_QuestBook))
-			{
-				touches->SetTouchType(PlayerUITouch_QuestBook);
-				sQuestBook->OnTouchBegin(touches);
-			}
 			return;
 		}
 	}
@@ -864,16 +510,16 @@ void PlayerUILayer::onTouchMoved(const std::vector<Touch*>& touchesVector, Event
 			switch (touches->GetTouchType())
 			{
 			case PlayerUITouch_Bag:
-				sPlayerBag->onTouchBagMoved(touches);
+				sPlayerBag->OnUITouchMoved(touches);
 				return;
 			case PlayerUITouch_Roker:
-				sRocker->TouchMoved(touches);
+				sRocker->OnUITouchMoved(touches);
 				return;
 			case PlayerUITouch_SpellBook:
-				sPlayerSpellBook->onTouchBagMoved(touches);
+				sPlayerSpellBook->OnUITouchMoved(touches);
 				return;
 			case PlayerUITouch_Equip_Window:
-				sPlayerEquip->onTouchBagMoved(touches);
+				sPlayerEquip->OnUITouchMoved(touches);
 				return;
 			}
 		}
@@ -891,17 +537,17 @@ void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event
 			switch (touches->GetTouchType())
 			{
 				case PlayerUITouch_Bag:
-					sPlayerBag->onTouchBagEnded(touches);
+					sPlayerBag->OnUITouchEnded(touches);
 					return;
 				case PlayerUITouch_SpellBook:
-					sPlayerSpellBook->onTouchBagEnded(touches);
+					sPlayerSpellBook->OnUITouchEnded(touches);
 					return;
 				case PlayerUITouch_Buttom_Menu:
 					SwapButtomMenuType();
 					return;
 				case PlayerUITouch_Roker:
 				{
-					sRocker->TouchEnded(touches);
+					sRocker->OnUITouchEnded(touches);
 					return;
 				}
 				case PlayerUITouch_Button_SpellSlot:
@@ -912,21 +558,25 @@ void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event
 				}
 				case PlayerUITouch_Equip_Window:
 				{
-					sPlayerEquip->onTouchBagEnded(touches);
+					sPlayerEquip->OnUITouchEnded(touches);
 					break;
 				}
 				case PlayerUITouch_SettingMenu:
-					sSettingMenu->OnTouchEnded(touches);
+					sSettingMenu->OnUITouchEnded(touches);
 					break;
 				case PlayerUITouch_SwapTopButton:
 					if (m_Player_UI_TopButton_Swap_Button->IsContectPoint(touches->getLocation()))
 						SwapButtomMenuType();
 					break;
 				case PlayerUITouch_QuestBook:
-					sQuestBook->OnTouchEnded(touches);
+					sQuestBook->OnUITouchEnded(touches);
 					break;
 				case PlayerUITouch_DeathTalkClass:
-					sDeadTalkClass->OnTouchEnded(touches);
+					sDeadTalkClass->OnUITouchEnded(touches);
+					break;
+				case PlayerUITouch_DeathSign:
+					sDeadTalkClass->Show();
+					DeadSign->setVisible(false);
 					break;
 			}
 		}
@@ -996,4 +646,20 @@ void PlayerUILayer::update(float diff)
 	AutoUpdateCastingBar();
 	AutoUpdateExpBar();
 	AutoUpdateHeadBar();
+	AutoUpdateListZorder();
+}
+
+void PlayerUILayer::AutoUpdateListZorder()
+{
+	if (!m_NeedUpdateListZorder)
+		return;
+	int Zorder = 100;
+	for (std::list<UISprite*>::reverse_iterator itr = UISpriteList.rbegin(); itr != UISpriteList.rend(); itr++)
+		(*itr)->setLocalZOrder(99);
+	for (std::list<UISprite*>::reverse_iterator itr = UISpriteList.rbegin(); itr != UISpriteList.rend(); itr++)
+	{
+		(*itr)->setLocalZOrder(Zorder);
+		Zorder++;
+	}
+	m_NeedUpdateListZorder = false;
 }

@@ -73,6 +73,24 @@ struct SingleQuestReWard
 	uint32 Count;
 };
 
+enum PlayerUITouchType
+{
+	PlayerUITouch_None,
+	PlayerUITouch_UperButton,
+	PlayerUITouch_Bag,
+	PlayerUITouch_SpellBook,
+	PlayerUITouch_Roker,
+	PlayerUITouch_Buttom_Menu,
+	PlayerUITouch_Button_SpellSlot,
+	PlayerUITouch_Equip_Window,
+	PlayerUITouch_SettingMenu,
+	PlayerUITouch_SwapTopButton,
+	PlayerUITouch_QuestBook,
+	PlayerUITouch_DeathTalkClass,
+	PlayerUITouch_DeathSign,
+	PlayerUITouch_TopBar,
+};
+
 enum UnitClasses
 {
 	Class_None,
