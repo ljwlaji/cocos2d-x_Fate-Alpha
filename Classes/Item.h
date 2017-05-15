@@ -12,7 +12,10 @@ class Item
 public:
 	//Create
 	//Return Nullptr If Failed To Find Template
-	static Item* CreateItem(const uint32& ItemEntry);
+	static Item* CreateItem(const uint32& ItemEntry, const uint32& Page, const uint32& Slot,const uint32& ItemGuid = 0/*Set To 0 If Is New Loot*/);
+	void SaveToDB();
+	void DeleteFromDB();
+	void SetSlot(const uint32& Page, const uint32& Slot);
 	~Item();
 public:
 	//Function
@@ -21,10 +24,16 @@ public:
 	std::string GetIconUrl()								{ return m_Template->Url; }
 	void SetCount(const uint8& Count)						{ m_ItemCount = Count; }
 private:
+	void InsertToDB();
+	void SetGuid(const uint32& guid)						{ m_Guid = guid; }
+	uint32 CreateNewItemGuid();
 	Item(const ItemTemplate* pTemplate);
 	std::string m_Icon_Url;
 	uint8 m_ItemCount;
 	const ItemTemplate* m_Template;
+	uint32 m_Slot = 0;
+	uint32 m_Page = 0;
+	uint32 m_Guid = 0;
 };
 
 

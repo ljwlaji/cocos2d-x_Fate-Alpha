@@ -100,6 +100,7 @@ public:
 	Sprite* GetDisPlaySprite()	{ return m_DisPlaySprite; }
 	void SetItem(Item* pItem = nullptr);
 	void SwapItem(Slot* Instead);
+	void CreateItemVisualIfNeed();
 private:
 	Item* m_Item;
 	Sprite* m_DisPlaySprite;

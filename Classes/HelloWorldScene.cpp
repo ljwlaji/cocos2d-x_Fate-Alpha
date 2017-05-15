@@ -31,7 +31,6 @@ MainScene::MainScene()
 	CombatSign = false;
 	CanPlaySound = true;
 	_MainScene = this;
-	scheduleUpdate();
 	ClearCacheDelayTime = 10.0f;
 	KeyBoardListener = nullptr;
 	//网页跳转

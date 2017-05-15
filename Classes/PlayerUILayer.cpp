@@ -50,20 +50,24 @@ void Slot::SetItem(Item* pItem)
 		}
 		return;
 	}
-	m_Item = pItem; 
+	m_Item = pItem;
+	m_Item->SetSlot(getParent() == sPlayerEquip ? Page_EquipWindow : getParent()->getTag() / 10 - 1, getTag());
+	CreateItemVisualIfNeed();
+	sPlayer->SendUpdateValueRequire();
+	m_Item->SaveToDB();
+	return;
+}
+
+void Slot::CreateItemVisualIfNeed()
+{
 	if (!m_DisPlaySprite)
 	{
-		m_DisPlaySprite = Sprite::create(pItem->GetIconUrl().c_str());
-		m_DisPlaySprite->setScale(getBoundingBox().size.width / m_DisPlaySprite->getBoundingBox().size.width);
-		m_DisPlaySprite->setPosition(getContentSize().width / 2, getContentSize().height / 2);
+		m_DisPlaySprite = Sprite::create(m_Item->GetIconUrl().c_str());
 		addChild(m_DisPlaySprite);
 	}
-	else
-	{
-		setTexture(pItem->GetIconUrl().c_str());
-	}
-	sPlayer->SendUpdateValueRequire();
-	return;
+	m_DisPlaySprite->setPosition(getContentSize().width / 2, getContentSize().height / 2);
+	m_DisPlaySprite->setTexture(m_Item->GetIconUrl().c_str());
+	m_DisPlaySprite->setScale(getBoundingBox().size.width / m_DisPlaySprite->getBoundingBox().size.width);
 }
 
 void Slot::SwapItem(Slot* Instead)
@@ -92,7 +96,6 @@ void Slot::SwapItem(Slot* Instead)
 		SetItem(NewSlotItem);
 	else SetItem(nullptr);
 	Instead->SetItem(OldSlotItem);
-
 	sPlayer->CalcItemValues();
 	sPlayerValueWindow->ResetValueDefault();
 }

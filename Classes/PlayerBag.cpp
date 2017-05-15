@@ -30,8 +30,8 @@ void PlayerBag::LoadInventory()
 {
 	if (!sPlayer)
 		return;
-	char msg[255];//				0		1		2		3
-	snprintf(msg, 255, "SELECT item_entry,bag_page,bag_slot,count FROM player_inventory WHERE guid = %u", sPlayer->GetGuid());
+	char msg[255];//				0		1		2		3		4
+	snprintf(msg, 255, "SELECT item_entry,bag_page,bag_slot,count,item_guid FROM player_inventory WHERE guid = %u", sPlayer->GetGuid());
 	Result result;
 	if (sDataMgr->selectUnitDataList(msg, result))
 	{
@@ -43,7 +43,7 @@ void PlayerBag::LoadInventory()
 				std::vector<RowInfo> info = itr->second;
 				if (Slot* TempSlot = GetSlotByPageTag(info.at(1).GetInt(), info.at(2).GetInt()))
 				{
-					Item* pItem = Item::CreateItem(info.at(0).GetInt());
+					Item* pItem = Item::CreateItem(info.at(0).GetInt(), info.at(1).GetInt(), info.at(2).GetInt(), info.at(4).GetInt());
 					if (!pItem)
 						continue;
 					pItem->SetCount(info.at(3).GetInt());
@@ -185,7 +185,7 @@ void PlayerBag::InitPage()
 		InitEmptySlots(_TempPageSprite);
 		m_PlayerBagPageSprites.push_back(_TempPageSprite);
 		_TempPageSprite->setVisible(false);
-
+		_TempPageSprite->setTag((1 + i) * 10);
 		Sprite* BagPageSelector = Sprite::create(PlayerBagPageSelectorImage);
 		BagPageSelector->setPositionX(getContentSize().width * 0.15f + BagPageSelector->getBoundingBox().size.width + (i * BagPageSelector->getBoundingBox().size.width * 1.6f));
 		BagPageSelector->setPositionY(getContentSize().height * 0.915f);

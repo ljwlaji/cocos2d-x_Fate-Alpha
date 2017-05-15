@@ -164,6 +164,7 @@ enum PlayerBagPage
 	Page_Eight,
 	Page_Nine,
 	End_Of_Player_Bag_Page,
+	Page_EquipWindow = 100,
 };
 
 typedef std::map<uint32, cocos2d::Sprite*> SlotMap;
