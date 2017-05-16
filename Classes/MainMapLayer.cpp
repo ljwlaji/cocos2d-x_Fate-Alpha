@@ -296,7 +296,7 @@ void Main_Map_Layer::CreateObjects()
 		WaitFroLoadingUnitTemplate _template = m_WaitForLoadingNpcs.at(m_WaitForLoadingNpcs.size() - 1);
 		SkeletonAnimation* sk = spine::SkeletonAnimation::createWithJsonFile(_template.json, _template.atlas, _template.Scale);
 		Npc* Temp = new Npc(sk, _template.entry, _template.guid);
-		Temp->SetRealPosition(_template.pos_x, _template.pos_y);
+		Temp->SetRealPosition(Visablesize.x * _template.pos_x / 100, Visablesize.y * _template.pos_y / 100);
 		Temp->Reset();
 		sk->setAnimation(0, "idle", true);
 		m_WaitForLoadingNpcs.pop_back();
@@ -371,7 +371,7 @@ void Main_Map_Layer::update(float diff)
 	}
 	else
 	{
-		if (!sPlayer)
+		if (!sPlayer || sPlayer->IsInCombat())
 			return;
 
 		if (m_Next_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))

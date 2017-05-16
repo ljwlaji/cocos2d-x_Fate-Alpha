@@ -15,6 +15,7 @@ Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 g
 	SetLevel(_template.Level);
 	SetFaction(_template.faction);
 	SetClass((UnitClasses)_template.Class);
+	CreatureStartPoint = Vec2(_template.pos_x, _template.pos_y);
 	SetEntry(entry);
 	SetGuid(guid);
 	m_Creature_Threat_List.clear();
@@ -54,6 +55,7 @@ void Creature::EnterEvadeMode()
 		GetCastingSpell()->cancel();
 	ResetThreatList();
 	SetTarget(nullptr);
+	SetRealPosition(sMainMap->GetVisableSize().x * CreatureStartPoint.x / 100, sMainMap->GetVisableSize().y * CreatureStartPoint.y / 100);
 }
 
 void Creature::Reset()
@@ -86,6 +88,9 @@ void Creature::CombatStart(Unit* pUnit)
 	SetInCombat(true);
 	SetTarget(pUnit);
 	AddThreat(pUnit, 5.0f);
+	pUnit->SetInCombat(true);
+	if (pUnit->ToPlayer())
+		pUnit->ToPlayer()->AddUnitToPlayerCombatList(this);
 }
 
 void Creature::OnGossipHello(Player* pPlayer)
@@ -208,6 +213,13 @@ void Creature::update(float diff)
 			}
 		}
 	}
+}
+
+bool Creature::IsInThreatList(Unit* pUnit)
+{
+	if (m_Creature_Threat_List.find(pUnit) != m_Creature_Threat_List.end())
+		return true;
+	return false;
 }
 
 void Creature::AddThreat(Unit* pTarget, float Threat)

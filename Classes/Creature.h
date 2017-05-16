@@ -31,6 +31,7 @@ public:
 	ScriptAI* CreatureAI()							{ return m_script_ai; }
 	uint32 GetEntry()								{ return m_Entry; }
 	CreatureThreadList GetThreatList()				{ return m_Creature_Threat_List; }
+	bool IsInThreatList(Unit* pUnit);
 	void SetEntry(uint32 entry)						{ m_Entry = entry; }
 	void ThreatUpdate();
 	void ResetThreatList()							{ m_Creature_Threat_List.clear(); }
@@ -43,6 +44,7 @@ public:
 	void Reset();
 	void EnterEvadeMode();
 private:
+	Vec2 CreatureStartPoint;
 	void FindScript();
 	virtual void UpdateMove();
 	virtual bool LoadFromDB();

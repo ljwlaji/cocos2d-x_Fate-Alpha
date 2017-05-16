@@ -20,6 +20,7 @@ public:
 private:
 	bool IsTouchedDisPlaySprite;
 	void InitWindow();
+	void LoadEquipSlot();
 	PlayerEquipWindow();
 	~PlayerEquipWindow();
 	void OnClickedItemSlot(const uint32& _tag);

@@ -79,8 +79,6 @@ bool MainScene::init()
 		sQuestMgr;
 		addChild(sEnterGameLayer);
 
-		addChild(sPlayerTalkLayer);
-
 
 		sLoadingLayer->DisAppear();
 		addChild(sLoadingLayer);

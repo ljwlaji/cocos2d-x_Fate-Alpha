@@ -103,7 +103,10 @@ public:
 	void ReSetPlayerTarget();
 	TalkClass* PlayerTalkClass;
 	bool CanEquipItem(Item* pItem);
+	void AddUnitToPlayerCombatList(Unit* pUnit);
+	void ReMoveUnitFromPlayerCombatList(Unit* pUnit);
 private:
+	void SaveCharacterInfoToDB();
 	bool m_NeedUpdateValueNumber;
 	void LoadPlayerQuests();
 	uint32 NextLevelRequireExp;
@@ -112,6 +115,7 @@ private:
 	ActionMgr* _ActionMgr;
 	std::map<MoveKeyValue, bool> MoveKeyStatus;
 	virtual void UpdateMoveStatus();
+	void AutoUpdateCombatList();
 	float KeyVectorClearTimer;
 	PlayerSpells m_Spells;
 	uint32 m_Money;
@@ -121,6 +125,7 @@ private:
 	std::map<uint32, PlayerQuestStatus> m_QuestsStat;
 	std::map<uint32, PlayerQuestStatus>::iterator m_Questitr;
 	std::map<UnitInt32Value, uint32> m_ItemTotalValues;
+	std::list<Unit*> CombatList;
 };
 
 #endif

@@ -59,6 +59,7 @@ public:
 public:
 	Unit* SelectNearestUnit(bool SelectForTarget = true, bool CheckAlive = true);
 	void CheckMoveFall();
+	bool IsInCombatWith(Unit* pUnit);
 private:
 	std::string GetUnitActionStringForAction(ActionType _Typeid);
 	void DoAction(ActionType _action);
@@ -98,7 +99,7 @@ public:
 	void SetCastingSpell(Spell* pSpell)						{ m_Castting_Spell = pSpell; }
 	void SetTypeId(TypeID _var)								{ m_TypeId = _var; }
 	void SetFaction(uint32 faction)							{ SetUnitInt32Value(Faction, faction); }
-	void SetInCombat(bool _var)								{ m_IsInCombat = _var; }
+	void SetInCombat(bool _var);
 	void SetLevel(uint8 _var)								{ SetUnitInt32Value(UnitValue_Level, _var); }
 	void SetName(std::string _var)							{ m_Name = _var; }
 	void SetClass(UnitClasses _var)							{ m_Class = _var; }

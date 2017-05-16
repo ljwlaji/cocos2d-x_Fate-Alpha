@@ -79,6 +79,12 @@ std::string Unit::GetUnitActionStringForAction(ActionType _Typeid)
 	return returnstring;
 }
 
+bool Unit::IsInCombatWith(Unit* pUnit)
+{
+	if (ToCreature() && ToCreature()->IsAlive() && ToCreature()->IsInThreatList(pUnit))
+		return true;
+}
+
 void Unit::JustDead(Unit* pKiller)
 {
 	m_DeathStatus = Dead;
@@ -98,7 +104,7 @@ void Unit::JustDead(Unit* pKiller)
 
 void Unit::DealSpellDamage(Unit* pTarget, SpellEffectType type, int32& damage)
 {
-	if (pTarget->ToCreature())
+	if (pTarget->ToCreature() && !pTarget->IsInCombatWith(this))
 		pTarget->ToCreature()->CombatStart(this);
 	damage += ToPlayer() ? ToPlayer()->GetPlayerTotalInt32Value(Base_Att) + ToPlayer()->GetItemTotalAttack() : GetUnitInt32Value(Base_Att);
 	damage -= pTarget->GetUnitInt32Value(Base_Def);
@@ -308,6 +314,13 @@ bool Unit::IsInAttackRange(Unit* pTarget)
 	if (abs(getPositionX() - pTarget->getPositionX()) < 100 && abs(getPositionY() - pTarget->getPositionY()) < sMainMap->GetVisableSize().y * 0.02f)
 		return true;
 	return false;
+}
+
+void Unit::SetInCombat(bool _var)
+{
+	if (ToPlayer())
+		sNotifyMgr->ShowNotify(_var ? "Combat Start!" : "Combat Ended!");
+	m_IsInCombat = _var; 
 }
 
 void Unit::CheckMoveFall()

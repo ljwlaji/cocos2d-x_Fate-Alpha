@@ -14,6 +14,7 @@
 #include "DeadTalkClass.h"
 #include "PlayerBag.h"
 #include "TopBar.h"
+#include "PlayerTalkLayer.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -140,6 +141,8 @@ bool PlayerUILayer::init()
 		InitUI();
 		InitButtomMenu();
 		InitButtomSpellBar();
+
+		addChild(sPlayerTalkLayer);
 
 		sRocker->setPosition(sRocker->getBoundingBox().size.width / 2, sRocker->getBoundingBox().size.height / 2);
 		addChild(sRocker);

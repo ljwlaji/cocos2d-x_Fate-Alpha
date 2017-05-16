@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "NotifyMgr.h"
 #include "PlayerBag.h"
+#include "DataMgr.h"
+#include "Item.h"
 
 static PlayerEquipWindow* _PlayerEquipWindow = nullptr;
 static PlayerEuqipValueWindow* _PlayerEuqipValueWindow = nullptr;
@@ -57,6 +59,34 @@ void PlayerEquipWindow::InitWindow()
 	addChild(m_Character_Name_Frame);
 }
 
+void PlayerEquipWindow::LoadEquipSlot()
+{
+	Result _res;
+	char msg[255];//				0		1			2	  3		  4
+	snprintf(msg, 255, "SELECT item_entry,bag_page,bag_slot,count,item_guid FROM player_inventory WHERE guid = %u AND bag_page == 100", sPlayer->GetGuid());
+	if (sDataMgr->selectUnitDataList(msg, _res))
+	{
+		if (!_res.empty())
+		{
+			for (Result::iterator itr = _res.begin(); itr != _res.end(); itr++)
+			{
+				std::vector<RowInfo> info = itr->second;
+				if (Slot* TempSlot = (Slot*)getChildByTag(info.at(2).GetInt()))
+				{
+					Item* pItem = Item::CreateItem(info.at(0).GetInt(), info.at(1).GetInt(), info.at(2).GetInt(), info.at(4).GetInt());
+					if (!pItem)
+						continue;
+					pItem->SetCount(info.at(3).GetInt());
+					TempSlot->SetItem(pItem);
+				}
+			}
+		}
+	}
+	else
+	{
+		log("Load Template Error From PlayerEquipWindow::LoadEquipSlot() Template name = player_inventory");
+	}
+}
 
 bool PlayerEquipWindow::OnUITouchBegin(Touch* touches)
 {
@@ -171,7 +201,10 @@ PlayerEquipWindow::~PlayerEquipWindow()
 PlayerEquipWindow* PlayerEquipWindow::GetInstance()
 {
 	if (!_PlayerEquipWindow)
+	{
 		_PlayerEquipWindow = new PlayerEquipWindow();
+		_PlayerEquipWindow->LoadEquipSlot();
+	}
 	return _PlayerEquipWindow;
 }
 

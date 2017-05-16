@@ -13,6 +13,7 @@
 #include "Item.h"
 #include "NotifyMgr.h"
 #include "DeadTalkClass.h"
+#include "Creature.h"
 
 static Player* _player = nullptr;
 
@@ -41,6 +42,7 @@ Player::Player(SkeletonAnimation* _SkeletonAnimation, CharacterEnumInfo& _info) 
 	PlayerTalkClass = new TalkClass();
 	PlayerTalkClass->ClearMenu();
 	LoadPlayerQuests();
+	CombatList.clear();
 	scheduleUpdate();
 }
 
@@ -63,6 +65,52 @@ Player* Player::GetInstance()
 		return nullptr;
 
 	return _player;
+}
+
+void Player::AddUnitToPlayerCombatList(Unit* pUnit)
+{
+	CombatList.push_back(pUnit);
+}
+
+void Player::ReMoveUnitFromPlayerCombatList(Unit* pUnit)
+{
+	for (std::list<Unit*>::iterator itr = CombatList.begin(); itr != CombatList.end(); itr++)
+	{
+		if (*itr == pUnit)
+			CombatList.erase(itr);
+	}
+}
+
+void Player::AutoUpdateCombatList()
+{
+	if (!IsInCombat())
+		return;
+
+	std::list<Unit*> RemoveList;
+	for (std::list<Unit*>::iterator itr = CombatList.begin(); itr != CombatList.end(); ++itr)
+	{
+		if (Creature* TempChecking = (*itr)->ToCreature())
+		{
+			if (!TempChecking->IsInCombatWith(this) && !TempChecking->IsAlive())
+				RemoveList.push_back(*itr);
+		}
+		else RemoveList.push_back(*itr);
+	}
+
+	while (RemoveList.size())
+	{
+		for (std::list<Unit*>::iterator itr = CombatList.begin(); itr != CombatList.end(); ++itr)
+		{
+			if (*itr == *RemoveList.begin())
+			{
+				CombatList.erase(itr);
+				RemoveList.pop_front();
+				break;
+			}
+		}
+	}
+	if (CombatList.empty())
+		SetInCombat(false);
 }
 
 void Player::Revive()
@@ -181,6 +229,13 @@ void Player::SaveQuestStatusInfoToDB()
 		snprintf(msg, 255, "UPDATE player_quest_status SET count_1 = %d,count_2 = %d, count_3 = %d, count_4 = %d WHERE quest_id = %d AND guid = %d", m_Questitr->second.FinishCount.at(0), m_Questitr->second.FinishCount.at(1), m_Questitr->second.FinishCount.at(2), m_Questitr->second.FinishCount.at(3), m_Questitr->first, sPlayer->GetGuid());
 		sDataMgr->PExcute(msg);
 	}
+}
+
+void Player::SaveCharacterInfoToDB()
+{
+	char msg[255];
+	snprintf(msg, 255, "UPDATE characters SET Money = %d, Exp = %d, Level = %d, Mapid = %d, Pos_X = %f, Pos_Y = %f WHERE guid = %d", GetMoney(), GetExp(), GetLevel(), GetMapid(), getPositionX(), getPositionY(), GetGuid());
+	sDataMgr->PExcute(msg);
 }
 
 void Player::CalcItemValues()
@@ -446,7 +501,8 @@ void Player::update(float diff)
 	if (GetCastingSpell())
 		GetCastingSpell()->update(diff);
 	UpdateMoveStatus();
-
+	if (IsInCombat())
+		AutoUpdateCombatList();
 	//Clear Key
 	if (KeyVectorClearTimer <= diff)
 	{
@@ -560,4 +616,5 @@ bool Player::LoadFromDB()
 void Player::SaveToDB()
 {
 	SaveQuestStatusInfoToDB();
+	SaveCharacterInfoToDB();
 }

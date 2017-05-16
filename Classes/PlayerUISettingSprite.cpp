@@ -2,6 +2,7 @@
 #include "PlayerUILayer.h"
 #include "HelloWorldScene.h"
 #include "MainMapLayer.h"
+#include "NotifyMgr.h"
 
 static SettingMenu* _SettingMenu = nullptr;
 
@@ -87,6 +88,11 @@ void SettingMenu::OnUITouchEnded(Touch* pTouch)
 			exit(0);
 			break;
 		case TAG_LOG_OUT:
+			if (sPlayer->IsInCombat())
+			{
+				sNotifyMgr->ShowNotify("Can Not Log Out While In Comabat!");
+				return;
+			}
 			Director::getInstance()->resume();
 			sPlayer->removeFromParentAndCleanup(true);
 			sPlayerUi->removeFromParentAndCleanup(true);
