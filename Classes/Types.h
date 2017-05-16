@@ -35,6 +35,15 @@ class Unit;
 typedef std::map<Unit*, float> CreatureThreadList;
 typedef std::map<uint32, uint32> ItemValueInfo;
 
+
+struct SingleLootInfo
+{
+	uint32 ItemID = 0;
+	uint32 Refance = 0;
+	uint32 MaxCount = 0;
+	uint32 MinCount = 0;
+};
+
 struct SingleMapInfo
 {
 	std::string BackGroundMusicUrl;
@@ -89,6 +98,8 @@ enum PlayerUITouchType
 	PlayerUITouch_DeathTalkClass,
 	PlayerUITouch_DeathSign,
 	PlayerUITouch_TopBar,
+	PlayerUITouch_LootingSprite,
+	PlayerUITouch_ItemDetailSprite,
 };
 
 enum UnitClasses
@@ -361,6 +372,18 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define DeadTalkClassCancelButton				"Player_UI_Dead_Button_No.png"
 
 
+#define PlayerUILootingFrame					"Player_UI_Loot_Frame.png"
+#define PlayerUILootingCloseButton				"Player_UI_Loot_Close_Button.png"
+#define PlayerUILootingSingleIconFrame			"Player_UI_Loot_Icon_Frame.png"
+#define PlayerUILootingSingleFrame				"Player_UI_Loot_Single_Loot_Frame.png"
+#define PlayerUILootingScoreBarFrame			"Player_UI_Loot_Scroll_Frame.png"
+#define PlayerUILootingScoreBarController		"Player_UI_Loot_Scroll_Controller.png"
+#define PlayerUILootingScoreBarUpButton			"Player_UI_Loot_Scroll_Top_Button.png"
+#define PlayerUILootingScoreBarButtomButton		"Player_UI_Loot_Scroll_Buttom_Button.png"
+
+#define PlayerUIItemDetailFrameTop						"Player_UI_Item_Detail_Frame_Top.png"
+#define PlayerUIItemDetailFrameButtom					"Player_UI_Item_Detail_Frame_Buttom.png"
+#define PlayerUIItemDetailFrameMiddle					"Player_UI_Item_Detail_Frame_Middle.png"
 enum SettingButtonTag
 {
 	TAG_RESUME_GAME = 1,

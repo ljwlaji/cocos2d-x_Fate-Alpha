@@ -8,7 +8,7 @@
 #include "NotifyMgr.h"
 #include "HelloWorldScene.h"
 #include "PlayerUILayer.h"
-
+#include "LootingSprite.h"
 Main_Map_Layer* _Main_Map_Layer = nullptr;
 
 Main_Map_Layer::Main_Map_Layer(int MapId)
@@ -100,7 +100,12 @@ void Main_Map_Layer::onTouchEnded(Touch *touch, Event *unused_event)
 	case Touch_Monster:
 		if (Monster* pMonster = (Monster*)m_TouchedSprite)
 		{
-			sPlayer->SetPlayerTarget(pMonster);
+			if (pMonster->IsAlive())
+				sPlayer->SetPlayerTarget(pMonster);
+			else if (pMonster->GetLoot())
+				sLootingSprite->ResetWithLoot(pMonster->GetLoot());
+			else
+				sNotifyMgr->ShowNotify("This Unit Is Dead Without A Loot.");
 			//pMonster->OnGossipHello(sPlayer);
 		}
 		break;
@@ -121,6 +126,7 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 	if (!FirstLoad)
 	{
 		sPlayer->ReSetPlayerTarget();
+		sPlayer->ResetCombatList();
 		stopAllActions();
 		if (sPlayer && sPlayer->getParent())
 		{
@@ -141,6 +147,7 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 		sPlayerUi->setLocalZOrder(UI_LAYER_ZORDER);
 		sGame->addChild(sPlayerUi);
 	}
+	sPlayer->SetMapid(m_Mapid);
 	ClearVectors();
 	FillLoadVectors(insteadid);
 	scheduleUpdate();
@@ -371,9 +378,14 @@ void Main_Map_Layer::update(float diff)
 	}
 	else
 	{
-		if (!sPlayer || sPlayer->IsInCombat())
+		if (!sPlayer)
 			return;
 
+		if (sPlayer->IsInCombat())
+		{
+			sNotifyMgr->ShowNotify("Can Not Swap Map While In Combat!");
+			return;
+		}
 		if (m_Next_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))
 			SwapMap(m_Mapid + 1, false);
 		else if (m_Older_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))

@@ -17,7 +17,7 @@ struct UnitMover
 	UnitSide Side;
 	float MoveDelay;
 };
-
+class Loot;
 class Creature : public Unit
 {
 public:
@@ -32,6 +32,8 @@ public:
 	uint32 GetEntry()								{ return m_Entry; }
 	CreatureThreadList GetThreatList()				{ return m_Creature_Threat_List; }
 	bool IsInThreatList(Unit* pUnit);
+	void SetLoot(Loot* pLoot)						{ m_Loot = pLoot; }
+	Loot* GetLoot()									{ return m_Loot; }
 	void SetEntry(uint32 entry)						{ m_Entry = entry; }
 	void ThreatUpdate();
 	void ResetThreatList()							{ m_Creature_Threat_List.clear(); }
@@ -57,6 +59,7 @@ private:
 	UnitMover* m_UnitMover;
 
 	uint32 m_Entry;
+	Loot* m_Loot;
 };
 
 #endif

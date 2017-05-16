@@ -5,6 +5,7 @@
 #include "PlayerBag.h"
 #include "DataMgr.h"
 #include "Item.h"
+#include "ItemDetailSprite.h"
 
 static PlayerEquipWindow* _PlayerEquipWindow = nullptr;
 static PlayerEuqipValueWindow* _PlayerEuqipValueWindow = nullptr;
@@ -80,6 +81,7 @@ void PlayerEquipWindow::LoadEquipSlot()
 					TempSlot->SetItem(pItem);
 				}
 			}
+			sPlayer->CalcItemValues();
 		}
 	}
 	else
@@ -99,7 +101,10 @@ bool PlayerEquipWindow::OnUITouchBegin(Touch* touches)
 		{
 			m_TouchedSprite = (Sprite*)(*itr);
 			if (m_TouchedSprite->getTag() >= SLOT_WEAPON && m_TouchedSprite->getTag() < SLOT_END)
+			{
 				m_Start_Move_Position = touches->getLocation();
+				sItemDetailSprite->ShowWithItem(((Slot*)m_TouchedSprite)->GetItem());
+			}
 			return true;
 		}
 	}

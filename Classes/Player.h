@@ -57,6 +57,7 @@ public:
 	~Player();
 
 	static Player* GetInstance();
+	bool IsUnitInCombatList(Unit* pUnit);
 	void JustDead();
 	void Revive();
 	bool CreatePlayer();
@@ -82,7 +83,7 @@ public:
 	void AddExp(uint32& Exp);
 	void LevelUp();
 	uint32 GetPlayerTotalInt32Value(UnitInt32Value _val);
-	void SendUpdateValueRequire()												{ m_NeedUpdateValueNumber = true; }
+	uint16 GetEmptyBagSlot();
 	ActionType GetDoingAction()													{ return m_Action; }
 	ActionMgr* PlayerActionMgr()												{ return _ActionMgr; }
 	uint32 GetMoney()															{ return m_Money; }
@@ -92,6 +93,7 @@ public:
 	Unit* GetPlayerTarget()														{ return m_Player_Target; }
 	std::map<uint32, PlayerQuestStatus>& GetQuests()							{ return m_QuestsStat; }
 	uint32 GetNextLevelRequireExp()												{ return NextLevelRequireExp; }
+	void ResetCombatList()														{ CombatList.clear(); }
 	void SetNextLevelRequireExp(uint32 _val)									{ NextLevelRequireExp = _val; }
 	void SetMapid(uint32 _var)													{ m_Mapid = _var; }
 	void SetExp(uint32 _var)													{ m_Exp = _var; }
@@ -99,6 +101,7 @@ public:
 	void ResetKeyTimer()														{ KeyVectorClearTimer = Base_Clear_Key_Time; }
 	virtual void DestorySelf()													{ removeFromParentAndCleanup(true); }
 	void SetMoney(uint32 _var)													{ m_Money = _var; }
+	void SendUpdateValueRequire()												{ m_NeedUpdateValueNumber = true; }
 	void SetPlayerTarget(Unit* pUnit);
 	void ReSetPlayerTarget();
 	TalkClass* PlayerTalkClass;

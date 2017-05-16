@@ -60,6 +60,8 @@ public:
 	Unit* SelectNearestUnit(bool SelectForTarget = true, bool CheckAlive = true);
 	void CheckMoveFall();
 	bool IsInCombatWith(Unit* pUnit);
+	void DealSpellDamage(Unit* pTarget, SpellEffectType type, int32& damage);
+	void JustDead(Unit* pKiller);
 private:
 	std::string GetUnitActionStringForAction(ActionType _Typeid);
 	void DoAction(ActionType _action);
@@ -112,8 +114,6 @@ public:
 	bool IsInAttackRange(Unit* pTarget);
 	UnitSide CheckSideForUnit(const Vec2& Loc);
 	virtual void DestorySelf() = 0;
-	void DealSpellDamage(Unit* pTarget, SpellEffectType type, int32& damage);
-	void JustDead(Unit* pKiller);
 private:
 	SkeletonAnimation* m_UnitVision;
 	Facing m_Facing;

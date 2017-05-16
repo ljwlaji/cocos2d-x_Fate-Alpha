@@ -6,6 +6,8 @@
 #include "NotifyMgr.h"
 #include "Spell.h"
 #include "Creature.h"
+#include "Loot.h"
+#include "LootingSprite.h"
 
 Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 {
@@ -83,6 +85,9 @@ bool Unit::IsInCombatWith(Unit* pUnit)
 {
 	if (ToCreature() && ToCreature()->IsAlive() && ToCreature()->IsInThreatList(pUnit))
 		return true;
+	else if (ToPlayer() && ToPlayer()->IsUnitInCombatList(pUnit))
+		return true;
+	return false;
 }
 
 void Unit::JustDead(Unit* pKiller)
@@ -96,6 +101,7 @@ void Unit::JustDead(Unit* pKiller)
 
 	if (ToCreature() && pKiller->ToPlayer())
 	{
+		Loot* TempLoot = Loot::CreateLoot(ToCreature());
 		Player* pPlayer = pKiller->ToPlayer();
 		uint32 exp = GetLevel() * 10;
 		pPlayer->AddExp(exp);

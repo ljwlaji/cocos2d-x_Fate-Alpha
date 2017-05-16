@@ -38,7 +38,7 @@ void Monster::InitProccessBar()
 	HpProccessBar->setPosition(getContentSize().width / 2, 0 - HpProccessBar->getBoundingBox().size.height * 2);
 	addChild(HpProccessBar);
 
-	CastingProccessBar = ProgressTimer::create(Sprite::create(MonsterHpProccessBar));
+	CastingProccessBar = ProgressTimer::create(Sprite::create(MonsterCastingProccessBar));
 	CastingProccessBar->setAnchorPoint(Vec2(0.5f, 0.5f));
 	CastingProccessBar->setPercentage(0);
 	CastingProccessBar->setBarChangeRate(Vec2(1, 0));
@@ -68,14 +68,15 @@ void Monster::UpdatePorccessBar()
 	}
 
 
-	CastingProccessBar->setVisible(GetCastingSpell() ? true : false);
-	if (GetCastingSpell())
+	if (Spell* pSpell = GetCastingSpell())
 	{
-		float CurrentCssting = GetCastingSpell()->GetSpellCurrentTimeLeft();
-		float MaxCasting = GetCastingSpell()->GetSpellTotalCastTime();
-		float CurrPercent = CurrentCssting / MaxCasting * 100.0f;
-		float PercentNow = CastingProccessBar->getPercentage();
-		if (abs(PercentNow - CurrPercent > 1))
-			CastingProccessBar->setPercentage(CurrPercent > PercentNow ? ++PercentNow : --PercentNow);
+		if (!CastingProccessBar->isVisible())
+			CastingProccessBar->setVisible(CastingProccessBar->isVisible() ? false : true);
+		float TotalTime = pSpell->GetSpellTotalCastTime();
+		float TimeLeft = pSpell->GetSpellCurrentTimeLeft();
+		float Proccess = (TotalTime - TimeLeft) / TotalTime;
+		CastingProccessBar->setPercentage(Proccess * 100.0f);
 	}
+	else if (CastingProccessBar->isVisible())
+		CastingProccessBar->setVisible(CastingProccessBar->isVisible() ? false : true);
 }

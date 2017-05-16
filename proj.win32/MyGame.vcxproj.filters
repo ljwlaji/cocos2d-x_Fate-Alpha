@@ -109,6 +109,18 @@
     <Filter Include="src\Layers\PlayerUILayer\TopBar">
       <UniqueIdentifier>{6ecb93f2-8a7d-479d-9d03-bddfad7078b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Loot">
+      <UniqueIdentifier>{90e2c197-0ffc-46f5-8d08-d0683dce6f6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Loot\LootMgr">
+      <UniqueIdentifier>{0ac3e9ca-8ef2-44f8-aa2a-e6f01af4e46f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\LootingSprite">
+      <UniqueIdentifier>{8191c20f-c632-4652-a90b-387f771f6aba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\ItemDetailSprite">
+      <UniqueIdentifier>{f84c0e0b-ef91-45ac-9e27-13de787cfb52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -234,6 +246,18 @@
     <ClCompile Include="..\Classes\TopBar.cpp">
       <Filter>src\Layers\PlayerUILayer\TopBar</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Loot.cpp">
+      <Filter>src\Loot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LootMgr.cpp">
+      <Filter>src\Loot\LootMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LootingSprite.cpp">
+      <Filter>src\Layers\PlayerUILayer\LootingSprite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ItemDetailSprite.cpp">
+      <Filter>src\Layers\PlayerUILayer\ItemDetailSprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -355,6 +379,18 @@
     </ClInclude>
     <ClInclude Include="..\Classes\TopBar.h">
       <Filter>src\Layers\PlayerUILayer\TopBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Loot.h">
+      <Filter>src\Loot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LootMgr.h">
+      <Filter>src\Loot\LootMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LootingSprite.h">
+      <Filter>src\Layers\PlayerUILayer\LootingSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ItemDetailSprite.h">
+      <Filter>src\Layers\PlayerUILayer\ItemDetailSprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

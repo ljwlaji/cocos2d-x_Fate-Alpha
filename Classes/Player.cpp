@@ -14,6 +14,7 @@
 #include "NotifyMgr.h"
 #include "DeadTalkClass.h"
 #include "Creature.h"
+#include "PlayerBag.h"
 
 static Player* _player = nullptr;
 
@@ -70,6 +71,14 @@ Player* Player::GetInstance()
 void Player::AddUnitToPlayerCombatList(Unit* pUnit)
 {
 	CombatList.push_back(pUnit);
+}
+
+bool Player::IsUnitInCombatList(Unit* pUnit)
+{
+	for (std::list<Unit*>::iterator itr = CombatList.begin(); itr != CombatList.end(); itr++)
+		if (*itr == pUnit)
+			return true;
+	return false;
 }
 
 void Player::ReMoveUnitFromPlayerCombatList(Unit* pUnit)
@@ -514,6 +523,7 @@ void Player::update(float diff)
 
 	if (m_NeedUpdateValueNumber)
 	{
+		CalcItemValues();
 		sPlayerUi->ResetAllUIValuesNumber();
 		m_NeedUpdateValueNumber = false;
 	}
@@ -617,4 +627,9 @@ void Player::SaveToDB()
 {
 	SaveQuestStatusInfoToDB();
 	SaveCharacterInfoToDB();
+}
+
+uint16 Player::GetEmptyBagSlot()
+{
+	return sPlayerBag->GetEmptySlot();
 }

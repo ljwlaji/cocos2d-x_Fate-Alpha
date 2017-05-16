@@ -15,6 +15,8 @@
 #include "PlayerBag.h"
 #include "TopBar.h"
 #include "PlayerTalkLayer.h"
+#include "LootingSprite.h"
+#include "ItemDetailSprite.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -175,7 +177,15 @@ bool PlayerUILayer::init()
 		addChild(sDeadTalkClass);
 		UISpriteList.push_back(sDeadTalkClass);
 
+		sItemDetailSprite->setPosition(visiablesize.x / 2, visiablesize.y / 2);
+		addChild(sItemDetailSprite);
+		UISpriteList.push_back(sItemDetailSprite);
+
 		addChild(sTopBar);
+
+		sLootingSprite->setPosition(visiablesize.x / 2, visiablesize.y / 2);
+		addChild(sLootingSprite);
+		UISpriteList.push_back(sLootingSprite);
 
 		DeadSign = Sprite::create("Dead_Sign.png");
 		DeadSign->SetRealPosition(visiablesize.x - DeadSign->getBoundingBox().size.width / 2, visiablesize.y * 0.7f);
@@ -527,6 +537,12 @@ void PlayerUILayer::onTouchMoved(const std::vector<Touch*>& touchesVector, Event
 			case PlayerUITouch_Equip_Window:
 				sPlayerEquip->OnUITouchMoved(touches);
 				return;
+			case PlayerUITouch_LootingSprite:
+				sLootingSprite->OnUITouchMoved(touches);
+				return;
+			case PlayerUITouch_ItemDetailSprite:
+				sItemDetailSprite->OnUITouchMoved(touches);
+				return;
 			}
 		}
 	}
@@ -583,6 +599,9 @@ void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event
 				case PlayerUITouch_DeathSign:
 					sDeadTalkClass->Show();
 					DeadSign->setVisible(false);
+					break;
+				case PlayerUITouch_LootingSprite:
+					sLootingSprite->OnUITouchEnded(touches);
 					break;
 			}
 		}

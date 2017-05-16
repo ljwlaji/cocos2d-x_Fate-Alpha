@@ -12,7 +12,9 @@ class Item
 public:
 	//Create
 	//Return Nullptr If Failed To Find Template
-	static Item* CreateItem(const uint32& ItemEntry, const uint32& Page, const uint32& Slot,const uint32& ItemGuid = 0/*Set To 0 If Is New Loot*/);
+	//Set Guid To 0 If Is New Loot*/
+	static Item* CreateItem(const uint32& ItemEntry, const uint32& Page, const uint32& Slot,const uint32& ItemGuid = 0);
+	static uint32 CreateNewItemGuid();
 	void SaveToDB();
 	void DeleteFromDB();
 	void SetSlot(const uint32& Page, const uint32& Slot);
@@ -26,7 +28,6 @@ public:
 private:
 	void InsertToDB();
 	void SetGuid(const uint32& guid)						{ m_Guid = guid; }
-	uint32 CreateNewItemGuid();
 	Item(const ItemTemplate* pTemplate);
 	std::string m_Icon_Url;
 	uint8 m_ItemCount;

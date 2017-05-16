@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Item.h"
 #include "PlayerEquipWindow.h"
+#include "ItemDetailSprite.h"
 
 static PlayerBag* _PlayerBag = nullptr;
 
@@ -114,6 +115,7 @@ bool PlayerBag::OnUITouchBegin(Touch* touches)
 					m_BagTouchType = Bag_Type_SeleItem;
 					m_Start_Move_Position = touches->getLocation();
 					TouchedSprite = TempSlot;
+					sItemDetailSprite->ShowWithItem(TempSlot->GetItem());
 					return true;
 				}
 			}
@@ -171,6 +173,26 @@ void PlayerBag::OnUITouchEnded(Touch* touches)
 bool PlayerBag::SwapItem(Slot* slot_one, Slot* slot_two)
 {
 	return true;
+}
+
+uint16 PlayerBag::GetEmptySlot()
+{
+	for (int i = Page_One; i != End_Of_Player_Bag_Page; i++)
+	{
+		int tag = (1 + i) * 10;
+		if (Sprite* _TempPageSprite = (Sprite*)getChildByTag(tag))
+		{
+			for (int k = 1; k != SingleSlotTagEnded; k++)
+			{
+				if (Slot* TempSlot = (Slot*)_TempPageSprite->getChildByTag(k))
+				{
+					if (!TempSlot->GetItem())
+						return (i * 100 + TempSlot->getTag());
+				}
+			}
+		}
+	}
+	return false;
 }
 
 void PlayerBag::InitPage()

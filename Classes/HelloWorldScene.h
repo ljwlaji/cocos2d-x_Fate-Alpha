@@ -40,6 +40,8 @@ public:
 	bool IsQuestGiver(const uint32& Creatureid);
 	const std::list<uint32>* GetCreatureQuests(uint32 creatureid);
 	uint32 FindNearestReviveMap(uint32 CurrentMapid);
+	std::string GetClassNameByClassID(UnitClasses _var);
+	std::string GetUnitValueNameByID(UnitInt32Value _val);
 	ClassInfo GetUnitClassInfo(UnitClasses _car)	{ ClassInfo _ClassInfo; if (m_UnitClasses_Class_Info.find(_car) != m_UnitClasses_Class_Info.end()) _ClassInfo = m_UnitClasses_Class_Info[_car]; return _ClassInfo; }
 	void SetCanPlaySound(bool var)					{ CanPlaySound = var; }
 	void SetKeyBoardEnable(bool _var)				{ KeyBoardListener->setEnabled(_var); }

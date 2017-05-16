@@ -154,7 +154,11 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\EnterGameLayer.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\Item.cpp" />
+    <ClCompile Include="..\Classes\ItemDetailSprite.cpp" />
     <ClCompile Include="..\Classes\LoadingUILayer.cpp" />
+    <ClCompile Include="..\Classes\Loot.cpp" />
+    <ClCompile Include="..\Classes\LootingSprite.cpp" />
+    <ClCompile Include="..\Classes\LootMgr.cpp" />
     <ClCompile Include="..\Classes\MainMapLayer.cpp" />
     <ClCompile Include="..\Classes\Monster.cpp" />
     <ClCompile Include="..\Classes\MovementMgr.cpp" />
@@ -197,7 +201,11 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\EnterGameLayer.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\Item.h" />
+    <ClInclude Include="..\Classes\ItemDetailSprite.h" />
     <ClInclude Include="..\Classes\LoadingUILayer.h" />
+    <ClInclude Include="..\Classes\Loot.h" />
+    <ClInclude Include="..\Classes\LootingSprite.h" />
+    <ClInclude Include="..\Classes\LootMgr.h" />
     <ClInclude Include="..\Classes\MainMapLayer.h" />
     <ClInclude Include="..\Classes\Monster.h" />
     <ClInclude Include="..\Classes\MovementMgr.h" />

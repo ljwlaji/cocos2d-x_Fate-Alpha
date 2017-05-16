@@ -12,6 +12,7 @@
 #include "PlayerTalkLayer.h"
 #include "SpellMgr.h"
 #include "QuestMgr.h"
+#include "LootMgr.h"
 #ifdef __APPLE__
 #include "spine/spine.h"
 #include "cocos/editor-support/spine/SkeletonAnimation.h"
@@ -77,6 +78,7 @@ bool MainScene::init()
 		LoadQuestGiver();
 		LoadExpPerLevelTemplate();
 		sQuestMgr;
+		sLootMgr;
 		addChild(sEnterGameLayer);
 
 
@@ -169,6 +171,39 @@ void MainScene::LoadMapInfo()
 	{
 		//Do Sth;
 	}
+}
+
+std::string MainScene::GetClassNameByClassID(UnitClasses _var)
+{
+	std::string Name = "Unknow";
+	switch (_var)
+	{
+	case Saber:		Name = "Saber";		break;
+	case Archer:	Name = "Archer";	break;
+	case Caster:	Name = "Caster";	break;
+	case Lancer:	Name = "Lancer";	break;
+	case Assasin:	Name = "Assasin";	break;
+	case Rider:		Name = "Rider";		break;
+	case Avenger:	Name = "Avenger";	break;
+	case Berserker:	Name = "Berserker";	break;
+	}
+	return Name;
+}
+
+std::string MainScene::GetUnitValueNameByID(UnitInt32Value _val)
+{
+	std::string Name = "UnKnow";
+	switch (_val)
+	{
+	case Max_HP:			Name = "Heath";		break;
+	case Max_Mana:			Name = "Mana";		break;
+	case Base_Def:			Name = "Defance";	break;
+	case Base_Str:			Name = "Strength";	break;
+	case Base_Dex:			Name = "Agile";		break;
+	case Base_Int:			Name = "Int";		break;
+	case Base_Att:			Name = "Attack";	break;
+	}
+	return Name;
 }
 
 uint32 MainScene::FindNearestReviveMap(uint32 CurrentMapid)

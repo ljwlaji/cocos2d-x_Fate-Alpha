@@ -123,6 +123,8 @@ void LoadingUILayer::update(float diff)
 	if (p_now >= 100.0f)
 	{
 		DisAppear();
+		if (sPlayer)
+			sPlayer->SendUpdateValueRequire();
 		return;
 	}
 	float change	= (float)m_TimeBarPrescent - p_now;

@@ -13,6 +13,7 @@ public:
 	virtual bool OnUITouchBegin(Touch* pTouch);
 	virtual void OnUITouchMoved(Touch* pTouch);
 	virtual void OnUITouchEnded(Touch* pTouch);
+	uint16 GetEmptySlot();
 	void SwapVisiable()			{ isVisible() ? setVisible(false) : setVisible(true); }
 	Slot* GetSlotByTouch(Touch* touches);
 	Slot* GetSlotByPageTag(const uint8& Page, const uint8& SlotTag);

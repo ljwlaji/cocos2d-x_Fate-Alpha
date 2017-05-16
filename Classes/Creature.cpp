@@ -6,11 +6,12 @@
 #include "HelloWorldScene.h"
 #include "PlayerTalkLayer.h"
 #include "Spell.h"
-
+#include "Loot.h"
 Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid) : Unit(_SkeletonAnimation, entry, guid)
 {
 	m_script_ai = nullptr;
 	m_UnitMover = nullptr;
+	m_Loot = nullptr;
 	WaitFroLoadingUnitTemplate _template = sMainMap->GetCreatureTemplate(guid);
 	SetLevel(_template.Level);
 	SetFaction(_template.faction);
@@ -39,6 +40,9 @@ Creature::~Creature()
 
 	if (m_UnitMover)
 		delete m_UnitMover;
+
+	if (m_Loot)
+		m_Loot->DeleteLootIfNeed(true);
 
 	removeAllChildrenWithCleanup(true);
 	removeFromParentAndCleanup(true);
