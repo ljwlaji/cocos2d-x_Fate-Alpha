@@ -7,6 +7,8 @@
 	* Also there are many other aspects that need to be done and are considered equally important.
 	* Anyone who wants to do stuff is very welcome to do so!
 
+----
+
 # 欢迎来到PlayFun-FateAlpha(ARPG)
 # 这是一个持续开发,并且功能健全的完全开源跨平台游戏项目(iOS/Android/Win32等)
 
@@ -18,52 +20,63 @@
 	* 此外,项目本身需要完善的地方还有很多.希望大家能一起合作开发
 	* 欢迎任何喜欢,或者有志与共同开发,探讨的朋友一起加入！
 
+----
 
+# Project Updated In Coding And GitHub
 # 项目将在coding和github开放源码:
 1. Coding开源地址:https://coding.net/u/ljwlaji/p/PlayFun-FateAlpha
-2. GitHub开源地址:待上传
+2. GitHub开源地址:https://github.com/ljwlaji/cocos2d-x_Fate-Alpha
+
+----
 
 # 开发文档:
-1.	OverView(概述)
-2.	Install(安装)
-	1.	Windows
-		1.	下载Cocos2d-x
-		2.	安装
-		3.	配置环境
-		4.	导入项目
-	2.	Mac OS
-3.	DataBase(数据库)
-	1.	玩家类(热修改)
-	2.	世界类(纯读取)
-4.	Classes(类)
-	1.	Manager
-		1.	NotifyMgr(消息提示)
-		2.	QuestMgr(任务)
-		3.	SpellMgr(技能)
-		4.	DataMgr(数据)
-		5.	ScriptMgr(脚本)
-		6.	MovementMgr(移动)
-	2.	Layers
-		1.	ChoseCharacterLayer(选择角色)
-		2.	CreateCharacterLayer(创建角色)
-		3.	EnterGameLayer(进入游戏)
-		4.	LoadingUILayer(读取界面)
-		5.	MapLayer(地图)
-		6.	PlayerUILayer(玩家界面)
-			1.	PlayerUILayer
-			2.	UISprite
-			3.	VirtualRocker
-			4.	TopBar
-			5.	SpellBook
-			6.	SettingSprite
-			7.	QuestBook
-			8.	PlayerTalkLayer
-			9.	PlayerEquip
-			10.	PlayerBag
-			11.	NpcVendorSprite
-			12.	LootingSprite
-			13.	ItemDetailSprite
-			14.	DeadTalkClass
-		7.	TypingLayer(*输入)
+* OverView(概述)
+* Install(安装)
+	* Windows
+		* DownLoad [**Cocos2d-x**](https://github.com/cocos2d/cocos2d-x)
+		* Install
+		* Setup
+		* Input Project
+	* Mac OS
+* DataBase(数据库)
+	* Player-Saving(热修改)
+	* World-Loading(纯读取)
+* Classes(类)
+	* Manager
+		* NotifyMgr(消息提示)
+		* QuestMgr(任务)
+		* SpellMgr(技能)
+		* DataMgr(数据)
+		* ScriptMgr(脚本)
+		* MovementMgr(移动)
+	* Layers
+		* ChoseCharacterLayer(选择角色)
+		* CreateCharacterLayer(创建角色)
+		* EnterGameLayer(进入游戏)
+		* LoadingUILayer(读取界面)
+		* MapLayer(地图)
+		* PlayerUILayer(玩家界面)
+			* PlayerUILayer
+			* UISprite
+			* VirtualRocker
+			* TopBar
+			* SpellBook
+			* SettingSprite
+			* QuestBook
+			* PlayerTalkLayer
+			* PlayerEquip
+			* PlayerBag
+			* NpcVendorSprite
+			* LootingSprite
+			* ItemDetailSprite
+			* DeadTalkClass
+		* TypingLayer(*输入)
+	* Unit
+		* Creature
+			* Monster
+			* Npc(*)
+		* Player
+		
+----
 
-# 资源文件
+# Resouce(资源文件)
