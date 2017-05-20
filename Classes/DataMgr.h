@@ -24,7 +24,7 @@ public:
 	sqlite3* openDB();
 	bool TestOpenDB();
 	bool PExcute(const char* args);
-	bool selectUnitDataList(const char* args, Result& _Result);
+	bool selectUnitDataList(Result& _res, const char* format, ...);
 private:
 	std::chrono::system_clock::time_point _dbOpenTime;
 	std::string DB_PATCH_URL;

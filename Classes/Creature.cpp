@@ -17,6 +17,7 @@ Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 g
 	SetFaction(_template.faction);
 	SetClass((UnitClasses)_template.Class);
 	CreatureStartPoint = Vec2(_template.pos_x, _template.pos_y);
+	m_Flags = _template.Npc_Flags;
 	SetEntry(entry);
 	SetGuid(guid);
 	m_Creature_Threat_List.clear();
@@ -99,7 +100,7 @@ void Creature::CombatStart(Unit* pUnit)
 
 void Creature::OnGossipHello(Player* pPlayer)
 {
-	if (!HasScript() || !ToNpc() || !IsAlive() || !IsFrendlyTo(pPlayer))
+	if (!IsFrendlyTo(pPlayer) || !IsAlive())
 		return;
 
 	if (IsQuestGiver())
@@ -115,21 +116,34 @@ void Creature::OnGossipHello(Player* pPlayer)
 			return;
 		}
 	}
-	sPlayerTalkLayer->SetQuestTalking(false);
-	CreatureAI()->OnGossipHello(pPlayer, this);
-}
 
-bool Creature::IsQuestGiver()
-{
-	return sGame->IsQuestGiver(GetEntry());
+	else if (IsVendor())
+	{
+		if (IsItemRepairer())
+		{
+
+		}
+
+	}
+	else if (IsSpellTeacher())
+	{
+
+	}
+
+	if (IsGossipTalker())
+	{
+		sPlayerTalkLayer->SetQuestTalking(false);
+		CreatureAI()->OnGossipHello(pPlayer, this);
+	}
 }
 
 void Creature::OnGossipSelect(Player* pPlayer, uint32 sender, uint32 action)
 {
-	if (!HasScript() || !ToNpc() || !IsAlive() || !IsFrendlyTo(pPlayer))
+	if (!IsAlive() || !IsFrendlyTo(pPlayer))
 		return;
 
-	CreatureAI()->OnGossipSelect(pPlayer, this, sender, action);
+	if (HasScript())
+		CreatureAI()->OnGossipSelect(pPlayer, this, sender, action);
 }
 
 bool Creature::CheckDisTanceForMILS(Unit* pUnit)

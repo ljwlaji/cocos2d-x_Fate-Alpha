@@ -77,10 +77,10 @@ bool MainScene::init()
 		LoadItemTemplate();
 		LoadQuestGiver();
 		LoadExpPerLevelTemplate();
+		LoadVendorTemplate();
 		sQuestMgr;
 		sLootMgr;
 		addChild(sEnterGameLayer);
-
 
 		sLoadingLayer->DisAppear();
 		addChild(sLoadingLayer);
@@ -107,7 +107,7 @@ void MainScene::LoadQuestGiver()
 {
 	m_QuestGivers.clear();
 	Result _result;
-	if (sDataMgr->selectUnitDataList("SELECT creature_id,quest_id FROM quest_giver_template", _result))
+	if (sDataMgr->selectUnitDataList(_result,"SELECT creature_id,quest_id FROM quest_giver_template"))
 	{
 		int CurrentCreature = 0;
 		for (Result::iterator itr = _result.begin(); itr != _result.end(); itr++)
@@ -152,7 +152,7 @@ void MainScene::LoadMapInfo()
 {
 	m_MapInfo.clear();
 	Result _result;
-	if (sDataMgr->selectUnitDataList("SELECT id,background_music_url,can_revive_player,revive_pos_x,revive_pos_y FROM map_template", _result))
+	if (sDataMgr->selectUnitDataList(_result,"SELECT id,background_music_url,can_revive_player,revive_pos_x,revive_pos_y FROM map_template"))
 	{
 		std::vector<RowInfo> row;
 		for (Result::iterator itr = _result.begin(); itr != _result.end(); itr++)
@@ -263,9 +263,9 @@ bool MainScene::GetFactionFriendly(uint32 factionA, uint32 FactionB)
 
 void MainScene::LoadItemTemplate()
 {
-	m_ItemTemplate.clear();
-	Result _Result;//							0	1		2		3	4		5			6			7			8				9		10		11			12			13		14				15			16			17		18			19			20			21			22
-	if (sDataMgr->selectUnitDataList("SELECT entry,name,slot_type,url,quality,buy_price,sell_price,require_class,require_level,max_count,item_set,min_damage,max_damage,stat_type1,stat_value1,stat_type2,stat_value2,stat_type3,stat_value3,stat_type4,stat_value4,stat_type5,stat_value5 FROM item_template", _Result))
+	m_ItemTemplate.clear(); 
+	Result _Result;
+	if (sDataMgr->selectUnitDataList(_Result,"SELECT entry,name,slot_type,url,quality,buy_price,sell_price,require_class,require_level,max_count,item_set,min_damage,max_damage,stat_type1,stat_value1,stat_type2,stat_value2,stat_type3,stat_value3,stat_type4,stat_value4,stat_type5,stat_value5 FROM item_template"))
 	{
 		if (_Result.empty())
 		{
@@ -334,7 +334,7 @@ void MainScene::LoadExpPerLevelTemplate()
 {
 	m_Exp_Per_Level.clear();
 	Result _Result;
-	if (sDataMgr->selectUnitDataList("SELECT level,exp FROM level_exp", _Result))
+	if (sDataMgr->selectUnitDataList(_Result,"SELECT level,exp FROM level_exp"))
 	{
 		if (_Result.empty())
 		{
@@ -352,13 +352,51 @@ void MainScene::LoadExpPerLevelTemplate()
 	}
 }
 
+const VendorList* MainScene::GetCreatureVendorInfo(uint32 creature_id)
+{
+	if (m_VendorTemplate.find(creature_id) != m_VendorTemplate.end())
+		return &m_VendorTemplate[creature_id];
+	return nullptr;
+}
+
+void MainScene::LoadVendorTemplate()
+{
+	m_VendorTemplate.clear();
+	Result _Result;
+	if (sDataMgr->selectUnitDataList(_Result,"SELECT creature_id,item_id,exchange_cost FROM npc_vendor"))
+	{
+		if (_Result.empty())
+		{
+
+		}
+		else
+		{
+			std::vector<RowInfo> info;
+			uint32 NowCreature = 0;
+			for (Result::iterator itr = _Result.begin(); itr != _Result.end(); itr++)
+			{
+				info = itr->second;
+				SingleVendorInfo _vendorinfo;
+
+				if (NowCreature != info.at(0).GetInt())
+				{
+					std::list<SingleVendorInfo> __info;
+					m_VendorTemplate[info.at(0).GetInt()] = __info;
+					NowCreature = info.at(0).GetInt();
+				}
+				_vendorinfo.Item_Id = info.at(1).GetInt();
+				_vendorinfo.Exchange_Cost = info.at(0).GetInt();
+				m_VendorTemplate[info.at(0).GetInt()].push_back(_vendorinfo);
+			}
+		}
+	}
+}
+
 void MainScene::LoadFactionInfo()
 {
 	m_Faction_Friendly_Info.clear();
-	char msg[255];
-	snprintf(msg, 255, "SELECT main_faction_id,match_faction_id,isfrendly FROM faction_template");
 	Result _Result;
-	if (sDataMgr->selectUnitDataList(msg, _Result))
+	if (sDataMgr->selectUnitDataList(_Result,"SELECT main_faction_id,match_faction_id,isfrendly FROM faction_template"))
 	{
 		if (_Result.empty())
 		{
@@ -395,10 +433,9 @@ void MainScene::LoadFactionInfo()
 
 void MainScene::LoadUnitClassInfo()
 {
-	char msg[255];//			0			1			2				3				4			5		6		7		8		9		10			11
-	snprintf(msg, 255, "SELECT classid,str_pre_level,dex_pre_level,int_pre_level,def_pre_level,hp_pre_level,name,base_hp,base_str,base_dex,base_int,base_def FROM unit_class_info");
+	m_UnitClasses_Class_Info.clear();
 	Result _Result;
-	if (sDataMgr->selectUnitDataList(msg, _Result))
+	if (sDataMgr->selectUnitDataList(_Result,"SELECT classid,str_pre_level,dex_pre_level,int_pre_level,def_pre_level,hp_pre_level,name,base_hp,base_str,base_dex,base_int,base_def FROM unit_class_info"))
 	{
 		if (_Result.empty())
 		{

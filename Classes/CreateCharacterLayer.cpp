@@ -146,7 +146,7 @@ void Create_Character_Layer::Create_Character()
 {
 	uint32 guid = 0;
 	Result _result;
-	if (sDataMgr->selectUnitDataList("SELECT MAX(guid) FROM characters", _result))
+	if (sDataMgr->selectUnitDataList(_result,"SELECT MAX(guid) FROM characters"))
 	{
 		if (!_result.empty())
 		{

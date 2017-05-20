@@ -354,10 +354,8 @@ void Player::SendGossipMenu(std::string Main_String, Creature* pCreature)
 void Player::LoadPlayerQuests()
 {
 	m_QuestsStat.clear();
-	char msg[255];
-	snprintf(msg, 255, "SELECT quest_id,is_completed,count_1,count_2,count_3,count_4 FROM player_quest_status WHERE guid = %u", GetGuid());
 	Result _Result;
-	if (sDataMgr->selectUnitDataList(msg, _Result))
+	if (sDataMgr->selectUnitDataList(_Result,"SELECT quest_id,is_completed,count_1,count_2,count_3,count_4 FROM player_quest_status WHERE guid = %u", GetGuid()))
 	{
 		if (!_Result.empty())
 		{
@@ -556,11 +554,7 @@ bool Player::LoadPlayerSpells()
 {
 	m_Spells.clear();
 	Result _Result;
-	char msg[255];//			0	1
-	snprintf(msg, 255, "SELECT spell,active FROM player_spells WHERE guid = %u", GetGuid());
-	if (!sDataMgr->selectUnitDataList(msg, _Result))
-		return false;
-	else
+	if (sDataMgr->selectUnitDataList(_Result,"SELECT spell,active FROM player_spells WHERE guid = %u", GetGuid()))
 	{
 		if (_Result.empty())
 			return true;
@@ -573,8 +567,9 @@ bool Player::LoadPlayerSpells()
 			_template.Active				= row.at(1).GetBool();
 			m_Spells[row.at(0).GetInt()]	= _template;
 		}
+		return true;
 	}
-	return true;
+	else return false;
 }
 
 bool Player::CreatePlayer()

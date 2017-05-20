@@ -31,10 +31,8 @@ void PlayerBag::LoadInventory()
 {
 	if (!sPlayer)
 		return;
-	char msg[255];//				0		1		2		3		4
-	snprintf(msg, 255, "SELECT item_entry,bag_page,bag_slot,count,item_guid FROM player_inventory WHERE guid = %u AND bag_page != 100", sPlayer->GetGuid());
 	Result result;
-	if (sDataMgr->selectUnitDataList(msg, result))
+	if (sDataMgr->selectUnitDataList(result,"SELECT item_entry,bag_page,bag_slot,count,item_guid FROM player_inventory WHERE guid = %u AND bag_page != 100", sPlayer->GetGuid()))
 	{
 		if (result.empty()) return;
 		else

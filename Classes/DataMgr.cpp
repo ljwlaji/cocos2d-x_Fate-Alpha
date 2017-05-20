@@ -70,13 +70,26 @@ bool DataMgr::PExcute(const char * args)
 	}
 	return true;
 }
-bool DataMgr::selectUnitDataList(const char* args, Result& _Result)
+
+bool DataMgr::selectUnitDataList(Result& _res, const char* format, ...)
 {
+	if (!format)
+		return false;
+
+	va_list ap;
+	char szQuery[MAX_QUERY_LEN];
+	va_start(ap, format);
+	int res = vsnprintf(szQuery, MAX_QUERY_LEN, format, ap);
+	va_end(ap);
+
+	if (res == -1)
+		return false;
+
 	sqlite3 *db = openDB();
 	// Select
 	sqlite3_stmt *stmt = nullptr;
 	int rowcount = 0;
-	int check = sqlite3_prepare_v2(db, args, -1, &stmt, nullptr);
+	int check = sqlite3_prepare_v2(db, szQuery, -1, &stmt, nullptr);
 	if (check == SQLITE_OK)
 	{
 		while (sqlite3_step(stmt) == SQLITE_ROW)
@@ -89,7 +102,7 @@ bool DataMgr::selectUnitDataList(const char* args, Result& _Result)
 				RowInfo _text = msg;
 				_info.push_back(_text);
 			}
-			_Result[rowcount] = _info;
+			_res[rowcount] = _info;
 			rowcount++;
 		}
 		sqlite3_reset(stmt);

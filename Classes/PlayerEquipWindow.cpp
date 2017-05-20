@@ -63,9 +63,7 @@ void PlayerEquipWindow::InitWindow()
 void PlayerEquipWindow::LoadEquipSlot()
 {
 	Result _res;
-	char msg[255];//				0		1			2	  3		  4
-	snprintf(msg, 255, "SELECT item_entry,bag_page,bag_slot,count,item_guid FROM player_inventory WHERE guid = %u AND bag_page == 100", sPlayer->GetGuid());
-	if (sDataMgr->selectUnitDataList(msg, _res))
+	if (sDataMgr->selectUnitDataList(_res,"SELECT item_entry,bag_page,bag_slot,count,item_guid FROM player_inventory WHERE guid = %u AND bag_page == 100", sPlayer->GetGuid()))
 	{
 		if (!_res.empty())
 		{

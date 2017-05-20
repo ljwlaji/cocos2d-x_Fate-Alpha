@@ -6,7 +6,7 @@
 #include "SimpleAudioEngine.h"
 using namespace CocosDenshion;
 USING_NS_CC;
-
+#define MAX_QUERY_LEN   1024
 
 #define sMusic									SimpleAudioEngine::getInstance()
 #define	int8				signed char				
@@ -35,7 +35,6 @@ class Unit;
 typedef std::map<Unit*, float> CreatureThreadList;
 typedef std::map<uint32, uint32> ItemValueInfo;
 
-
 struct SingleLootInfo
 {
 	uint32 ItemID = 0;
@@ -44,6 +43,13 @@ struct SingleLootInfo
 	uint32 MinCount = 0;
 };
 
+struct SingleVendorInfo
+{
+	uint32 Item_Id;
+	uint32 Exchange_Cost;
+};
+
+typedef std::list<SingleVendorInfo> VendorList;
 struct SingleMapInfo
 {
 	std::string BackGroundMusicUrl;
@@ -66,6 +72,15 @@ enum QuestRewardType
 	Reward_None,
 	Reward_Item,
 	Reward_Rep,
+};
+
+enum NpcFlags
+{
+	NPC_Flag_GossipTalker = 1,
+	NPC_Flag_QuestGiver = 2,
+	NPC_Flag_Vendor = 4,
+	NPC_Flag_Reqairer = 8,
+	NPC_Flag_SpellTeacher = 16,
 };
 
 struct SingleQuestRequire

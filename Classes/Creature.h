@@ -25,7 +25,11 @@ public:
 	virtual ~Creature();
 	void OnGossipHello(Player* pPlayer);
 	void OnGossipSelect(Player* pPlayer, uint32 sender, uint32 action);
-	bool IsQuestGiver();
+	bool IsQuestGiver()								{ return m_Flags & NPC_Flag_QuestGiver; }
+	bool IsGossipTalker()							{ return m_Flags & NPC_Flag_GossipTalker; }
+	bool IsVendor()									{ return m_Flags & NPC_Flag_Vendor; }
+	bool IsItemRepairer()							{ return m_Flags & NPC_Flag_Reqairer; }
+	bool IsSpellTeacher()							{ return m_Flags & NPC_Flag_SpellTeacher; }
 	void CombatStart(Unit* pUnit);
 	bool HasScript()								{ bool re; m_script_ai ? re = true : re = false; return re; }
 	ScriptAI* CreatureAI()							{ return m_script_ai; }
@@ -60,6 +64,7 @@ private:
 
 	uint32 m_Entry;
 	Loot* m_Loot;
+	uint32 m_Flags;
 };
 
 #endif

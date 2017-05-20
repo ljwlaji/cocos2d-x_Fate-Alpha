@@ -182,10 +182,8 @@ void Main_Map_Layer::FillLoadVectors(int id)
 			case Object_ForeGround:		LoadTemplateName = "map_fore_ground_template";		break;
 			case Object_FloatingObject:	LoadTemplateName = "map_floating_object_template";	break;
 		}
-		char msg[255];
-		snprintf(msg, 255, "SELECT url,pos_x,pos_y FROM %s WHERE map_id = %d", LoadTemplateName.c_str(), id);
 		Result _Result;
-		if (sDataMgr->selectUnitDataList(msg, _Result))
+		if (sDataMgr->selectUnitDataList(_Result,"SELECT url,pos_x,pos_y FROM %s WHERE map_id = %d", LoadTemplateName.c_str(), id))
 		{
 			if (_Result.empty())
 			{
@@ -220,10 +218,8 @@ void Main_Map_Layer::FillLoadVectors(int id)
 	for (int i = 0; i != 2; i++)
 	{
 		i ? LoadTemplateName = "map_npc_template" : LoadTemplateName = "map_monster_template";
-		char get[255];//			0	 1		2	 3		4	5	   6		7		8		9		10
-		snprintf(get, 255, "SELECT json,atlas,pos_x,pos_y,guid,entry,scale,script_name,faction,level,class FROM %s WHERE map_id = %d", LoadTemplateName.c_str(), id);
 		Result _Result;
-		if (sDataMgr->selectUnitDataList(get, _Result))
+		if (sDataMgr->selectUnitDataList(_Result,"SELECT json,atlas,pos_x,pos_y,guid,entry,scale,script_name,faction,level,class,npc_flag FROM %s WHERE map_id = %d", LoadTemplateName.c_str(), id))
 		{
 			if (_Result.empty())
 			{
@@ -247,6 +243,7 @@ void Main_Map_Layer::FillLoadVectors(int id)
 					_SingleTemplate.faction			= row.at(8).GetInt();
 					_SingleTemplate.Level			= row.at(9).GetInt();
 					_SingleTemplate.Class			= row.at(10).GetInt();
+					_SingleTemplate.Npc_Flags		= row.at(11).GetInt();
 					i ? m_WaitForLoadingNpcs.push_back(_SingleTemplate) : m_WaitForLoadingMonsters.push_back(_SingleTemplate);
 					CreaturesTemplate[_SingleTemplate.guid] = _SingleTemplate;
 					TotalLoadingSize++;

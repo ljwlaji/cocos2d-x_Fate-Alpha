@@ -23,8 +23,8 @@ LootMgr* LootMgr::GetInstance()
 void LootMgr::LoadLootInfoFromDB()
 {
 	LootInfoMap.clear();
-	Result _res;//									0		1		2			3		4
-	if (sDataMgr->selectUnitDataList("SELECT creature_id,item_id,min_count,max_count,refance FROM loot_template", _res))
+	Result _res;
+	if (sDataMgr->selectUnitDataList(_res,"SELECT creature_id,item_id,min_count,max_count,refance FROM loot_template"))
 	{
 		if (_res.empty())
 		{

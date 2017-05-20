@@ -37,17 +37,14 @@ void Item::SetSlot(const uint32& Page, const uint32& Slot)
 uint32 Item::CreateNewItemGuid()
 {
 	Result _res;
-	if (sDataMgr->selectUnitDataList("SELECT MAX(item_guid) FROM player_inventory", _res))
+	if (sDataMgr->selectUnitDataList(_res,"SELECT MAX(item_guid) FROM player_inventory"))
 	{
 		if (_res.empty())
-		{
-
-		}
+			return 0;
 		else
-		{
-			return (*_res.begin()).second.at(0).GetInt();
-		}
+			return _res.begin()->second.at(0).GetInt();
 	}
+	return 0;
 }
 
 Item::Item(const ItemTemplate* pTemplate)

@@ -315,10 +315,8 @@ void Chose_Character_Layer::SpritesFadeIn()
 
 bool Chose_Character_Layer::LoadCharacters()
 {
-	char msg[255];//			0	 1		2	 3	  4		5	 6		7	8		9
-	snprintf(msg, 255, "SELECT guid,name,Class,Money,Exp,Level,Mapid,Pos_X,Pos_Y,Faction FROM characters");
 	Result _Result;
-	if (sDataMgr->selectUnitDataList(msg, _Result))
+	if (sDataMgr->selectUnitDataList(_Result,"SELECT guid,name,Class,Money,Exp,Level,Mapid,Pos_X,Pos_Y,Faction FROM characters"))
 	{
 		if (_Result.empty()) return true;
 		else

@@ -41,10 +41,8 @@ void ActionMgr::OnPlayerPressKey(cocos2d::EventKeyboard::KeyCode keyCode)
 void ActionMgr::LoadActionFromDB()
 {
 	Actions.clear();
-	char msg[255];//			0			1			2			3	4		5	6		7		8			9
-	snprintf(msg, 255, "SELECT character,actionid,require_action,key_0,key_1,key_2,key_3,key_4,action_name,require_move_type FROM Action");
 	Result _result;
-	if (sDataMgr->selectUnitDataList(msg, _result))
+	if (sDataMgr->selectUnitDataList(_result,"SELECT character,actionid,require_action,key_0,key_1,key_2,key_3,key_4,action_name,require_move_type FROM Action"))
 	{
 		if (_result.empty())
 		{
@@ -54,7 +52,7 @@ void ActionMgr::LoadActionFromDB()
 		char msg[255];
 		snprintf(msg, 255, "%d", _result.size());
 		sNotifyMgr->ShowNotify(msg);
-		for (Result::iterator itr = _result.begin(); itr != _result.end(); itr++)
+		for (Result::const_iterator itr = _result.begin(); itr != _result.end(); itr++)
 		{
 			std::vector<RowInfo> row = itr->second;
 			if (row.empty()) continue;

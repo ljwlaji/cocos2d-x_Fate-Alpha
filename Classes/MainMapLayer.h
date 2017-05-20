@@ -43,6 +43,7 @@ struct WaitFroLoadingUnitTemplate
 	uint32 faction = 0;
 	uint32 Level = 0;
 	uint32 Class = 0;
+	uint32 Npc_Flags = 0;
 };
 
 

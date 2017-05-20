@@ -31,7 +31,7 @@ void SpellMgr::LoadSpellTemplate()
 {
 	m_SpellTemplate.clear();
 	Result _Result;
-	if (sDataMgr->selectUnitDataList("SELECT id,base_level_spell_id,require_class,require_level,spell_cast_range,spell_real_range,spell_type,spell_target_type,spell_target_count,effect_type,spell_value,spell_cast_time,spell_cold_down_time,arua_total_duration,arua_single_damage_duration,can_cast_while_moving,spell_linked_aura,spell_action_name,play_action_time,spell_icon_url,spell_name FROM spell_template", _Result))
+	if (sDataMgr->selectUnitDataList(_Result,"SELECT id,base_level_spell_id,require_class,require_level,spell_cast_range,spell_real_range,spell_type,spell_target_type,spell_target_count,effect_type,spell_value,spell_cast_time,spell_cold_down_time,arua_total_duration,arua_single_damage_duration,can_cast_while_moving,spell_linked_aura,spell_action_name,play_action_time,spell_icon_url,spell_name FROM spell_template"))
 	{
 		if (_Result.empty())
 		{
@@ -135,7 +135,7 @@ void SpellMgr::LoadSpellChain()
 	}
 	res += " FROM spell_chain;";
 	Result _Result;
-	if (sDataMgr->selectUnitDataList(res.c_str(), _Result))
+	if (sDataMgr->selectUnitDataList(_Result,res.c_str()))
 	{
 		if (_Result.empty())
 		{

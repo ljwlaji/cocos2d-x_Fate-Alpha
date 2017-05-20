@@ -121,6 +121,9 @@
     <Filter Include="src\Layers\PlayerUILayer\ItemDetailSprite">
       <UniqueIdentifier>{f84c0e0b-ef91-45ac-9e27-13de787cfb52}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\NpcVendorSprite">
+      <UniqueIdentifier>{08d74309-49c6-42f5-b7d4-6b3275a6d16b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -258,6 +261,9 @@
     <ClCompile Include="..\Classes\ItemDetailSprite.cpp">
       <Filter>src\Layers\PlayerUILayer\ItemDetailSprite</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\NpcVendorSprite.cpp">
+      <Filter>src\Layers\PlayerUILayer\NpcVendorSprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -391,6 +397,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\ItemDetailSprite.h">
       <Filter>src\Layers\PlayerUILayer\ItemDetailSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\NpcVendorSprite.h">
+      <Filter>src\Layers\PlayerUILayer\NpcVendorSprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

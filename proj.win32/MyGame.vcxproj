@@ -164,6 +164,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\MovementMgr.cpp" />
     <ClCompile Include="..\Classes\NotifyMgr.cpp" />
     <ClCompile Include="..\Classes\Npc.cpp" />
+    <ClCompile Include="..\Classes\NpcVendorSprite.cpp" />
     <ClCompile Include="..\Classes\Player.cpp" />
     <ClCompile Include="..\Classes\PlayerBag.cpp" />
     <ClCompile Include="..\Classes\PlayerEquipWindow.cpp" />
@@ -211,6 +212,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\MovementMgr.h" />
     <ClInclude Include="..\Classes\NotifyMgr.h" />
     <ClInclude Include="..\Classes\Npc.h" />
+    <ClInclude Include="..\Classes\NpcVendorSprite.h" />
     <ClInclude Include="..\Classes\Player.h" />
     <ClInclude Include="..\Classes\PlayerBag.h" />
     <ClInclude Include="..\Classes\PlayerEquipWindow.h" />

@@ -49,7 +49,10 @@ public:
 	void SetCombatSign(bool var)					{ CombatSign = var; }
 	bool GetCombatSign()							{ return CombatSign; }
 	GameDiffcute GetDiffCute()						{ return m_Diffcute; }
-	bool GetCanPlaySound()							{ return CanPlaySound; }private: 
+	bool GetCanPlaySound()							{ return CanPlaySound; }
+	const VendorList* GetCreatureVendorInfo(uint32 creature_id);
+private: 
+	void LoadVendorTemplate();
 	void LoadExpPerLevelTemplate();
 	void LoadQuestGiver();
 	void LoadMapInfo();
@@ -72,6 +75,7 @@ public:
 	std::map<uint32, ItemTemplate> m_ItemTemplate;
 	std::map<uint32, SingleMapInfo> m_MapInfo;
 	std::map<uint32, std::list<uint32>> m_QuestGivers;
+	std::map<uint32, std::list<SingleVendorInfo>> m_VendorTemplate;
 	virtual void update(float diff);
 	float ClearCacheDelayTime;
 protected:
