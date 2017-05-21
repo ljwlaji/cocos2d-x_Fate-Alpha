@@ -7,14 +7,28 @@
 class NpcVendorSprite : public UISprite
 {
 public:
+	//Return false if the creature don't have a vendor list;
+	bool ShowVendorList(uint32 Creature_id);
+	void UpdateList(uint32 Removing);
 	static NpcVendorSprite* GetInstance();
 	virtual bool OnUITouchBegin(Touch* pTouch);
 	virtual void OnUITouchMoved(Touch* pTouch);
 	virtual void OnUITouchEnded(Touch* pTouch);
 private:
 	void InitFrame();
+	void AddNewItemToList(uint32 ItemID, uint32 Exchange_Cost);
 	NpcVendorSprite();
 	~NpcVendorSprite();
+	void HandleListScroll();
+
+	Sprite* CloseButton;
+	std::list<Sprite*> ShowingList;
+	Point MovePoint;
+	Point LastPoint;
+
+	Sprite* m_TouchedSprite;
+
+	bool CanClickMenu;
 };
 
 #endif

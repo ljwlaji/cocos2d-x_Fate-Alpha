@@ -84,6 +84,7 @@ public:
 	void LevelUp();
 	uint32 GetPlayerTotalInt32Value(UnitInt32Value _val);
 	uint16 GetEmptyBagSlot();
+	void AddItem(uint32 ItemEntry, uint32 Count);
 	ActionType GetDoingAction()													{ return m_Action; }
 	ActionMgr* PlayerActionMgr()												{ return _ActionMgr; }
 	uint32 GetMoney()															{ return m_Money; }

@@ -7,6 +7,7 @@
 #include "PlayerTalkLayer.h"
 #include "Spell.h"
 #include "Loot.h"
+#include "NpcVendorSprite.h"
 Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid) : Unit(_SkeletonAnimation, entry, guid)
 {
 	m_script_ai = nullptr;
@@ -105,24 +106,27 @@ void Creature::OnGossipHello(Player* pPlayer)
 
 	if (IsQuestGiver())
 	{
-		const std::list<uint32>* TempList = sGame->GetCreatureQuests(GetEntry());
-		for (std::list<uint32>::const_iterator itr = TempList->begin(); itr != TempList->end(); itr++)
+		if (const std::list<uint32>* TempList = sGame->GetCreatureQuests(GetEntry()))
 		{
-			if (sPlayer->HasQuest(*itr))
-				continue;
-			//Send Quest
-			sPlayerTalkLayer->SendQuestMenuToPlayer(GetEntry());
-			sPlayerTalkLayer->SetQuestTalking(true);
-			return;
+			for (std::list<uint32>::const_iterator itr = TempList->begin(); itr != TempList->end(); itr++)
+			{
+				if (sPlayer->HasQuest(*itr))
+					continue;
+				//Send Quest
+				sPlayerTalkLayer->SendQuestMenuToPlayer(GetEntry());
+				sPlayerTalkLayer->SetQuestTalking(true);
+				return;
+			}
 		}
 	}
 
-	else if (IsVendor())
+	else if (IsVendor() && sVendorSprite->ShowVendorList(GetEntry()))
 	{
 		if (IsItemRepairer())
 		{
 
 		}
+		return;
 
 	}
 	else if (IsSpellTeacher())
@@ -130,7 +134,7 @@ void Creature::OnGossipHello(Player* pPlayer)
 
 	}
 
-	if (IsGossipTalker())
+	if (IsGossipTalker() && HasScript())
 	{
 		sPlayerTalkLayer->SetQuestTalking(false);
 		CreatureAI()->OnGossipHello(pPlayer, this);

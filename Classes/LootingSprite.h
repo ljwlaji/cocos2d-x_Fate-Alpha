@@ -21,7 +21,6 @@ private:
 	void ScorllUpdate();
 	void Init();
 	void AddNewLootVisual(uint32 Item_ID, uint32 Count);
-	bool IsSpriteOutOfRange(Sprite* pSprite);
 	LootingSprite();
 	~LootingSprite();
 

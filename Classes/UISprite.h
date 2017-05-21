@@ -7,8 +7,8 @@ class UISprite : public Sprite
 {
 public:
 	UISprite();
-	~UISprite();
-
+	virtual ~UISprite();
+	bool IsSpriteOutOfRange(Sprite* pSprite);
 	virtual bool OnUITouchBegin(Touch* pTouch) = 0;
 	virtual void OnUITouchMoved(Touch* pTouch) {};
 	virtual void OnUITouchEnded(Touch* pTouch) = 0;

@@ -17,7 +17,7 @@
 #include "PlayerTalkLayer.h"
 #include "LootingSprite.h"
 #include "ItemDetailSprite.h"
-
+#include "NpcVendorSprite.h"
 #pragma execution_character_set("utf-8")
 
 static PlayerUILayer* _PlayerUILayer = nullptr;
@@ -182,6 +182,10 @@ bool PlayerUILayer::init()
 		UISpriteList.push_back(sItemDetailSprite);
 
 		addChild(sTopBar);
+
+		sVendorSprite->setPosition(visiablesize.x / 2, visiablesize.y / 2);
+		addChild(sVendorSprite);
+		UISpriteList.push_back(sVendorSprite);
 
 		sLootingSprite->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sLootingSprite);
@@ -543,6 +547,9 @@ void PlayerUILayer::onTouchMoved(const std::vector<Touch*>& touchesVector, Event
 			case PlayerUITouch_ItemDetailSprite:
 				sItemDetailSprite->OnUITouchMoved(touches);
 				return;
+			case PlayerUITouch_NpcVendorSprite:
+				sVendorSprite->OnUITouchMoved(touches);
+				return;
 			}
 		}
 	}
@@ -602,6 +609,9 @@ void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event
 					break;
 				case PlayerUITouch_LootingSprite:
 					sLootingSprite->OnUITouchEnded(touches);
+					break;
+				case PlayerUITouch_NpcVendorSprite:
+					sVendorSprite->OnUITouchEnded(touches);
 					break;
 			}
 		}

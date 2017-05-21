@@ -115,6 +115,7 @@ enum PlayerUITouchType
 	PlayerUITouch_TopBar,
 	PlayerUITouch_LootingSprite,
 	PlayerUITouch_ItemDetailSprite,
+	PlayerUITouch_NpcVendorSprite,
 };
 
 enum UnitClasses
@@ -399,6 +400,11 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define PlayerUIItemDetailFrameTop						"Player_UI_Item_Detail_Frame_Top.png"
 #define PlayerUIItemDetailFrameButtom					"Player_UI_Item_Detail_Frame_Buttom.png"
 #define PlayerUIItemDetailFrameMiddle					"Player_UI_Item_Detail_Frame_Middle.png"
+
+#define PlayerUIVendorSingleIconFrame			"Player_UI_Vendor_Single_Icon_Frame.png"
+#define PlayerUIVendorSingleFrame				"Player_UI_Vendor_Single_Frame.png"
+#define PlayerUIVendorFrame						"Player_UI_Vendor_Frame.png"
+#define PlayerUIVendorCloseButton				"Player_UI_Vendor_Close_Button.png"
 enum SettingButtonTag
 {
 	TAG_RESUME_GAME = 1,

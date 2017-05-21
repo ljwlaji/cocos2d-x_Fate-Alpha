@@ -628,3 +628,21 @@ uint16 Player::GetEmptyBagSlot()
 {
 	return sPlayerBag->GetEmptySlot();
 }
+
+void Player::AddItem(uint32 ItemEntry, uint32 Count)
+{
+	if (uint16 BagSlot = GetEmptyBagSlot())
+	{
+		uint8 Page = BagSlot / 100;
+		uint8 __Slot = BagSlot % 100;
+		Slot* pSlot = sPlayerBag->GetSlotByPageTag(Page, __Slot);
+		Item* pItem = Item::CreateItem(ItemEntry, Page, __Slot);
+		pItem->SaveToDB();
+		pItem->SetCount(Count);
+		pSlot->SetItem(pItem);
+	}
+	else
+	{
+		sNotifyMgr->ShowNotify("Inventory Is Full");
+	}
+}

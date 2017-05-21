@@ -27,6 +27,28 @@
 1. Coding开源地址:https://coding.net/u/ljwlaji/p/PlayFun-FateAlpha
 2. GitHub开源地址:https://github.com/ljwlaji/cocos2d-x_Fate-Alpha
 
+# Release
+* [**iOS**] https://www.pgyer.com/PG3K
+	* [**Get Your UDID**] https://www.pgyer.com/udid 
+* [**Android**] https://www.pgyer.com/7LQd
+
+----
+
+Screen Shot
+<br>
+[![getMaNGOS](http://i1.piimg.com/588926/8d6b6b070696b1f6.png)](https://github.com/ljwlaji/cocos2d-x_Fate-Alpha)
+<br>
+[![getMaNGOS](http://i1.piimg.com/588926/2d6aeeefc526c475.png)](https://github.com/ljwlaji/cocos2d-x_Fate-Alpha)
+<br>
+[![getMaNGOS](http://i1.piimg.com/588926/53722b4ddafa1224.png)](https://github.com/ljwlaji/cocos2d-x_Fate-Alpha)
+<br>
+[![getMaNGOS](http://i1.piimg.com/588926/b46579cbc1e05b0b.png)](https://github.com/ljwlaji/cocos2d-x_Fate-Alpha)
+<br>
+[![getMaNGOS](http://i4.buimg.com/588926/676603f230709763.png)](https://github.com/ljwlaji/cocos2d-x_Fate-Alpha)
+<br>
+[![getMaNGOS](http://i4.buimg.com/588926/012a3e3fb6f2f6c5.png)](https://github.com/ljwlaji/cocos2d-x_Fate-Alpha)
+<br>
+[![getMaNGOS](http://i4.buimg.com/588926/741612199398bda8.png)](https://github.com/ljwlaji/cocos2d-x_Fate-Alpha)
 ----
 
 # 开发文档:
