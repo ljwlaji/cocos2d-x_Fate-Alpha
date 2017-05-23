@@ -120,6 +120,7 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 {
 	if (!insteadid)
 		return false;
+
 	m_MaxSize = 0;
 	setTouchEnabled(false);
 	unscheduleUpdate();
@@ -396,15 +397,9 @@ void Main_Map_Layer::update(float diff)
 	{
 		if (!sPlayer)
 			return;
-
-		if (sPlayer->IsInCombat())
-		{
-			sNotifyMgr->ShowNotify("Can Not Swap Map While In Combat!");
-			return;
-		}
-		if (m_Next_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))
+		if (!sPlayer->IsInCombat() && m_Next_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))
 			SwapMap(m_Mapid + 1, false);
-		else if (m_Older_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))
+		else if (!sPlayer->IsInCombat() && m_Older_Map_Door->getBoundingBox().intersectsRect(sPlayer->getBoundingBox()))
 			SwapMap(m_Mapid - 1, false);
 
 		if (m_CheckZorderTimer <= diff)

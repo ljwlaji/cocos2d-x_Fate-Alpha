@@ -319,6 +319,7 @@ void PlayerUILayer::SwapButtomMenuType()
 	if (m_TopMenuIsVisable)
 	{
 		m_TopMenuIsVisable = false;
+		sMiniMap->runAction(MoveTo::create(1.0f, Vec2(sMiniMap->getPositionX(), visiablesize.y - sMiniMap->getBoundingBox().size.height / 2)));
 		m_Player_UI_TopButton_Swap_Button->runAction(MoveTo::create(1.0f, Vec2(m_Player_UI_TopButton_Swap_Button->getPositionX(), visiablesize.y - m_Player_UI_TopButton_Swap_Button->getBoundingBox().size.height / 2)));
 		m_Player_Info_UI->runAction(MoveTo::create(1.0f, Vec2(m_Player_Info_UI->getPositionX(), visiablesize.y - m_Player_Info_UI->getBoundingBox().size.height * 0.45f)));
 		sq = Sequence::create(MoveTo::create(1.0f, Vec2(sTopBar->getPositionX(), sTopBar->getPositionY() + sTopBar->getBoundingBox().size.height)), CallFunc::create(CC_CALLBACK_0(PlayerUILayer::ButtonMenuCallBack, this)), NULL);
@@ -326,6 +327,7 @@ void PlayerUILayer::SwapButtomMenuType()
 	else
 	{
 		m_TopMenuIsVisable = true;
+		sMiniMap->runAction(MoveTo::create(1.0f, Vec2(sMiniMap->getPositionX(), visiablesize.y - sTopBar->getBoundingBox().size.height - sMiniMap->getBoundingBox().size.height / 2)));
 		m_Player_UI_TopButton_Swap_Button->runAction(MoveTo::create(1.0f, Vec2(m_Player_UI_TopButton_Swap_Button->getPositionX(), visiablesize.y + m_Player_UI_TopButton_Swap_Button->getBoundingBox().size.height / 2)));
 		m_Player_Info_UI->runAction(MoveTo::create(1.0f, Vec2(m_Player_Info_UI->getPositionX(), visiablesize.y * 0.9f - m_Player_Info_UI->getBoundingBox().size.height / 2)));
 		sq = Sequence::create(MoveTo::create(1.0f, Vec2(sTopBar->getPositionX(), visiablesize.y - sTopBar->getBoundingBox().size.height / 2)), CallFunc::create(CC_CALLBACK_0(PlayerUILayer::ButtonMenuCallBack, this)), NULL);

@@ -8,6 +8,8 @@
 #include "Spell.h"
 #include "Loot.h"
 #include "NpcVendorSprite.h"
+#include "MiniMap.h"
+
 Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid) : Unit(_SkeletonAnimation, entry, guid)
 {
 	m_script_ai = nullptr;
@@ -32,6 +34,7 @@ Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 g
 		UpdateUnitValues();
 
 	m_Creature_Move_CheckTimer = 1.0f;
+
 	scheduleUpdate();
 }
 
@@ -46,6 +49,7 @@ Creature::~Creature()
 	if (m_Loot)
 		m_Loot->DeleteLootIfNeed(true);
 
+	//sMiniMap->RemoveCreatureFromMiniMap(this);
 	removeAllChildrenWithCleanup(true);
 	removeFromParentAndCleanup(true);
 }
@@ -200,6 +204,7 @@ void Creature::UpdateMovement(const float& diff)
 					if (sMoveMgr->CanMoveTo(this, Mov_Y < 0 ? Move_To_Down : Move_To_Up, Mov_Y))
 						setPositionY(getPositionY() + Mov_Y);
 				}
+				sMiniMap->UpdateSingleUnitSign(this);
 				m_UnitMover->MoveDelay -= diff;
 			}
 			else

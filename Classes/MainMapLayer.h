@@ -62,13 +62,17 @@ public:
 	static Main_Map_Layer* GetInstance();
 	bool SwapMap(int insteadid, bool FirstLoad = true);
 	WaitFroLoadingUnitTemplate GetCreatureTemplate(uint32 guid);
-	Sprite* GetCurrentGroundSprite(int id)		{ int size = m_MapGroundSpriteVector.size(); if (size + 1 <= id) return m_MapGroundSpriteVector.at(id); return nullptr; }
-	std::vector<Sprite*> GetGroundSprites()		{ return m_MapGroundSpriteVector; }
-	float GetMapMaxWidth()						{ return m_MaxSize; }
-	Vec2 GetVisableSize()						{ return Visablesize; }
-	uint32 GetMapID()							{ return m_Mapid; }
 	Unit* GetNearestUnitForUnit(Unit* pUnit, bool SelectForTarget = true, bool CheckAlive = true);
 	void GetUnitAtRange(std::list<Unit*>& pTargetList, Unit* pSearcher, float Range, bool GetTarget = true, bool SearchAlive = true, bool IncludeSelf = false);
+
+
+	Sprite* GetCurrentGroundSprite(int id)						{ int size = m_MapGroundSpriteVector.size(); if (size + 1 <= id) return m_MapGroundSpriteVector.at(id); return nullptr; }
+	std::vector<Sprite*> GetGroundSprites()						{ return m_MapGroundSpriteVector; }
+	float GetMapMaxWidth()										{ return m_MaxSize; }
+	Vec2 GetVisableSize()										{ return Visablesize; }
+	uint32 GetMapID()											{ return m_Mapid; }
+	const std::vector<Monster*>* GetMonsterMap()				{ return &m_MonsterVector; }
+	const std::vector<Npc*>* GetNpcMap()						{ return &m_NpcVector; }
 private:
 	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
 	virtual void onTouchEnded(Touch *touch, Event *unused_event);

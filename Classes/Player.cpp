@@ -15,6 +15,7 @@
 #include "DeadTalkClass.h"
 #include "Creature.h"
 #include "PlayerBag.h"
+#include "MiniMap.h"
 
 static Player* _player = nullptr;
 
@@ -501,6 +502,8 @@ void Player::UpdateMoveStatus()
 		if (sMoveMgr->CanMoveTo(this,Y_MoveFront, abs(Y_Modify)))
 			setPositionY(getPositionY() + Y_Modify);
 	}
+	if (X_Modify || Y_Modify)
+		sMiniMap->UpdateSingleUnitSign(this);
 }
 
 void Player::update(float diff)

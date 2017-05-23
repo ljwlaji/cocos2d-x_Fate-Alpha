@@ -7,7 +7,7 @@
 #include "QuestBook.h"
 #include "PlayerBag.h"
 #include "PlayerEquipWindow.h"
-
+#include "MiniMap.h"
 static TopBar* _TopBar = nullptr;
 
 TopBar::TopBar()
@@ -135,6 +135,9 @@ bool TopBar::OnUITouchBegin(Touch* pTouch)
 				case Button_Menu_Character:
 					sPlayerValueWindow->SwapVisable();
 					TempUISprite = sPlayerEquip;
+					break;
+				case Button_Menu_End://MapButton;
+					sMiniMap->SwapOpType();
 					break;
 				}
 				if (TempUISprite)

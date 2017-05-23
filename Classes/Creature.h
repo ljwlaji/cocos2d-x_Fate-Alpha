@@ -22,7 +22,7 @@ class Creature : public Unit
 {
 public:
 	explicit Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid);
-	virtual ~Creature();
+	~Creature();
 	void OnGossipHello(Player* pPlayer);
 	void OnGossipSelect(Player* pPlayer, uint32 sender, uint32 action);
 	bool IsQuestGiver()								{ return m_Flags & NPC_Flag_QuestGiver; }

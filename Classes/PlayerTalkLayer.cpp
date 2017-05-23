@@ -51,7 +51,7 @@ bool Player_Talk_Layer::init()
 Player_Talk_Layer* Player_Talk_Layer::GetInstance()
 {
 	if (!_Player_Talk_Layer)
-		_Player_Talk_Layer = Player_Talk_Layer::create();
+		_Player_Talk_Layer = new Player_Talk_Layer::create();
 	return _Player_Talk_Layer;
 }
 
