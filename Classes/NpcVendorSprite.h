@@ -9,7 +9,6 @@ class NpcVendorSprite : public UISprite
 public:
 	//Return false if the creature don't have a vendor list;
 	bool ShowVendorList(uint32 Creature_id);
-	void UpdateList(uint32 Removing);
 	static NpcVendorSprite* GetInstance();
 	virtual bool OnUITouchBegin(Touch* pTouch);
 	virtual void OnUITouchMoved(Touch* pTouch);

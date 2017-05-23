@@ -58,6 +58,7 @@ class Main_Map_Layer : public Layer
 public:
 	Main_Map_Layer(int MapId);
 	~Main_Map_Layer();
+	Sprite* GetMiniMapSprite(float& TotalX);
 	static Main_Map_Layer* GetInstance();
 	bool SwapMap(int insteadid, bool FirstLoad = true);
 	WaitFroLoadingUnitTemplate GetCreatureTemplate(uint32 guid);

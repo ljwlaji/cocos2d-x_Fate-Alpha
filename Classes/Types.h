@@ -405,6 +405,12 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define PlayerUIVendorSingleFrame				"Player_UI_Vendor_Single_Frame.png"
 #define PlayerUIVendorFrame						"Player_UI_Vendor_Frame.png"
 #define PlayerUIVendorCloseButton				"Player_UI_Vendor_Close_Button.png"
+
+
+#define PlayerUIMiniMapFrame					"Player_UI_Mini_Map_Frame.png"
+#define PlayerUIMiniMapSearch					"Player_UI_Mini_Map_Search.png"
+#define PlayerUIMiniMapSkipFrame				"Player_UI_Mini_Map_ClipFrame.png"
+			
 enum SettingButtonTag
 {
 	TAG_RESUME_GAME = 1,

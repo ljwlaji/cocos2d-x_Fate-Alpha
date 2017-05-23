@@ -160,6 +160,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\LootingSprite.cpp" />
     <ClCompile Include="..\Classes\LootMgr.cpp" />
     <ClCompile Include="..\Classes\MainMapLayer.cpp" />
+    <ClCompile Include="..\Classes\MiniMap.cpp" />
     <ClCompile Include="..\Classes\Monster.cpp" />
     <ClCompile Include="..\Classes\MovementMgr.cpp" />
     <ClCompile Include="..\Classes\NotifyMgr.cpp" />
@@ -208,6 +209,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\LootingSprite.h" />
     <ClInclude Include="..\Classes\LootMgr.h" />
     <ClInclude Include="..\Classes\MainMapLayer.h" />
+    <ClInclude Include="..\Classes\MiniMap.h" />
     <ClInclude Include="..\Classes\Monster.h" />
     <ClInclude Include="..\Classes\MovementMgr.h" />
     <ClInclude Include="..\Classes\NotifyMgr.h" />

@@ -124,6 +124,9 @@
     <Filter Include="src\Layers\PlayerUILayer\NpcVendorSprite">
       <UniqueIdentifier>{08d74309-49c6-42f5-b7d4-6b3275a6d16b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\MiniMap">
+      <UniqueIdentifier>{6c009c7f-0c3e-4273-8472-b7323a91f718}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -264,6 +267,9 @@
     <ClCompile Include="..\Classes\NpcVendorSprite.cpp">
       <Filter>src\Layers\PlayerUILayer\NpcVendorSprite</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\MiniMap.cpp">
+      <Filter>src\Layers\PlayerUILayer\MiniMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -400,6 +406,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\NpcVendorSprite.h">
       <Filter>src\Layers\PlayerUILayer\NpcVendorSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MiniMap.h">
+      <Filter>src\Layers\PlayerUILayer\MiniMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

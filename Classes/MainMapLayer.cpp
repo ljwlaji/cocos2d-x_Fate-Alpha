@@ -9,6 +9,8 @@
 #include "HelloWorldScene.h"
 #include "PlayerUILayer.h"
 #include "LootingSprite.h"
+#include "MiniMap.h"
+
 Main_Map_Layer* _Main_Map_Layer = nullptr;
 
 Main_Map_Layer::Main_Map_Layer(int MapId)
@@ -165,7 +167,24 @@ bool Main_Map_Layer::SwapMap(int insteadid, bool FirstLoad)
 	}
 	if (sPlayer->getReferenceCount() == 2)
 		sPlayer->release();
+
 	return true;
+}
+
+Sprite* Main_Map_Layer::GetMiniMapSprite(float& TotalX)
+{
+	int i = m_MapGroundSpriteVector.size() - 1;
+	Sprite* TempSprite = Sprite::create(m_MapGroundSpriteVector.at(i--)->getResourceName().c_str());
+	TotalX = TempSprite->getContentSize().width;
+	for (; i != -1; i--)
+	{
+		Sprite* TempSprite_Back = Sprite::create(m_MapGroundSpriteVector.at(i)->getResourceName().c_str());
+		TempSprite_Back->setPosition(TotalX + TempSprite_Back->getBoundingBox().size.width / 2, TempSprite->getContentSize().height / 2);
+		TotalX += TempSprite_Back->getBoundingBox().size.width;
+		TempSprite->addChild(TempSprite_Back);
+	}
+
+	return TempSprite;
 }
 
 void Main_Map_Layer::FillLoadVectors(int id)

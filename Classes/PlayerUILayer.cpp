@@ -18,6 +18,8 @@
 #include "LootingSprite.h"
 #include "ItemDetailSprite.h"
 #include "NpcVendorSprite.h"
+#include "MiniMap.h"
+
 #pragma execution_character_set("utf-8")
 
 static PlayerUILayer* _PlayerUILayer = nullptr;
@@ -190,6 +192,9 @@ bool PlayerUILayer::init()
 		sLootingSprite->setPosition(visiablesize.x / 2, visiablesize.y / 2);
 		addChild(sLootingSprite);
 		UISpriteList.push_back(sLootingSprite);
+
+		sMiniMap->setPosition(visiablesize.x - sMiniMap->getBoundingBox().size.width / 2, sTopBar->getBoundingBox().origin.y - sMiniMap->getBoundingBox().size.height / 2);
+		addChild(sMiniMap);
 
 		DeadSign = Sprite::create("Dead_Sign.png");
 		DeadSign->SetRealPosition(visiablesize.x - DeadSign->getBoundingBox().size.width / 2, visiablesize.y * 0.7f);

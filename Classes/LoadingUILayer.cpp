@@ -1,6 +1,7 @@
 ﻿#include "LoadingUILayer.h"
 #include "Player.h"
-
+#include "MiniMap.h"
+#include "MainMapLayer.h"
 using namespace spine;
 
 static LoadingUILayer* _LoadingUILayer = nullptr;
@@ -119,12 +120,13 @@ void LoadingUILayer::RandomSetBackGroundImage()
 
 void LoadingUILayer::update(float diff)
 {
-	float p_now		= m_TimeBar->getPercentage();
+	float p_now	= m_TimeBar->getPercentage();
 	if (p_now >= 100.0f)
 	{
 		DisAppear();
 		if (sPlayer)
 			sPlayer->SendUpdateValueRequire();
+		sMiniMap->InitWithMapID(sMainMap->GetMapID());
 		return;
 	}
 	float change	= (float)m_TimeBarPrescent - p_now;
