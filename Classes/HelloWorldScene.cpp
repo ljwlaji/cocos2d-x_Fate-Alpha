@@ -78,6 +78,7 @@ bool MainScene::init()
 		LoadQuestGiver();
 		LoadExpPerLevelTemplate();
 		LoadVendorTemplate();
+		LoadNpcTrainerTemplate();
 		sQuestMgr;
 		sLootMgr;
 		addChild(sEnterGameLayer);
@@ -124,6 +125,44 @@ void MainScene::LoadQuestGiver()
 	else
 	{
 		//Do Sth;
+	}
+}
+
+const std::list<SingleTrainerSpell>* MainScene::GetSingleTrainerList(uint32 creatureid)
+{
+	if (m_Npc_Trainer_Template.find(creatureid) != m_Npc_Trainer_Template.end())
+		return &m_Npc_Trainer_Template[creatureid];
+	return nullptr;
+}
+
+void MainScene::LoadNpcTrainerTemplate()
+{
+	m_Npc_Trainer_Template.clear();
+	Result _result;
+	if (sDataMgr->selectUnitDataList(_result, "SELECT entry,spell,require_money,require_level FROM npc_trainer"))
+	{
+		if (_result.empty())
+		{
+
+		}
+		else
+		{
+			std::vector<RowInfo> _Info;
+			for (Result::iterator itr = _result.begin(); itr != _result.end(); itr++)
+			{
+				_Info = itr->second;
+				if (m_Npc_Trainer_Template.find(_Info.at(0).GetInt()) == m_Npc_Trainer_Template.end())
+				{
+					std::list<SingleTrainerSpell> temp;
+					m_Npc_Trainer_Template[_Info.at(0).GetInt()] = temp;
+				}
+				SingleTrainerSpell _SingleTrainerSpell;
+				_SingleTrainerSpell.SpellID = _Info.at(1).GetInt();
+				_SingleTrainerSpell.NeedMoney = _Info.at(2).GetInt();
+				_SingleTrainerSpell.NeedLevel = _Info.at(3).GetInt();
+				m_Npc_Trainer_Template[_Info.at(0).GetInt()].push_back(_SingleTrainerSpell);
+			}
+		}
 	}
 }
 

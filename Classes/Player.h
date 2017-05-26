@@ -58,6 +58,8 @@ public:
 
 	static Player* GetInstance();
 	bool IsUnitInCombatList(Unit* pUnit);
+	void LearnSpell(uint32 pSpell){}
+	void RepairItems(bool Cost = true){}
 	void JustDead();
 	void Revive();
 	bool CreatePlayer();

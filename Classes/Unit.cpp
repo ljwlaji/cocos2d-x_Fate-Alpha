@@ -150,7 +150,7 @@ void Unit::ShowDamageImage(int32 DamageNumber ,bool IsDamage)
 		char msg[255];
 		snprintf(msg, 255, IsDamage ? DamageTextUrl : HealingTextUrl, *itr);
 		Sprite* TempSprite = Sprite::create(msg);
-		SpriteVector.push_back(TempSprite);
+		SpriteVector.push_front(TempSprite);
 		numberVector.pop_front();
 	}
 	_ShowDamage(SpriteVector);

@@ -91,6 +91,7 @@ public:
 	SpellInfo GetSpellInfo(uint32 spellid);
 	uint32 GetSpellNextLevelID(uint32 spellid, uint32 baseid);
 	uint32 GetSpellCurrentLevel(uint32 spellid, uint32 baseid);
+	uint32 GetSpellFrontLevelID(uint32 spellid, uint32 baseid);
 private:
 	SpellMgr();
 	~SpellMgr();

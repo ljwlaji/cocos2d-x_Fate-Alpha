@@ -127,6 +127,9 @@
     <Filter Include="src\Layers\PlayerUILayer\MiniMap">
       <UniqueIdentifier>{6c009c7f-0c3e-4273-8472-b7323a91f718}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Layers\PlayerUILayer\LearnSpellSprite">
+      <UniqueIdentifier>{4a8967e7-7f1a-49cc-881b-a9dedab3f2b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -270,6 +273,9 @@
     <ClCompile Include="..\Classes\MiniMap.cpp">
       <Filter>src\Layers\PlayerUILayer\MiniMap</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\LearnSpellSprite.cpp">
+      <Filter>src\Layers\PlayerUILayer\LearnSpellSprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -409,6 +415,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\MiniMap.h">
       <Filter>src\Layers\PlayerUILayer\MiniMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LearnSpellSprite.h">
+      <Filter>src\Layers\PlayerUILayer\LearnSpellSprite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

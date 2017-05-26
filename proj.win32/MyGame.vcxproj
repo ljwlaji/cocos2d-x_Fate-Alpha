@@ -155,6 +155,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\Item.cpp" />
     <ClCompile Include="..\Classes\ItemDetailSprite.cpp" />
+    <ClCompile Include="..\Classes\LearnSpellSprite.cpp" />
     <ClCompile Include="..\Classes\LoadingUILayer.cpp" />
     <ClCompile Include="..\Classes\Loot.cpp" />
     <ClCompile Include="..\Classes\LootingSprite.cpp" />
@@ -204,6 +205,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\Item.h" />
     <ClInclude Include="..\Classes\ItemDetailSprite.h" />
+    <ClInclude Include="..\Classes\LearnSpellSprite.h" />
     <ClInclude Include="..\Classes\LoadingUILayer.h" />
     <ClInclude Include="..\Classes\Loot.h" />
     <ClInclude Include="..\Classes\LootingSprite.h" />

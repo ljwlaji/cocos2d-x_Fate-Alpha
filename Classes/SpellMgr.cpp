@@ -102,6 +102,25 @@ uint32 SpellMgr::GetSpellCurrentLevel(uint32 spellid, uint32 baseid)
 
 	return returnid;
 }
+uint32 SpellMgr::GetSpellFrontLevelID(uint32 spellid, uint32 baseid)
+{
+	uint32 returnid = 0;
+	if (m_SpellChainMap.find(baseid) == m_SpellChainMap.end())
+		return returnid;
+
+	std::vector<uint32> TempCheck = m_SpellChainMap[baseid];
+
+	for (int i = 0; i != TempCheck.size(); i++)
+	{
+		if (TempCheck.at(i) == spellid)
+		{
+			returnid = TempCheck.at(--i);
+			break;
+		}
+	}
+
+	return returnid;
+}
 
 uint32 SpellMgr::GetSpellNextLevelID(uint32 spellid, uint32 baseid)
 {

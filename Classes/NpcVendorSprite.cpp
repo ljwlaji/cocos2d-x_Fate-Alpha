@@ -30,6 +30,10 @@ void NpcVendorSprite::InitFrame()
 	CloseButton = Sprite::create(PlayerUIVendorCloseButton);
 	CloseButton->setPosition(getContentSize().width - CloseButton->getBoundingBox().size.width, getContentSize().height - CloseButton->getBoundingBox().size.height);
 	addChild(CloseButton);
+
+	RepairButton = Sprite::create(PlayerUIVendorRepairButton);
+	RepairButton->setPosition(getContentSize().width - RepairButton->getBoundingBox().size.width * 1.3f, CloseButton->getPositionY());
+	addChild(RepairButton);
 }
 
 NpcVendorSprite* NpcVendorSprite::GetInstance()
@@ -90,10 +94,16 @@ bool NpcVendorSprite::OnUITouchBegin(Touch* pTouch)
 		return true;
 	}
 
+	if (RepairButton->isVisible() && RepairButton->IsContectPoint(pTouch->getLocation()))
+	{
+		m_TouchedSprite = RepairButton;
+		return true;
+	}
 	LastPoint = pTouch->getLocation();
 	m_TouchedSprite = this;
 	return true;
 }
+
 void NpcVendorSprite::OnUITouchMoved(Touch* pTouch)
 {
 	if (m_TouchedSprite == CloseButton)
@@ -113,11 +123,17 @@ void NpcVendorSprite::OnUITouchMoved(Touch* pTouch)
 		CanClickMenu = false;
 	}
 }
+
 void NpcVendorSprite::OnUITouchEnded(Touch* pTouch)
 {
 	if (m_TouchedSprite == CloseButton && CloseButton->IsContectPoint(pTouch->getLocation()))
 	{
 		setVisible(false);
+		return;
+	}
+	if (m_TouchedSprite == RepairButton && RepairButton->IsContectPoint(pTouch->getLocation()))
+	{
+		sPlayer->RepairItems();
 		return;
 	}
 	if (m_TouchedSprite != this && CanClickMenu)

@@ -19,6 +19,7 @@
 #include "ItemDetailSprite.h"
 #include "NpcVendorSprite.h"
 #include "MiniMap.h"
+#include "LearnSpellSprite.h"
 
 #pragma execution_character_set("utf-8")
 
@@ -193,6 +194,10 @@ bool PlayerUILayer::init()
 		addChild(sLootingSprite);
 		UISpriteList.push_back(sLootingSprite);
 
+		sLearnSpellSprite->setPosition(visiablesize / 2);
+		addChild(sLearnSpellSprite);
+		UISpriteList.push_back(sLearnSpellSprite);
+
 		sMiniMap->setPosition(visiablesize.x - sMiniMap->getBoundingBox().size.width / 2, sTopBar->getBoundingBox().origin.y - sMiniMap->getBoundingBox().size.height / 2);
 		addChild(sMiniMap);
 
@@ -349,7 +354,7 @@ void PlayerUILayer::InitButtomMenu()
 
 void PlayerUILayer::ResetHeadLevel()
 {
-	for (int i = 0; i < m_Player_Info_UI_Level_Sprite.size(); i++)
+	for (int i = 0; i != m_Player_Info_UI_Level_Sprite.size(); i++)
 		m_Player_Info_UI_Level_Sprite.at(i)->removeFromParentAndCleanup(true);
 	m_Player_Info_UI_Level_Sprite.clear();
 
@@ -619,6 +624,9 @@ void PlayerUILayer::onTouchEnded(const std::vector<Touch*>& touchesVector, Event
 					break;
 				case PlayerUITouch_NpcVendorSprite:
 					sVendorSprite->OnUITouchEnded(touches);
+					break;
+				case PlayerUITouch_LearnSpellSprite:
+					sLearnSpellSprite->OnUITouchEnded(touches);
 					break;
 			}
 		}

@@ -9,6 +9,7 @@ class NpcVendorSprite : public UISprite
 public:
 	//Return false if the creature don't have a vendor list;
 	bool ShowVendorList(uint32 Creature_id);
+	void SetCanRep(bool var)	{ RepairButton->setVisible(var); }
 	static NpcVendorSprite* GetInstance();
 	virtual bool OnUITouchBegin(Touch* pTouch);
 	virtual void OnUITouchMoved(Touch* pTouch);
@@ -20,6 +21,7 @@ private:
 	~NpcVendorSprite();
 	void HandleListScroll();
 
+	Sprite* RepairButton;
 	Sprite* CloseButton;
 	std::list<Sprite*> ShowingList;
 	Point MovePoint;

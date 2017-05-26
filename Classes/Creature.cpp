@@ -9,6 +9,7 @@
 #include "Loot.h"
 #include "NpcVendorSprite.h"
 #include "MiniMap.h"
+#include "LearnSpellSprite.h"
 
 Creature::Creature(SkeletonAnimation* _SkeletonAnimation, uint32 entry, uint32 guid) : Unit(_SkeletonAnimation, entry, guid)
 {
@@ -65,6 +66,7 @@ void Creature::EnterEvadeMode()
 		GetCastingSpell()->cancel();
 	ResetThreatList();
 	SetTarget(nullptr);
+	SetInCombat(false);
 	SetRealPosition(sMainMap->GetVisableSize().x * CreatureStartPoint.x / 100, sMainMap->GetVisableSize().y * CreatureStartPoint.y / 100);
 }
 
@@ -124,18 +126,16 @@ void Creature::OnGossipHello(Player* pPlayer)
 		}
 	}
 
-	else if (IsVendor() && sVendorSprite->ShowVendorList(GetEntry()))
+	if (IsVendor() && sVendorSprite->ShowVendorList(GetEntry()))
 	{
-		if (IsItemRepairer())
-		{
-
-		}
+		sVendorSprite->SetCanRep(IsItemRepairer() ? true : false);
 		return;
-
 	}
-	else if (IsSpellTeacher())
-	{
 
+	if (IsSpellTeacher())
+	{
+		sLearnSpellSprite->InitWithCreature(GetEntry());
+		return;
 	}
 
 	if (IsGossipTalker() && HasScript())

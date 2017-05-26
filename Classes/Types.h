@@ -35,6 +35,12 @@ class Unit;
 typedef std::map<Unit*, float> CreatureThreadList;
 typedef std::map<uint32, uint32> ItemValueInfo;
 
+struct SingleTrainerSpell
+{
+	uint32 SpellID;
+	uint32 NeedMoney;
+	uint32 NeedLevel;
+};
 struct SingleLootInfo
 {
 	uint32 ItemID = 0;
@@ -116,6 +122,7 @@ enum PlayerUITouchType
 	PlayerUITouch_LootingSprite,
 	PlayerUITouch_ItemDetailSprite,
 	PlayerUITouch_NpcVendorSprite,
+	PlayerUITouch_LearnSpellSprite,
 };
 
 enum UnitClasses
@@ -397,20 +404,23 @@ typedef std::map<int, std::vector<RowInfo>> Result;
 #define PlayerUILootingScoreBarUpButton			"Player_UI_Loot_Scroll_Top_Button.png"
 #define PlayerUILootingScoreBarButtomButton		"Player_UI_Loot_Scroll_Buttom_Button.png"
 
-#define PlayerUIItemDetailFrameTop						"Player_UI_Item_Detail_Frame_Top.png"
-#define PlayerUIItemDetailFrameButtom					"Player_UI_Item_Detail_Frame_Buttom.png"
-#define PlayerUIItemDetailFrameMiddle					"Player_UI_Item_Detail_Frame_Middle.png"
+#define PlayerUIItemDetailFrameTop				"Player_UI_Item_Detail_Frame_Top.png"
+#define PlayerUIItemDetailFrameButtom			"Player_UI_Item_Detail_Frame_Buttom.png"
+#define PlayerUIItemDetailFrameMiddle			"Player_UI_Item_Detail_Frame_Middle.png"
 
 #define PlayerUIVendorSingleIconFrame			"Player_UI_Vendor_Single_Icon_Frame.png"
 #define PlayerUIVendorSingleFrame				"Player_UI_Vendor_Single_Frame.png"
 #define PlayerUIVendorFrame						"Player_UI_Vendor_Frame.png"
 #define PlayerUIVendorCloseButton				"Player_UI_Vendor_Close_Button.png"
-
+#define PlayerUIVendorRepairButton				"Player_UI_Vendor_Repaire_Button.png"
 
 #define PlayerUIMiniMapFrame					"Player_UI_Mini_Map_Frame.png"
 #define PlayerUIMiniMapSearch					"Player_UI_Mini_Map_Search.png"
 #define PlayerUIMiniMapSkipFrame				"Player_UI_Mini_Map_ClipFrame.png"
-			
+
+#define PlayerUILearnSpellSpriteSingleFrame		"Player_UI_LearnSpell_Sprite_SingleFrame.png"
+#define PlayerUILearnSpellSpriteFrame			"Player_UI_LearnSpell_Sprite_Frame.png"
+
 enum SettingButtonTag
 {
 	TAG_RESUME_GAME = 1,

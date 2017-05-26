@@ -42,6 +42,7 @@ public:
 	uint32 FindNearestReviveMap(uint32 CurrentMapid);
 	std::string GetClassNameByClassID(UnitClasses _var);
 	std::string GetUnitValueNameByID(UnitInt32Value _val);
+	const std::list<SingleTrainerSpell>* GetSingleTrainerList(uint32 creatureid);
 	ClassInfo GetUnitClassInfo(UnitClasses _car)	{ ClassInfo _ClassInfo; if (m_UnitClasses_Class_Info.find(_car) != m_UnitClasses_Class_Info.end()) _ClassInfo = m_UnitClasses_Class_Info[_car]; return _ClassInfo; }
 	void SetCanPlaySound(bool var)					{ CanPlaySound = var; }
 	void SetKeyBoardEnable(bool _var)				{ KeyBoardListener->setEnabled(_var); }
@@ -52,6 +53,7 @@ public:
 	bool GetCanPlaySound()							{ return CanPlaySound; }
 	const VendorList* GetCreatureVendorInfo(uint32 creature_id);
 private: 
+	void LoadNpcTrainerTemplate();
 	void LoadVendorTemplate();
 	void LoadExpPerLevelTemplate();
 	void LoadQuestGiver();
@@ -69,6 +71,7 @@ private:
 	bool CanPlaySound;
 	EventListenerKeyboard* KeyBoardListener;
 	LabelTTF* Temp;
+	std::map<uint32, std::list<SingleTrainerSpell>> m_Npc_Trainer_Template;
 	std::map<UnitClasses, ClassInfo> m_UnitClasses_Class_Info;
 	std::map<uint32, uint32> m_Exp_Per_Level;
 	std::map<uint32, std::map<uint32, bool>> m_Faction_Friendly_Info;
