@@ -432,15 +432,14 @@ void Player::UpdateMoveStatus()
 {
 	if (!IsAlive())
 		return;
-	if (GetCastingSpell())
-		return;
+
 	bool NeedResetMoveStatus = true;
 	for (int i = MoveKey_Left; i < MoveKey_Endl; i++)
 	{
 		if (MoveKeyStatus[(MoveKeyValue)i])
 			NeedResetMoveStatus = false;
 	}
-	if (NeedResetMoveStatus && GetMoveType() != MoveType_None)
+	if (NeedResetMoveStatus && GetMoveType() != MoveType_None && !GetCastingSpell())
 	{
 		SetMoveType(MoveType_None);
 		GetVision()->clearTracks();
@@ -503,7 +502,11 @@ void Player::UpdateMoveStatus()
 			setPositionY(getPositionY() + Y_Modify);
 	}
 	if (X_Modify || Y_Modify)
+	{
 		sMiniMap->UpdateSingleUnitSign(this);
+		if (GetCastingSpell() && !GetCastingSpell()->GetSpellInfo()->CanCastWhileMoving)
+			GetCastingSpell()->cancel();
+	}
 }
 
 void Player::update(float diff)

@@ -190,22 +190,25 @@ void Creature::UpdateMovement(const float& diff)
 		{
 			if (m_UnitMover->MoveDelay > diff)
 			{
-				float X_Modify = 0;
-				m_UnitMover->Side ? X_Modify = Base_X_MovePoint : X_Modify = 0 - Base_X_MovePoint;
-				m_UnitMover->Side ? SetFacing(Facing_Right) : SetFacing(Facing_Left);
-				if (sMoveMgr->CanMoveTo(this, X_Modify < 0 ? Move_To_Left : Move_To_Right, X_Modify))
-					setPositionX(getPositionX() + X_Modify);
-
-				float CheckPoint = abs(UpdateVictim()->getPositionY() - getPositionY());
-				if (CheckPoint > sMainMap->GetVisableSize().y * 0.02f)
-				{
-					float Mov_Y = 0;
-					UpdateVictim()->getPositionY() > getPositionY() ? Mov_Y += Base_Y_MovePoint : Mov_Y -= Base_Y_MovePoint;
-					if (sMoveMgr->CanMoveTo(this, Mov_Y < 0 ? Move_To_Down : Move_To_Up, Mov_Y))
-						setPositionY(getPositionY() + Mov_Y);
-				}
-				sMiniMap->UpdateSingleUnitSign(this);
 				m_UnitMover->MoveDelay -= diff;
+				if (!GetCastingSpell() || (GetCastingSpell() && GetCastingSpell()->GetSpellInfo()->CanCastWhileMoving))
+				{
+					float X_Modify = 0;
+					m_UnitMover->Side ? X_Modify = Base_X_MovePoint : X_Modify = 0 - Base_X_MovePoint;
+					m_UnitMover->Side ? SetFacing(Facing_Right) : SetFacing(Facing_Left);
+					if (sMoveMgr->CanMoveTo(this, X_Modify < 0 ? Move_To_Left : Move_To_Right, X_Modify))
+						setPositionX(getPositionX() + X_Modify);
+
+					float CheckPoint = abs(UpdateVictim()->getPositionY() - getPositionY());
+					if (CheckPoint > sMainMap->GetVisableSize().y * 0.02f)
+					{
+						float Mov_Y = 0;
+						UpdateVictim()->getPositionY() > getPositionY() ? Mov_Y += Base_Y_MovePoint : Mov_Y -= Base_Y_MovePoint;
+						if (sMoveMgr->CanMoveTo(this, Mov_Y < 0 ? Move_To_Down : Move_To_Up, Mov_Y))
+							setPositionY(getPositionY() + Mov_Y);
+					}
+					sMiniMap->UpdateSingleUnitSign(this);
+				}
 			}
 			else
 			{
