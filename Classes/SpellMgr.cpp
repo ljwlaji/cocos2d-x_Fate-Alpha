@@ -35,7 +35,7 @@ void SpellMgr::LoadSpellTemplate()
 	{
 		if (_Result.empty())
 		{
-			log("spell_chain Template Was Empty!");
+			log("spell_template Template Was Empty!");
 			return;
 		}
 		else
@@ -66,7 +66,7 @@ void SpellMgr::LoadSpellTemplate()
 				SpellChainInfo.PlayActionTime			= row.at(18).GetFloat();
 				SpellChainInfo.SpellIconUrl				= row.at(19).GetString();
 				SpellChainInfo.SpellName				= row.at(20).GetString();
-				m_SpellTemplate[row.at(0).GetInt()] = SpellChainInfo;
+				m_SpellTemplate[row.at(0).GetInt()]		= SpellChainInfo;
 			}
 		}
 	}

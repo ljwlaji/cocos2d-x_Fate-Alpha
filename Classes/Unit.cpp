@@ -31,6 +31,7 @@ Unit::Unit(SkeletonAnimation* _vision, uint32 entry, uint32 guid)
 	m_MoveType = MoveType_None;
 	SetInCombat(false);
 	addChild(_vision);
+	_vision->setAnimation(0, "idle_normal", true);
 }
 
 Unit::~Unit()
@@ -112,6 +113,7 @@ void Unit::DealSpellDamage(Unit* pTarget, SpellEffectType type, int32& damage)
 {
 	if (pTarget->ToCreature() && !pTarget->IsInCombatWith(this))
 		pTarget->ToCreature()->CombatStart(this);
+
 	damage += ToPlayer() ? ToPlayer()->GetPlayerTotalInt32Value(Base_Att) + ToPlayer()->GetItemTotalAttack() : GetUnitInt32Value(Base_Att);
 	damage -= pTarget->GetUnitInt32Value(Base_Def);
 
@@ -125,7 +127,9 @@ void Unit::DealSpellDamage(Unit* pTarget, SpellEffectType type, int32& damage)
 		return;
 	}
 	pTarget->SetUnitInt32Value(Curr_HP, pTarget->GetUnitInt32Value(Curr_HP) - damage);
-	pTarget->GetVision()->setAnimation(0, "take_damage", false);
+	pTarget->GetVision()->clearTracks();
+	pTarget->GetVision()->addAnimation(0, "take_damage", false);
+	pTarget->GetVision()->addAnimation(0, "idle_normal", true);
 }
 
 void Unit::ShowDamageImage(int32 DamageNumber ,bool IsDamage)

@@ -32,7 +32,7 @@ public:
 	void DisTorySprite(Sprite* pSprite);
 	CREATE_FUNC(MainScene);
 	void SwapLayer(int instead, int removetag, int mapid = 0);
-	SkeletonAnimation* GetAnimationByClass(UnitClasses _class);
+	SkeletonAnimation* GetAnimationByClass(UnitClasses _class,bool ForEnum = true);
 	std::vector<Sprite*> GetNumberSpriteByInt(int _var);
 	bool GetFactionFriendly(uint32 factionA, uint32 FactionB);
 	const ItemTemplate* GetItemTemplate(const uint32& ItemEntry);

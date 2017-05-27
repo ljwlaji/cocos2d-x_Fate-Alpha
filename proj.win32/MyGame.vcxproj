@@ -183,6 +183,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Scripts\TestScript_Two.cpp" />
     <ClCompile Include="..\Classes\Spell.cpp" />
     <ClCompile Include="..\Classes\SpellBook.cpp" />
+    <ClCompile Include="..\Classes\SpellBullet.cpp" />
     <ClCompile Include="..\Classes\SpellMgr.cpp" />
     <ClCompile Include="..\Classes\sqlite\shell.c" />
     <ClCompile Include="..\Classes\sqlite\sqlite3.c" />
@@ -231,6 +232,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\ScriptMgr.h" />
     <ClInclude Include="..\Classes\Spell.h" />
     <ClInclude Include="..\Classes\SpellBook.h" />
+    <ClInclude Include="..\Classes\SpellBullet.h" />
     <ClInclude Include="..\Classes\SpellMgr.h" />
     <ClInclude Include="..\Classes\sqlite\sqlite3.h" />
     <ClInclude Include="..\Classes\sqlite\sqlite3ext.h" />

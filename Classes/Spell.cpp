@@ -2,6 +2,7 @@
 #include "Unit.h"
 #include "NotifyMgr.h"
 #include "MainMapLayer.h"
+#include "SpellBullet.h"
 Spell::Spell(Unit* caster, Unit* pTarget, const SpellInfo& _info)
 {
 	caster->SetCastingSpell(this);
@@ -33,7 +34,9 @@ void Spell::cast()
 		finish();
 		break;
 	case SpellType_Magic:
-		m_status = STATUS_SPELLGO;
+		for (std::list<Unit*>::iterator itr = m_SpellTargets.begin(); itr != m_SpellTargets.end(); itr++)
+			Spell_Builet::CreateBullet(m_caster, (*itr), m_SpellInfo.SpellValue);
+		finish();
 		break;
 	case SpellType_Arua:
 		break;

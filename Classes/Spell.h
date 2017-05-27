@@ -12,6 +12,7 @@ public:
 	~Spell();
 	float GetSpellTotalCastTime()	{ return m_Spell_Total_Casting_Time; }
 	float GetSpellCurrentTimeLeft()	{ return m_SpellInfo.SpellCastTime; }
+	const SpellInfo* GetSpellInfo()	{ return &m_SpellInfo; }
 	void update(const float& diff);
 	void cancel();
 private:

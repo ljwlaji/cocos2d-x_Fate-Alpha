@@ -507,34 +507,34 @@ void MainScene::LoadUnitClassInfo()
 	}
 }
 
-SkeletonAnimation* MainScene::GetAnimationByClass(UnitClasses _class)
+SkeletonAnimation* MainScene::GetAnimationByClass(UnitClasses _class, bool ForEnum)
 {
 	SkeletonAnimation* SkeletonAnimation = nullptr;
 	switch (_class)
 	{
 	case Saber:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", ForEnum ? 0.35f : 0.25f);
 		break;
 	case Archer:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Emia.json", "Emia.atlas", ForEnum ? 0.4f : 0.3f);
 		break;
 	case Caster:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", ForEnum ? 0.4f : 0.3f);
 		break;
 	case Lancer:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", ForEnum ? 0.4f : 0.3f);
 		break;
 	case Assasin:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", ForEnum ? 0.4f : 0.3f);
 		break;
 	case Rider:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", ForEnum ? 0.4f : 0.3f);
 		break;
 	case Avenger:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", ForEnum ? 0.4f : 0.3f);
 		break;
 	case Berserker:
-		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.4f);
+		SkeletonAnimation = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", ForEnum ? 0.4f : 0.3f);
 		break;
 	}
 	return SkeletonAnimation;

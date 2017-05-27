@@ -1,4 +1,4 @@
-#include "ChoseCharacterLayer.h"
+﻿#include "ChoseCharacterLayer.h"
 #include "DataMgr.h"
 #include "HelloWorldScene.h"
 #include "MainMapLayer.h"
@@ -171,6 +171,8 @@ void Chose_Character_Layer::InitFrames()
 	addChild(FactionFrame);
 
 	FactionInfo = LabelTTF::create("Please Chose Your \nCharacter.", "Ariral", 28, Size::ZERO, TextHAlignment::LEFT);
+	// A Way To Change Font Name Need Test At Device;
+	/*FactionInfo->setFontName("微软雅黑");*/
 	FactionInfo->setAnchorPoint(Vec2(0, 1));
 	FactionInfo->setPosition(FactionFrame->getContentSize().width * 0.15f, FactionFrame->getContentSize().height * 0.6f);
 	FactionFrame->addChild(FactionInfo);
@@ -274,7 +276,7 @@ void Chose_Character_Layer::_SwapLayer(FadeType _FadeType)
 	case EnterGame:
 		if (!sPlayer)
 		{
-			SkeletonAnimation* sk = SkeletonAnimation::createWithJsonFile("Black_Saber_Thrid_View.json", "Black_Saber_Thrid_View.atlas", 0.3f);
+			SkeletonAnimation* sk = sGame->GetAnimationByClass(m_ChosedInfo.Class, false);
 			Player* _player = new Player(sk, m_ChosedInfo);
 			if (!_player->CreatePlayer())
 				return;

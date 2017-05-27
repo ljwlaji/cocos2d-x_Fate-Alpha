@@ -276,6 +276,9 @@
     <ClCompile Include="..\Classes\LearnSpellSprite.cpp">
       <Filter>src\Layers\PlayerUILayer\LearnSpellSprite</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\SpellBullet.cpp">
+      <Filter>src\Spell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -418,6 +421,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\LearnSpellSprite.h">
       <Filter>src\Layers\PlayerUILayer\LearnSpellSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SpellBullet.h">
+      <Filter>src\Spell</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

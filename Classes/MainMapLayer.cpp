@@ -322,7 +322,6 @@ void Main_Map_Layer::CreateObjects()
 		Npc* Temp = new Npc(sk, _template.entry, _template.guid);
 		Temp->SetRealPosition(Visablesize.x * _template.pos_x / 100, Visablesize.y * _template.pos_y / 100);
 		Temp->Reset();
-		sk->setAnimation(0, "idle", true);
 		m_WaitForLoadingNpcs.pop_back();
 		m_NpcVector.push_back(Temp);
 		addChild(Temp);
@@ -335,7 +334,6 @@ void Main_Map_Layer::CreateObjects()
 		Monster* Temp = new Monster(sk, _template.entry, _template.guid);
 		Temp->SetRealPosition(Visablesize.x * _template.pos_x / 100, Visablesize.y * _template.pos_y / 100);
 		Temp->Reset();
-		sk->setAnimation(0, "idle", true);
 		m_WaitForLoadingMonsters.pop_back();
 		m_MonsterVector.push_back(Temp);
 		addChild(Temp);
