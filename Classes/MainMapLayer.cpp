@@ -345,8 +345,13 @@ void Main_Map_Layer::CreateObjects()
 	Size s = Director::getInstance()->getWinSize();
 	m_MaxSize = 0;
 	for (int i = 0; i != m_MapGroundSpriteVector.size(); i++)
-		m_MaxSize += m_MapGroundSpriteVector.at(i)->getBoundingBox().size.width;
-
+	{
+		if (m_MaxSize < m_MapGroundSpriteVector.at(i)->getBoundingBox().origin.x + m_MapGroundSpriteVector.at(i)->getBoundingBox().size.width)
+			m_MaxSize = m_MapGroundSpriteVector.at(i)->getBoundingBox().origin.x + m_MapGroundSpriteVector.at(i)->getBoundingBox().size.width;
+		//log("%f", m_MapGroundSpriteVector.at(i)->getBoundingBox().size.width);
+		//m_MaxSize += m_MapGroundSpriteVector.at(i)->getBoundingBox().size.width;
+	}
+	log("%f", m_MaxSize);
 	runAction(Follow::create(sPlayer, Rect(0, 0, m_MaxSize, s.height)));
 
 	NeedCreateObjects = false;

@@ -150,6 +150,7 @@ void MiniMap::UpdateSingleUnitSign(Unit* pUnit)
 	float MiniMapPosX = TotalX * X;
 	float Move_x = MiniMapPosX - PlayerMiniMapSingle->getPositionX();
 
+	Move_x = pUnit->GetPositionX() - PlayerMiniMapSingle->getPositionX();
 	SignSprite->setPosition(pUnit->getPositionX(), pUnit->getPositionY());
 
 	if (pUnit->ToPlayer())
