@@ -1,24 +1,31 @@
 #ifndef __NOTIFY_MGR_H__
 #define __NOTIFY_MGR_H__
 
-#include "cocos2d.h"
-USING_NS_CC;
+#include "UISprite.h"
+#include "Common.h"
 
-#define sNotifyMgr NotifyMgr::GetInstance()
-class NotifyMgr : public Layer
+#define sNotifyMgr	NotifyMgr::GetInstance()
+class NotifyMgr : public UISprite
 {
 public:
 	static NotifyMgr* GetInstance();
-	void ShowNotify(const char* args);
+	void ShowUpWithDisabaledTouching(float WaitSecond,const char* format, ...);
+	void ShowUpWithNormalNotify(const char* formal, ...);
+	bool IsDisabaleTouch()		{ return DisabaleTouching; }
+	virtual bool OnUITouchBegin(Touch* pTouch);
 private:
 	NotifyMgr();
 	~NotifyMgr();
-	virtual bool init();
-	CREATE_FUNC(NotifyMgr);
-	void DestorySingleNotifyText(LabelTTF* pLabelTTF);
-	std::vector<LabelTTF*> NotifyQueue;
-	Vec2 visablesize;
+	virtual void OnUITouchMoved(Touch* pTouch);
+	virtual void OnUITouchEnded(Touch* pTouch);
+	virtual void update(float diff);
+private:
+	bool DisabaleTouching;
+	LabelTTF* NotiTTF;
+	Sprite* CancelButton;
+	Sprite* BackGround;
+	Sprite* Frame;
+	float DelayTimer;
 };
-
 
 #endif

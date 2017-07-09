@@ -2,6 +2,7 @@
 
 UISprite::UISprite()
 {
+
 }
 
 UISprite::~UISprite()

@@ -8,7 +8,10 @@ Spell_Builet* Spell_Builet::CreateBullet(Unit* Owner, Unit* pTarget, uint32 Dama
 	if (pTarget && pTarget->IsAlive())
 	{
 		Spell_Builet* TempBuilet = new Spell_Builet();
+		//Wait To Fix
+		//Need Switch Sprite Image Here
 		TempBuilet->initWithFile("Arrow.png");
+		TempBuilet->autorelease();
 		sMainMap->addChild(TempBuilet);
 		TempBuilet->SetDamage(Damage);
 		TempBuilet->SetTarget(pTarget);

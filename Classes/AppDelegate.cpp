@@ -1,23 +1,35 @@
 ﻿#include "AppDelegate.h"
 #include "HelloWorldScene.h"
-#include "DataMgr.h"
 #include <iostream>
 #include <fstream>
+//#include "scripting/lua-bindings/manual/CCLuaEngine.h"
+//#include "audio/include/SimpleAudioEngine.h"
+//#include "cocos2d.h"
+//#include "scripting/lua-bindings/manual/lua_module_register.h"
 using namespace std;
 USING_NS_CC;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(480, 500);
-static cocos2d::Size smallResolutionSize = cocos2d::Size(1280, 760);
-static cocos2d::Size mediumResolutionSize = cocos2d::Size(1920,1080/*1280, 760*/);
+static cocos2d::Size smallResolutionSize = cocos2d::Size(760, 1280);
+static cocos2d::Size mediumResolutionSize = cocos2d::Size(1080,1920/*1280, 760*/);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 static cocos2d::Size big = cocos2d::Size(2560, 1440);
 static cocos2d::Size asdf = cocos2d::Size(1920, 1080);
-AppDelegate::AppDelegate() {
 
+// If you want to use packages manager to install more packages, 
+// don't modify or remove this function
+int AppDelegate::register_all_packages()
+{
+	return 0; //flag for packages manager
+}
+
+AppDelegate::AppDelegate() {
+	
 }
 
 AppDelegate::~AppDelegate() 
 {
+    
 }
 
 //if you want a different context,just modify the value of glContextAttrs
@@ -31,23 +43,36 @@ void AppDelegate::initGLContextAttrs()
     GLView::setGLContextAttrs(glContextAttrs);
 }
 
-// If you want to use packages manager to install more packages, 
-// don't modify or remove this function
-static int register_all_packages()
-{
-    return 0; //flag for packages manager
-}
-
 bool AppDelegate::applicationDidFinishLaunching() {
 
 	//检查数据库文件是否已经提取
-	CopyData("Datas.db");//要使用的sqlite库文件
+	//CopyData("Datas.db");//要使用的sqlite库文件
     // initialize director
+
+	//auto engine = LuaEngine::getInstance();
+	//ScriptEngineManager::getInstance()->setScriptEngine(engine);
+	//lua_State* L = engine->getLuaStack()->getLuaState();
+	//lua_module_register(L);
+	//
+	//register_all_packages();
+	//
+	//LuaStack* stack = engine->getLuaStack();
+	//stack->setXXTEAKeyAndSign("2dxLua", strlen("2dxLua"), "XXTEA", strlen("XXTEA"));
+
+	//register custom function
+	//LuaStack* stack = engine->getLuaStack();
+	//register_custom_function(stack->getLuaState());
+
+	//if (engine->executeScriptFile("src/main.lua"))
+	//{
+	//	return false;
+	//}
+
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-		glview = GLViewImpl::createWithRect("MyGame", Rect(0, 0, smallResolutionSize.width, smallResolutionSize.height));
+		glview = GLViewImpl::createWithRect("MyGame", Rect(0, 0, smallResolutionSize.width * 0.6f, smallResolutionSize.height * 0.6f));
 #else
         glview = GLViewImpl::create("MyGame");
 #endif
@@ -65,10 +90,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     Size frameSize = glview->getFrameSize();
 	director->setContentScaleFactor(MIN(smallResolutionSize.height / mediumResolutionSize.height, smallResolutionSize.width / mediumResolutionSize.width));
 
-    register_all_packages();
-
     // create a scene. it's an autorelease object
-    auto scene = MainScene::create();
+    auto scene = MainScene::GetInstance();
     // run
     director->runWithScene(scene);
     return true;
@@ -92,12 +115,5 @@ void AppDelegate::applicationWillEnterForeground() {
 
 void AppDelegate::CopyData(const char* pFileName)
 {
-	std::string dbFilePath = FileUtils::getInstance()->fullPathForFilename("Datas.db");
-	std::string writablePath = FileUtils::getInstance()->getWritablePath() + pFileName;
 
-	ssize_t dbSize;
-	FileUtils::getInstance()->getFileData(writablePath.c_str(), "r", &dbSize);
-	ssize_t asize = 0;
-	Data data = FileUtils::getInstance()->getDataFromFile(dbFilePath.c_str());
-	FileUtils::getInstance()->writeDataToFile(data, writablePath);
 }

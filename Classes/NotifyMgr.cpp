@@ -1,63 +1,112 @@
 #include "NotifyMgr.h"
+#pragma once
+#pragma execution_character_set("utf-8")
 
 static NotifyMgr* _NotifyMgr = nullptr;
 
-NotifyMgr::NotifyMgr()
+NotifyMgr::NotifyMgr() : DisabaleTouching(false)
 {
-	_NotifyMgr = this;
-	NotifyQueue.clear();
-	visablesize = Director::getInstance()->getVisibleSize();
+	initWithFile(NotifyMgr_BackGround);
+	autorelease();
+
+	SetTouchType(PlayerUITouch_Notify_Sprite);
+
+	Frame = Sprite::create(NotifyMgr_Frame);
+	Frame->setPosition(0,getContentSize().height);
+	Frame->setAnchorPoint(Vec2(0.0f, 1.0f));
+	addChild(Frame);
+
+	CancelButton = Sprite::create(NotifyMgr_Button);
+	CancelButton->setAnchorPoint(Vec2(0.5f, 0));
+	CancelButton->setPosition(getContentSize().width / 2, 0);
+	addChild(CancelButton);
+
+	NotiTTF = LabelTTF::create("123", "Airal", 35);
+	NotiTTF->setPosition(getContentSize().width / 2, getContentSize().height / 2 + NotiTTF->getBoundingBox().size.height);
+	addChild(NotiTTF);
+
+	setLocalZOrder(9000);
 }
+
 
 NotifyMgr::~NotifyMgr()
 {
 	removeAllChildrenWithCleanup(true);
+	removeFromParentAndCleanup(true);
 	_NotifyMgr = nullptr;
-}
-
-bool NotifyMgr::init()
-{
-	bool bRef = false;
-	do
-	{
-		CC_BREAK_IF(!Layer::init());
-		bRef = true;
-	} while (0);
-	return bRef;
 }
 
 NotifyMgr* NotifyMgr::GetInstance()
 {
 	if (!_NotifyMgr)
-		_NotifyMgr = NotifyMgr::create();
-
+		_NotifyMgr = new NotifyMgr();
 	return _NotifyMgr;
 }
 
-void NotifyMgr::ShowNotify(const char* args)
+void NotifyMgr::ShowUpWithNormalNotify(const char* format, ...)
 {
-	LabelTTF* Temp = LabelTTF::create(args, "Arial", 38);
-	Temp->setColor(ccc3(255, 0, 0));
-	CCDelayTime* pdelay = CCDelayTime::create(2.0f);
-	CCFadeOut* pFadeOut = CCFadeOut::create(1.0f);
-	CCSequence* spawn = CCSequence::create(pdelay, pFadeOut, CallFunc::create(CC_CALLBACK_0(NotifyMgr::DestorySingleNotifyText, this, Temp)), NULL);
-	Temp->SetRealPosition(visablesize.x / 2, visablesize.y * 0.85f + Temp->getBoundingBox().size.height);
-	for (int i = 0; i != NotifyQueue.size(); i++)
-		NotifyQueue.at(i)->setPositionY(NotifyQueue.at(i)->getPositionY() + Temp->getBoundingBox().size.height);
-	NotifyQueue.push_back(Temp);
-	addChild(Temp);
-	Temp->runAction(spawn);
+	va_list ap;
+	char szQuery[1024];
+	va_start(ap, format);
+	int res = vsnprintf(szQuery, 1024, format, ap);
+	va_end(ap);
+
+	if (res == -1)
+		return;
+
+	NotiTTF->setString(szQuery);
+
+	setVisible(true);
+	DisabaleTouching = false;
+	CancelButton->setVisible(true);
 }
 
-void NotifyMgr::DestorySingleNotifyText(LabelTTF* pLabelTTF)
+void NotifyMgr::ShowUpWithDisabaledTouching(float WaitSecond,const char* format, ...)
 {
-	for (std::vector<LabelTTF*>::iterator i = NotifyQueue.begin(); i != NotifyQueue.end(); i++)
+	va_list ap;
+	char szQuery[1024];
+	va_start(ap, format);
+	int res = vsnprintf(szQuery, 1024, format, ap);
+	va_end(ap);
+
+	if (res == -1)
+		return;
+
+	unscheduleUpdate();
+	NotiTTF->setString(szQuery);
+	DelayTimer = (float)WaitSecond;
+	setVisible(true);
+	DisabaleTouching = true;
+	CancelButton->setVisible(false);
+	scheduleUpdate();
+}
+
+
+
+bool NotifyMgr::OnUITouchBegin(Touch* pTouch)
+{
+	if (CancelButton->isVisible() && CancelButton->IsContectPoint(pTouch->getLocation()))
+		setVisible(false);
+	return true;
+}
+
+void NotifyMgr::OnUITouchMoved(Touch* pTouch)
+{
+
+}
+
+void NotifyMgr::OnUITouchEnded(Touch* pTouch)
+{
+
+}
+
+void NotifyMgr::update(float diff)
+{
+	if (DelayTimer <= diff)
 	{
-		if (*i == pLabelTTF)
-		{
-			NotifyQueue.erase(i);
-			pLabelTTF->removeFromParentAndCleanup(true);
-			break;
-		}
+		unscheduleUpdate();
+		DelayTimer = 0;
+		setVisible(false);
 	}
+	else DelayTimer -= diff;
 }

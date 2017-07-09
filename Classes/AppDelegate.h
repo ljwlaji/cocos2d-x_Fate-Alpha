@@ -16,7 +16,7 @@ public:
 
 	void CopyData(const char* pFileName);
     virtual void initGLContextAttrs();
-
+	static int register_all_packages();
     /**
     @brief    Implement Director and Scene init code here.
     @return true    Initialize success, app continue.
